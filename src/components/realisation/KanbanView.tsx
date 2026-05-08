@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import {
   DndContext,
-  DragEndEvent,
   DragOverlay,
   PointerSensor,
   useSensor,
@@ -9,6 +8,7 @@ import {
   useDroppable,
   useDraggable,
 } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
 import type { Realisation, Product, RealisationStatus } from '../../types/realisation'
 import { STATUS_LABELS, STATUS_COLORS } from '../../types/realisation'
 import StatusBadge from './StatusBadge'
