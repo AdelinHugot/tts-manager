@@ -48,17 +48,24 @@ const NAV_ITEMS: NavItem[] = [
       </svg>
     ),
   },
-  {
-    id: 'parametres',
-    label: 'Paramètres',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <circle cx="9" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.8"/>
-        <path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    ),
-  },
 ]
+
+const PARAMETRES_ITEM: NavItem = {
+  id: 'parametres',
+  label: 'Paramètres',
+  icon: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.8"/>
+      <path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+}
+
+const MOCK_USER = {
+  name: 'Adelin Hugot',
+  email: 'adelin.hugot@gmail.com',
+  avatar: 'AH',
+}
 
 type SidebarProps = {
   activePage: string
@@ -67,25 +74,57 @@ type SidebarProps = {
 
 export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
   return (
-    <aside className="w-60 min-h-screen bg-white border-r border-slate-100 flex flex-col py-6 px-4 gap-1">
+    <aside className="w-60 min-h-screen bg-white border-r border-slate-100 flex flex-col py-6 px-4">
+      {/* Logo */}
       <div className="flex items-center gap-3 px-3 mb-8">
         <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white text-sm font-bold">T</div>
         <span className="font-semibold text-slate-800 text-base">TTS Manager</span>
       </div>
-      {NAV_ITEMS.map((item) => (
+
+      {/* Main nav */}
+      <nav className="flex flex-col gap-1 flex-1">
+        {NAV_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => onNavigate(item.id)}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors w-full text-left ${
+              activePage === item.id
+                ? 'bg-brand/10 text-brand'
+                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+            }`}
+          >
+            <span className="w-5 flex items-center justify-center">{item.icon}</span>
+            {item.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Bottom section */}
+      <div className="flex flex-col gap-2 mt-4">
+        {/* Paramètres */}
         <button
-          key={item.id}
-          onClick={() => onNavigate(item.id)}
+          onClick={() => onNavigate(PARAMETRES_ITEM.id)}
           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors w-full text-left ${
-            activePage === item.id
+            activePage === PARAMETRES_ITEM.id
               ? 'bg-brand/10 text-brand'
               : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
           }`}
         >
-          <span className="w-5 flex items-center justify-center">{item.icon}</span>
-          {item.label}
+          <span className="w-5 flex items-center justify-center">{PARAMETRES_ITEM.icon}</span>
+          {PARAMETRES_ITEM.label}
         </button>
-      ))}
+
+        {/* User card */}
+        <div className="mt-1 p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand to-indigo-400 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm">
+            {MOCK_USER.avatar}
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-slate-800 truncate leading-tight">{MOCK_USER.name}</p>
+            <p className="text-xs text-slate-400 truncate leading-tight mt-0.5">{MOCK_USER.email}</p>
+          </div>
+        </div>
+      </div>
     </aside>
   )
 }
