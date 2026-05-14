@@ -5,6 +5,7 @@ import Analytics from '../../pages/Analytics'
 import RealisationPage from '../../pages/Realisation'
 import Produits from '../../pages/Produits'
 import Parametres from '../../pages/Parametres'
+import RushsPage from '../../pages/Rushs'
 import type { Realisation, RealisationStatus } from '../../types/realisation'
 import type { Rush } from '../../types/rush'
 import { MOCK_REALISATIONS, MOCK_PRODUCTS, MOCK_RUSHES } from '../../data/mock'
@@ -80,9 +81,14 @@ export default function AppLayout() {
           />
         )}
         {activePage === 'rushs' && (
-          <div className="p-8">
-            <p className="text-slate-400">Page Rushs — coming in next tasks</p>
-          </div>
+          <RushsPage
+            rushes={rushes}
+            realisations={realisations}
+            onAddRush={handleAddRush}
+            onDeleteRush={handleDeleteRush}
+            onLinkRush={handleLinkRush}
+            onCreateRealisation={(rushId) => handleNewRealisation(rushId)}
+          />
         )}
         {activePage === 'produits' && <Produits />}
         {activePage === 'parametres' && <Parametres />}
