@@ -1,11 +1,14 @@
+import type { ReactNode } from 'react'
+
 export type ViewType = 'list' | 'kanban' | 'cards'
 
 type Props = {
   activeView: ViewType
   onViewChange: (view: ViewType) => void
+  views?: ViewType[]
 }
 
-const VIEWS: { id: ViewType; label: string; icon: React.ReactNode }[] = [
+const VIEWS: { id: ViewType; label: string; icon: ReactNode }[] = [
   {
     id: 'list',
     label: 'Vue Liste',
@@ -42,10 +45,12 @@ const VIEWS: { id: ViewType; label: string; icon: React.ReactNode }[] = [
   },
 ]
 
-export default function ViewSwitcher({ activeView, onViewChange }: Props) {
+export default function ViewSwitcher({ activeView, onViewChange, views }: Props) {
+  const visibleViews = views ? VIEWS.filter((v) => views.includes(v.id)) : VIEWS
+
   return (
     <div className="flex items-center gap-0.5 bg-slate-100 p-1 rounded-lg">
-      {VIEWS.map((view) => (
+      {visibleViews.map((view) => (
         <button
           key={view.id}
           title={view.label}

@@ -39,8 +39,25 @@ export type Realisation = {
   createdAt: string
 }
 
+export type ProductStatus = 'actif' | 'rupture_stock' | 'inactif'
+
 export type Product = {
   id: string
   name: string
   imageUrl: string
+  description: string
+  status: ProductStatus
+  url?: string
+}
+
+export const PRODUCT_STATUS_LABELS: Record<ProductStatus, string> = {
+  actif: 'Actif',
+  rupture_stock: 'Rupture de stock',
+  inactif: 'Inactif',
+}
+
+export const PRODUCT_STATUS_COLORS: Record<ProductStatus, { dot: string; badge: string }> = {
+  actif:         { dot: 'bg-emerald-400', badge: 'bg-emerald-50 text-emerald-600' },
+  rupture_stock: { dot: 'bg-amber-400',   badge: 'bg-amber-50 text-amber-600' },
+  inactif:       { dot: 'bg-slate-300',   badge: 'bg-slate-100 text-slate-500' },
 }

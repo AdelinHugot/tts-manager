@@ -1,10 +1,38 @@
 import type { Realisation, Product } from '../types/realisation'
 
 export const MOCK_PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Crème hydratante bio', imageUrl: 'https://placehold.co/60x60/e2e8f0/94a3b8?text=Prod' },
-  { id: 'p2', name: 'Sac en cuir végétal', imageUrl: 'https://placehold.co/60x60/e2e8f0/94a3b8?text=Prod' },
-  { id: 'p3', name: 'Montre minimaliste', imageUrl: 'https://placehold.co/60x60/e2e8f0/94a3b8?text=Prod' },
-  { id: 'p4', name: 'Diffuseur huiles essentielles', imageUrl: 'https://placehold.co/60x60/e2e8f0/94a3b8?text=Prod' },
+  {
+    id: 'p1',
+    name: 'Crème hydratante bio',
+    imageUrl: 'https://placehold.co/400x400/e2e8f0/94a3b8?text=Prod',
+    description: 'Crème visage à base d\'aloe vera et d\'huile de jojoba. Convient à tous types de peaux.',
+    status: 'actif',
+    url: 'https://shop.tiktok.com/p1',
+  },
+  {
+    id: 'p2',
+    name: 'Sac en cuir végétal',
+    imageUrl: 'https://placehold.co/400x400/e2e8f0/94a3b8?text=Prod',
+    description: 'Sac à main fabriqué en cuir végétal certifié, disponible en 3 coloris.',
+    status: 'actif',
+    url: 'https://shop.tiktok.com/p2',
+  },
+  {
+    id: 'p3',
+    name: 'Montre minimaliste',
+    imageUrl: 'https://placehold.co/400x400/e2e8f0/94a3b8?text=Prod',
+    description: 'Montre analogique au design épuré, bracelet interchangeable, résistante à l\'eau.',
+    status: 'rupture_stock',
+    url: 'https://shop.tiktok.com/p3',
+  },
+  {
+    id: 'p4',
+    name: 'Diffuseur huiles essentielles',
+    imageUrl: 'https://placehold.co/400x400/e2e8f0/94a3b8?text=Prod',
+    description: 'Diffuseur ultrasonique 300ml, 7 couleurs LED, minuterie intégrée.',
+    status: 'inactif',
+    url: 'https://shop.tiktok.com/p4',
+  },
 ]
 
 export const MOCK_REALISATIONS: Realisation[] = [
