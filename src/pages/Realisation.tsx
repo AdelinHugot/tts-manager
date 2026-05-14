@@ -32,7 +32,7 @@ export default function RealisationPage() {
       productId: MOCK_PRODUCTS[0].id,
       publishDate: null,
       notes: '',
-      rushes: [],
+      rushIds: [],
       createdAt: new Date().toISOString().split('T')[0],
     }
     setRealisations((prev) => [newReal, ...prev])

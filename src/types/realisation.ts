@@ -21,13 +21,6 @@ export const STATUS_COLORS: Record<RealisationStatus, { bg: string; text: string
   publiee:   { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-500' },
 }
 
-export type RushFile = {
-  id: string
-  name: string
-  url: string
-  size: number
-}
-
 export type Realisation = {
   id: string
   title: string
@@ -35,7 +28,7 @@ export type Realisation = {
   productId: string
   publishDate: string | null
   notes: string
-  rushes: RushFile[]
+  rushIds: string[]
   createdAt: string
 }
 
