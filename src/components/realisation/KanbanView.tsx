@@ -62,8 +62,8 @@ function KanbanCard({
       )}
       <div className="flex items-center justify-between">
         <StatusBadge status={realisation.status} size="sm" />
-        {realisation.rushes.length > 0 && (
-          <span className="text-xs text-slate-400">▶ {realisation.rushes.length}</span>
+        {realisation.rushIds.length > 0 && (
+          <span className="text-xs text-slate-400">▶ {realisation.rushIds.length}</span>
         )}
       </div>
     </div>

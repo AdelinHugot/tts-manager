@@ -53,9 +53,9 @@ export default function ListView({ realisations, products, onSelect }: Props) {
                 {formatDate(r.publishDate)}
               </td>
               <td className="px-5 py-4">
-                {r.rushes.length > 0 ? (
+                {r.rushIds.length > 0 ? (
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                    ▶ {r.rushes.length} fichier{r.rushes.length > 1 ? 's' : ''}
+                    ▶ {r.rushIds.length} fichier{r.rushIds.length > 1 ? 's' : ''}
                   </span>
                 ) : (
                   <span className="text-slate-300 text-xs">—</span>

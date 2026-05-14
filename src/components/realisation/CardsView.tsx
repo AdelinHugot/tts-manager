@@ -27,7 +27,7 @@ export default function CardsView({ realisations, products, onSelect }: Props) {
         >
           {/* Thumbnail */}
           <div className="relative h-40 bg-slate-100 overflow-hidden">
-            {r.rushes.length > 0 ? (
+            {r.rushIds.length > 0 ? (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
                 <span className="text-white/60 text-4xl">▶</span>
               </div>
@@ -40,10 +40,10 @@ export default function CardsView({ realisations, products, onSelect }: Props) {
             <div className="absolute top-3 right-3">
               <StatusBadge status={r.status} size="sm" />
             </div>
-            {r.rushes.length > 0 && (
+            {r.rushIds.length > 0 && (
               <div className="absolute bottom-3 left-3">
                 <span className="text-xs font-medium text-white bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                  {r.rushes.length} rush{r.rushes.length > 1 ? 's' : ''}
+                  {r.rushIds.length} rush{r.rushIds.length > 1 ? 's' : ''}
                 </span>
               </div>
             )}

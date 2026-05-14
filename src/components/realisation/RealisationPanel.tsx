@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import type { Realisation, Product, RealisationStatus, RushFile } from '../../types/realisation'
+import type { Realisation, Product, RealisationStatus } from '../../types/realisation'
+import type { Rush } from '../../types/rush'
 import StatusBadge from './StatusBadge'
 import FileUploadZone from './FileUploadZone'
 
 type Props = {
   realisation: Realisation | null
   products: Product[]
+  rushes: Rush[]
+  onAddRush: (rush: Rush) => void
   onClose: () => void
   onUpdate: (updated: Realisation) => void
 }
@@ -15,7 +18,7 @@ const ALL_STATUSES: RealisationStatus[] = [
   'a_tourner', 'script', 'a_monter', 'a_publier', 'publiee',
 ]
 
-export default function RealisationPanel({ realisation, products, onClose, onUpdate }: Props) {
+export default function RealisationPanel({ realisation, products, rushes, onAddRush, onClose, onUpdate }: Props) {
   const [draft, setDraft] = useState<Realisation | null>(null)
   const [showStatusMenu, setShowStatusMenu] = useState(false)
 
@@ -31,14 +34,20 @@ export default function RealisationPanel({ realisation, products, onClose, onUpd
     onUpdate(updated)
   }
 
-  function handleAddRushes(files: RushFile[]) {
+  function handleAddRushes(newRushes: Rush[]) {
     if (!draft) return
-    update({ rushes: [...draft.rushes, ...files] })
+    newRushes.forEach((r) => onAddRush(r))
+    update({ rushIds: [...draft.rushIds, ...newRushes.map((r) => r.id)] })
   }
 
-  function handleRemoveRush(id: string) {
+  function handleUnlinkRush(rushId: string) {
     if (!draft) return
-    update({ rushes: draft.rushes.filter((r) => r.id !== id) })
+    update({ rushIds: draft.rushIds.filter((id) => id !== rushId) })
+  }
+
+  function handleLinkExisting(rushId: string) {
+    if (!draft || draft.rushIds.includes(rushId)) return
+    update({ rushIds: [...draft.rushIds, rushId] })
   }
 
   const isOpen = realisation !== null
@@ -47,7 +56,6 @@ export default function RealisationPanel({ realisation, products, onClose, onUpd
     <AnimatePresence>
       {isOpen && draft && (
         <>
-          {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -56,8 +64,6 @@ export default function RealisationPanel({ realisation, products, onClose, onUpd
             className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-40"
             onClick={onClose}
           />
-
-          {/* Panel */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
@@ -65,7 +71,6 @@ export default function RealisationPanel({ realisation, products, onClose, onUpd
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             className="fixed top-0 right-0 h-full w-[480px] bg-white shadow-2xl z-50 flex flex-col overflow-hidden"
           >
-            {/* Header */}
             <div className="flex items-start justify-between p-6 border-b border-slate-100">
               <div className="flex-1 pr-4">
                 <input
@@ -106,14 +111,9 @@ export default function RealisationPanel({ realisation, products, onClose, onUpd
               </button>
             </div>
 
-            {/* Scrollable body */}
             <div className="flex-1 overflow-y-auto p-6 space-y-7">
-
-              {/* Metadata */}
               <section>
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-                  Informations
-                </h3>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Informations</h3>
                 <div className="space-y-3">
                   <div>
                     <label className="text-xs font-medium text-slate-500 mb-1.5 block">Produit</label>
@@ -139,23 +139,19 @@ export default function RealisationPanel({ realisation, products, onClose, onUpd
                 </div>
               </section>
 
-              {/* Rushes */}
               <section>
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-                  Rushs
-                </h3>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Rushs</h3>
                 <FileUploadZone
-                  rushes={draft.rushes}
+                  rushIds={draft.rushIds}
+                  allRushes={rushes}
                   onAdd={handleAddRushes}
-                  onRemove={handleRemoveRush}
+                  onUnlink={handleUnlinkRush}
+                  onLinkExisting={handleLinkExisting}
                 />
               </section>
 
-              {/* Notes */}
               <section>
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-                  Notes
-                </h3>
+                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Notes</h3>
                 <textarea
                   value={draft.notes}
                   onChange={(e) => update({ notes: e.target.value })}
