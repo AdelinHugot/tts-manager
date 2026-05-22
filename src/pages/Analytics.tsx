@@ -4,7 +4,7 @@ import { MOCK_ORDERS } from '../data/mockAnalytics'
 import {
   filterByPeriod,
   computeKPIs,
-  computeWeeklyTrend,
+  computeDailyTrend,
   computeOrderTypeBreakdown,
   computeTopProducts,
   computeTopBoutiques,
@@ -39,7 +39,7 @@ export default function Analytics() {
   const allRéglées = useMemo(() => MOCK_ORDERS.filter(o => o.status === 'Réglée'), [])
 
   const kpis = useMemo(() => computeKPIs(filtered, allRéglées, period), [filtered, allRéglées, period])
-  const weeklyTrend = useMemo(() => computeWeeklyTrend(filteredRéglées), [filteredRéglées])
+  const weeklyTrend = useMemo(() => computeDailyTrend(filteredRéglées), [filteredRéglées])
   const breakdown = useMemo(() => computeOrderTypeBreakdown(filteredRéglées), [filteredRéglées])
   const topProducts = useMemo(() => computeTopProducts(filteredRéglées), [filteredRéglées])
   const topBoutiques = useMemo(() => computeTopBoutiques(filteredRéglées), [filteredRéglées])

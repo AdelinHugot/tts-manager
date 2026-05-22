@@ -90,6 +90,34 @@ function getISOWeekKey(date: Date): string {
   return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`
 }
 
+export function computeDailyTrend(orders: Order[]): WeeklyPoint[] {
+  const réglées = orders.filter(o => o.status === 'Réglée')
+  if (réglées.length === 0) return []
+
+  const map = new Map<string, { ca: number; commissions: number }>()
+  for (const o of réglées) {
+    const d = o.date
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    const existing = map.get(key) ?? { ca: 0, commissions: 0 }
+    map.set(key, {
+      ca: existing.ca + o.price,
+      commissions: existing.commissions + o.commissionStandard + o.commissionPub,
+    })
+  }
+
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([dateStr, val]) => {
+      const date = new Date(dateStr + 'T12:00:00')
+      const label = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+      return {
+        week: label,
+        ca: Math.round(val.ca * 100) / 100,
+        commissions: Math.round(val.commissions * 100) / 100,
+      }
+    })
+}
+
 export function computeOrderTypeBreakdown(orders: Order[]): { affiliée: number; pub_shopping: number } {
   return {
     affiliée: orders.filter(o => o.orderType === 'affiliée').length,

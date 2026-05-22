@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { MOCK_ORDERS } from '../data/mockAnalytics'
 import {
   computeKPIs,
-  computeWeeklyTrend,
+  computeDailyTrend,
   computeTopProducts,
 } from '../utils/analyticsUtils'
 import KPICard from '../components/analytics/KPICard'
@@ -40,7 +40,7 @@ export default function Dashboard({ realisations, products }: Props) {
     () => computeKPIs(currentMonthOrders, allRéglées, '30j'),
     [currentMonthOrders, allRéglées]
   )
-  const weeklyTrend = useMemo(() => computeWeeklyTrend(currentMonthRéglées), [currentMonthRéglées])
+  const weeklyTrend = useMemo(() => computeDailyTrend(currentMonthRéglées), [currentMonthRéglées])
   const topProducts = useMemo(() => computeTopProducts(allRéglées, 5), [allRéglées])
 
   // Todo: réalisations non publiées, triées par ordre de statut
