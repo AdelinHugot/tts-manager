@@ -6,6 +6,7 @@ type Filter = 'all' | IdeaStatus
 type Idea = {
   id: string
   text: string
+  description: string
   status: IdeaStatus
   createdAt: Date
 }
@@ -45,6 +46,7 @@ export default function Ideas() {
   const [ideas, setIdeas] = useState<Idea[]>([])
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -52,7 +54,7 @@ export default function Ideas() {
     const trimmed = text.trim()
     if (!trimmed) return
     setIdeas((prev) => [
-      { id: crypto.randomUUID(), text: trimmed, status: 'pending', createdAt: new Date() },
+      { id: crypto.randomUUID(), text: trimmed, description: '', status: 'pending', createdAt: new Date() },
       ...prev,
     ])
     setInput('')
@@ -64,6 +66,15 @@ export default function Ideas() {
 
   function deleteIdea(id: string) {
     setIdeas((prev) => prev.filter((i) => i.id !== id))
+    if (expandedId === id) setExpandedId(null)
+  }
+
+  function updateDescription(id: string, description: string) {
+    setIdeas((prev) => prev.map((i) => (i.id === id ? { ...i, description } : i)))
+  }
+
+  function toggleExpand(id: string) {
+    setExpandedId((prev) => (prev === id ? null : id))
   }
 
   function handleAISuggest() {
@@ -78,6 +89,7 @@ export default function Ideas() {
         ...picks.map((text) => ({
           id: crypto.randomUUID(),
           text,
+          description: '',
           status: 'pending' as IdeaStatus,
           createdAt: new Date(),
         })),
@@ -170,9 +182,12 @@ export default function Ideas() {
             <IdeaCard
               key={idea.id}
               idea={idea}
+              expanded={expandedId === idea.id}
+              onToggleExpand={() => toggleExpand(idea.id)}
               onValidate={() => setStatus(idea.id, idea.status === 'validated' ? 'pending' : 'validated')}
               onReject={() => setStatus(idea.id, idea.status === 'rejected' ? 'pending' : 'rejected')}
               onDelete={() => deleteIdea(idea.id)}
+              onDescriptionChange={(desc) => updateDescription(idea.id, desc)}
             />
           ))}
         </div>
@@ -183,21 +198,27 @@ export default function Ideas() {
 
 function IdeaCard({
   idea,
+  expanded,
+  onToggleExpand,
   onValidate,
   onReject,
   onDelete,
+  onDescriptionChange,
 }: {
   idea: Idea
+  expanded: boolean
+  onToggleExpand: () => void
   onValidate: () => void
   onReject: () => void
   onDelete: () => void
+  onDescriptionChange: (desc: string) => void
 }) {
   const isValidated = idea.status === 'validated'
   const isRejected = idea.status === 'rejected'
 
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all ${
+      className={`rounded-2xl border transition-all ${
         isValidated
           ? 'bg-emerald-50 border-emerald-100'
           : isRejected
@@ -205,48 +226,85 @@ function IdeaCard({
           : 'bg-white border-slate-100 shadow-sm'
       }`}
     >
-      <p
-        className={`flex-1 text-sm leading-snug ${
-          isRejected ? 'line-through text-slate-400' : 'text-slate-700'
-        } ${isValidated ? 'font-medium text-emerald-800' : ''}`}
-      >
-        {idea.text}
-      </p>
+      {/* Main row */}
+      <div className="flex items-center gap-3 px-4 py-3">
+        {/* Text — cliquable pour expand */}
+        <p
+          onClick={onToggleExpand}
+          className={`flex-1 text-sm leading-snug cursor-pointer select-none ${
+            isRejected ? 'line-through text-slate-400' : 'text-slate-700'
+          } ${isValidated ? 'font-medium text-emerald-800' : ''}`}
+        >
+          {idea.text}
+          {idea.description && !expanded && (
+            <span className="ml-2 text-xs text-slate-400 font-normal not-italic">· note</span>
+          )}
+        </p>
 
-      {/* Validate */}
-      <button
-        onClick={onValidate}
-        title="Valider"
-        className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
-          isValidated
-            ? 'bg-emerald-500 text-white'
-            : 'text-slate-400 hover:bg-emerald-50 hover:text-emerald-600'
-        }`}
-      >
-        ✓
-      </button>
+        {/* Expand toggle */}
+        <button
+          onClick={onToggleExpand}
+          title={expanded ? 'Réduire' : 'Ajouter une note'}
+          className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs transition-all ${
+            expanded ? 'bg-brand/10 text-brand' : 'text-slate-300 hover:bg-slate-100 hover:text-slate-500'
+          }`}
+        >
+          {expanded ? '▲' : '▼'}
+        </button>
 
-      {/* Reject */}
-      <button
-        onClick={onReject}
-        title="Rejeter"
-        className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
-          isRejected
-            ? 'bg-slate-300 text-slate-600'
-            : 'text-slate-400 hover:bg-red-50 hover:text-red-500'
-        }`}
-      >
-        ✕
-      </button>
+        {/* Validate */}
+        <button
+          onClick={onValidate}
+          title="Valider"
+          className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
+            isValidated
+              ? 'bg-emerald-500 text-white'
+              : 'text-slate-400 hover:bg-emerald-50 hover:text-emerald-600'
+          }`}
+        >
+          ✓
+        </button>
 
-      {/* Delete */}
-      <button
-        onClick={onDelete}
-        title="Supprimer"
-        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:bg-slate-100 hover:text-slate-500 transition-all text-xs"
-      >
-        🗑
-      </button>
+        {/* Reject */}
+        <button
+          onClick={onReject}
+          title="Rejeter"
+          className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
+            isRejected
+              ? 'bg-slate-300 text-slate-600'
+              : 'text-slate-400 hover:bg-red-50 hover:text-red-500'
+          }`}
+        >
+          ✕
+        </button>
+
+        {/* Delete */}
+        <button
+          onClick={onDelete}
+          title="Supprimer"
+          className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:bg-slate-100 hover:text-slate-500 transition-all text-xs"
+        >
+          🗑
+        </button>
+      </div>
+
+      {/* Description expandable */}
+      {expanded && (
+        <div className="px-4 pb-3">
+          <textarea
+            autoFocus
+            value={idea.description}
+            onChange={(e) => onDescriptionChange(e.target.value)}
+            placeholder="Ajoute une note, un angle, des détails…"
+            rows={2}
+            className={`w-full text-xs rounded-xl px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-brand/20 placeholder:text-slate-300 border transition-all ${
+              isValidated
+                ? 'bg-emerald-100/50 border-emerald-100 text-emerald-800'
+                : 'bg-slate-50 border-slate-100 text-slate-600'
+            }`}
+          />
+        </div>
+      )}
     </div>
   )
 }
