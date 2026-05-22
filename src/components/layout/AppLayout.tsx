@@ -69,9 +69,9 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F4F6FA]">
+    <div className="flex h-screen bg-[#F4F6FA]">
       <Sidebar activePage={activePage} onNavigate={setActivePage} />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto h-full">
         {activePage === 'dashboard' && (
           <Dashboard realisations={realisations} products={MOCK_PRODUCTS} />
         )}
