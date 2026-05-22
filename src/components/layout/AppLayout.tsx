@@ -6,6 +6,7 @@ import RealisationPage from '../../pages/Realisation'
 import Produits from '../../pages/Produits'
 import Parametres from '../../pages/Parametres'
 import RushsPage from '../../pages/Rushs'
+import Planning from '../../pages/Planning'
 import type { Realisation, RealisationStatus } from '../../types/realisation'
 import type { Rush } from '../../types/rush'
 import { MOCK_REALISATIONS, MOCK_PRODUCTS, MOCK_RUSHES } from '../../data/mock'
@@ -39,6 +40,12 @@ export default function AppLayout() {
 
   function handleRealisationUpdate(updated: Realisation) {
     setRealisations((prev) => prev.map((r) => (r.id === updated.id ? updated : r)))
+  }
+
+  function handlePublishDateChange(id: string, date: string | null) {
+    setRealisations((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, publishDate: date } : r))
+    )
   }
 
   function handleRealisationStatusChange(id: string, status: RealisationStatus) {
@@ -88,6 +95,12 @@ export default function AppLayout() {
             onDeleteRush={handleDeleteRush}
             onLinkRush={handleLinkRush}
             onCreateRealisation={(rushId) => handleNewRealisation(rushId)}
+          />
+        )}
+        {activePage === 'planning' && (
+          <Planning
+            realisations={realisations}
+            onPublishDateChange={handlePublishDateChange}
           />
         )}
         {activePage === 'produits' && <Produits />}

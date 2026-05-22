@@ -24,9 +24,9 @@ test('shows correct realisation count per product', () => {
       onSelect={() => {}}
     />
   )
-  // p1 + p2 have 2 réalisations each, p3 + p4 have 1 each
-  expect(screen.getAllByText('2 vidéos')).toHaveLength(2)
-  expect(screen.getAllByText('1 vidéo')).toHaveLength(2)
+  // p1 → 3 vidéos (r1, r5, r8), p2/p3/p4 → 2 vidéos each
+  expect(screen.getAllByText('3 vidéos')).toHaveLength(1)
+  expect(screen.getAllByText('2 vidéos')).toHaveLength(3)
 })
 
 test('calls onSelect when a card is clicked', () => {

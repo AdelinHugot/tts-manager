@@ -37,6 +37,19 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    id: 'planning',
+    label: 'Planning',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="3" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+        <path d="M6 1v4M12 1v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M2 8h14" stroke="currentColor" strokeWidth="1.5"/>
+        <rect x="5" y="11" width="2" height="2" rx="0.5" fill="currentColor"/>
+        <rect x="8.5" y="11" width="2" height="2" rx="0.5" fill="currentColor"/>
+      </svg>
+    ),
+  },
+  {
     id: 'rushs',
     label: 'Rushs',
     icon: (
