@@ -100,6 +100,7 @@ export default function AppLayout() {
         {activePage === 'planning' && (
           <Planning
             realisations={realisations}
+            products={MOCK_PRODUCTS}
             onPublishDateChange={handlePublishDateChange}
           />
         )}

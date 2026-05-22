@@ -8,9 +8,10 @@ type Props = {
   realisations: Realisation[]
   currentMonth: Date
   onMonthChange: (d: Date) => void
+  onChipClick?: (r: Realisation, e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export default function CalendarGrid({ realisations, currentMonth, onMonthChange }: Props) {
+export default function CalendarGrid({ realisations, currentMonth, onMonthChange, onChipClick }: Props) {
   const year = currentMonth.getFullYear()
   const month = currentMonth.getMonth()
   const weeks = buildCalendarWeeks(year, month)
@@ -63,6 +64,7 @@ export default function CalendarGrid({ realisations, currentMonth, onMonthChange
               date={date}
               realisations={dayRealisations}
               isCurrentMonth={isCurrentMonth}
+              onChipClick={onChipClick}
             />
           )
         })}

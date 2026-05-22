@@ -4,9 +4,10 @@ import { STATUS_COLORS } from '../../types/realisation'
 
 type Props = {
   realisation: Realisation
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export default function RealisationChip({ realisation }: Props) {
+export default function RealisationChip({ realisation, onClick }: Props) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: realisation.id,
   })
@@ -21,6 +22,7 @@ export default function RealisationChip({ realisation }: Props) {
       style={style}
       {...listeners}
       {...attributes}
+      onClick={onClick}
       className={`flex items-center gap-1.5 px-2 py-1 bg-white border border-slate-100 rounded-lg text-xs font-medium text-slate-700 cursor-grab select-none shadow-sm hover:shadow-md transition-all ${
         isDragging ? 'opacity-50' : ''
       }`}

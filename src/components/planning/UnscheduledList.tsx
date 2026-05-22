@@ -4,9 +4,10 @@ import RealisationChip from './RealisationChip'
 
 type Props = {
   realisations: Realisation[]
+  onChipClick?: (r: Realisation, e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export default function UnscheduledList({ realisations }: Props) {
+export default function UnscheduledList({ realisations, onChipClick }: Props) {
   const { setNodeRef, isOver } = useDroppable({ id: 'unscheduled' })
 
   return (
@@ -29,7 +30,13 @@ export default function UnscheduledList({ realisations }: Props) {
             Toutes les vidéos ont une date 🎉
           </p>
         ) : (
-          realisations.map((r) => <RealisationChip key={r.id} realisation={r} />)
+          realisations.map((r) => (
+            <RealisationChip
+              key={r.id}
+              realisation={r}
+              onClick={onChipClick ? (e) => onChipClick(r, e) : undefined}
+            />
+          ))
         )}
       </div>
     </div>

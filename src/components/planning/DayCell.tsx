@@ -7,9 +7,10 @@ type Props = {
   date: Date
   realisations: Realisation[]
   isCurrentMonth: boolean
+  onChipClick?: (r: Realisation, e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export default function DayCell({ date, realisations, isCurrentMonth }: Props) {
+export default function DayCell({ date, realisations, isCurrentMonth, onChipClick }: Props) {
   const dateStr = toISODateString(date)
   const { setNodeRef, isOver } = useDroppable({
     id: dateStr,
@@ -34,7 +35,11 @@ export default function DayCell({ date, realisations, isCurrentMonth }: Props) {
       </span>
       <div className="flex flex-col gap-0.5">
         {realisations.map((r) => (
-          <RealisationChip key={r.id} realisation={r} />
+          <RealisationChip
+            key={r.id}
+            realisation={r}
+            onClick={onChipClick ? (e) => onChipClick(r, e) : undefined}
+          />
         ))}
       </div>
     </div>

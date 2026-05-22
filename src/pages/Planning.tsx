@@ -7,19 +7,27 @@ import {
   useSensors,
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
-import type { Realisation } from '../types/realisation'
+import type { Realisation, Product } from '../types/realisation'
 import { STATUS_COLORS } from '../types/realisation'
 import CalendarGrid from '../components/planning/CalendarGrid'
 import UnscheduledList from '../components/planning/UnscheduledList'
+import RealisationPopover from '../components/planning/RealisationPopover'
+
+type PopoverState = {
+  realisation: Realisation
+  anchorRect: DOMRect
+}
 
 type Props = {
   realisations: Realisation[]
+  products: Product[]
   onPublishDateChange: (id: string, date: string | null) => void
 }
 
-export default function Planning({ realisations, onPublishDateChange }: Props) {
+export default function Planning({ realisations, products, onPublishDateChange }: Props) {
   const [currentMonth, setCurrentMonth] = useState(() => new Date())
   const [activeId, setActiveId] = useState<string | null>(null)
+  const [popover, setPopover] = useState<PopoverState | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -28,8 +36,14 @@ export default function Planning({ realisations, onPublishDateChange }: Props) {
   const unscheduled = realisations.filter((r) => r.publishDate === null)
   const activeRealisation = activeId ? realisations.find((r) => r.id === activeId) ?? null : null
 
+  function handleChipClick(realisation: Realisation, e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    setPopover({ realisation, anchorRect: rect })
+  }
+
   function handleDragStart(event: DragStartEvent) {
     setActiveId(String(event.active.id))
+    setPopover(null) // close popover when dragging starts
   }
 
   function handleDragEnd(event: DragEndEvent) {
@@ -65,12 +79,16 @@ export default function Planning({ realisations, onPublishDateChange }: Props) {
               realisations={realisations}
               currentMonth={currentMonth}
               onMonthChange={setCurrentMonth}
+              onChipClick={handleChipClick}
             />
           </div>
 
           {/* Unscheduled — fixed right column */}
           <div className="w-72 flex-shrink-0" style={{ height: 'calc(100vh - 200px)' }}>
-            <UnscheduledList realisations={unscheduled} />
+            <UnscheduledList
+              realisations={unscheduled}
+              onChipClick={handleChipClick}
+            />
           </div>
         </div>
 
@@ -88,6 +106,16 @@ export default function Planning({ realisations, onPublishDateChange }: Props) {
           )}
         </DragOverlay>
       </DndContext>
+
+      {/* Popover */}
+      {popover && (
+        <RealisationPopover
+          realisation={popover.realisation}
+          product={products.find((p) => p.id === popover.realisation.productId)}
+          anchorRect={popover.anchorRect}
+          onClose={() => setPopover(null)}
+        />
+      )}
     </div>
   )
 }
