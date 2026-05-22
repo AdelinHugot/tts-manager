@@ -39,12 +39,12 @@ test('filterByPeriod "tout" returns all orders', () => {
 })
 
 test('computeKPIs calculates correctly on Réglée orders', () => {
-  const réglées = orders.filter(o => o.status === 'Réglée')
-  const kpis = computeKPIs(réglées, réglées, 'tout')
-  expect(kpis.totalCA).toBeCloseTo(230) // 100 + 50 + 80 (orders 1, 2, 4)
+  // Pass all 4 orders as currentOrders — computeKPIs filters Réglée internally
+  const kpis = computeKPIs(orders, orders.filter(o => o.status === 'Réglée'), 'tout')
+  expect(kpis.totalOrders).toBe(4)           // all orders in period
+  expect(kpis.validatedOrders).toBe(3)       // Réglée only: orders 1, 2, 4
+  expect(kpis.totalCA).toBeCloseTo(230)      // 100 + 50 + 80
   expect(kpis.totalCommissions).toBeCloseTo(23) // 10 + 5 + 8
-  expect(kpis.totalOrders).toBe(3)
-  expect(kpis.validatedOrders).toBe(3)
   expect(kpis.averageBasket).toBeCloseTo(230 / 3)
   expect(kpis.caGrowth).toBeNull() // 'tout' → no previous period window → null
 })

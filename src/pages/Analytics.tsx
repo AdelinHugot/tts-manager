@@ -29,16 +29,20 @@ export default function Analytics() {
   const [tab, setTab] = useState<Tab>('general')
 
   const filtered = useMemo(
-    () => filterByPeriod(MOCK_ORDERS, period).filter(o => o.status === 'Réglée'),
+    () => filterByPeriod(MOCK_ORDERS, period),
     [period]
+  )
+  const filteredRéglées = useMemo(
+    () => filtered.filter(o => o.status === 'Réglée'),
+    [filtered]
   )
   const allRéglées = useMemo(() => MOCK_ORDERS.filter(o => o.status === 'Réglée'), [])
 
   const kpis = useMemo(() => computeKPIs(filtered, allRéglées, period), [filtered, allRéglées, period])
-  const weeklyTrend = useMemo(() => computeWeeklyTrend(filtered), [filtered])
-  const breakdown = useMemo(() => computeOrderTypeBreakdown(filtered), [filtered])
-  const topProducts = useMemo(() => computeTopProducts(filtered), [filtered])
-  const topBoutiques = useMemo(() => computeTopBoutiques(filtered), [filtered])
+  const weeklyTrend = useMemo(() => computeWeeklyTrend(filteredRéglées), [filteredRéglées])
+  const breakdown = useMemo(() => computeOrderTypeBreakdown(filteredRéglées), [filteredRéglées])
+  const topProducts = useMemo(() => computeTopProducts(filteredRéglées), [filteredRéglées])
+  const topBoutiques = useMemo(() => computeTopBoutiques(filteredRéglées), [filteredRéglées])
 
   function fmt(n: number) {
     return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'

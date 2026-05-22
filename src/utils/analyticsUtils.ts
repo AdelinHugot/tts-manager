@@ -34,11 +34,12 @@ function growth(current: number, previous: number): number | null {
 }
 
 export function computeKPIs(currentOrders: Order[], allOrders: Order[], period: Period = 'tout'): KPIData {
-  const totalCA = currentOrders.reduce((s, o) => s + o.price, 0)
-  const totalCommissions = currentOrders.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
+  const réglées = currentOrders.filter(o => o.status === 'Réglée')
+  const totalCA = réglées.reduce((s, o) => s + o.price, 0)
+  const totalCommissions = réglées.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
   const totalOrders = currentOrders.length
-  const validatedOrders = currentOrders.length
-  const averageBasket = totalOrders > 0 ? totalCA / totalOrders : 0
+  const validatedOrders = réglées.length
+  const averageBasket = validatedOrders > 0 ? totalCA / validatedOrders : 0
 
   const prevOrders = getPreviousPeriodOrders(allOrders, period).filter(o => o.status === 'Réglée')
   const prevCA = prevOrders.reduce((s, o) => s + o.price, 0)
@@ -52,7 +53,7 @@ export function computeKPIs(currentOrders: Order[], allOrders: Order[], period: 
     averageBasket,
     caGrowth: growth(totalCA, prevCA),
     commissionsGrowth: growth(totalCommissions, prevCommissions),
-    ordersGrowth: growth(totalOrders, prevOrders.length),
+    ordersGrowth: growth(validatedOrders, prevOrders.length),
   }
 }
 
