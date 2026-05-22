@@ -10,10 +10,10 @@ test('renders all product names', () => {
       onSelect={() => {}}
     />
   )
-  expect(screen.getByText('Crème hydratante bio')).toBeInTheDocument()
-  expect(screen.getByText('Sac en cuir végétal')).toBeInTheDocument()
-  expect(screen.getByText('Montre minimaliste')).toBeInTheDocument()
-  expect(screen.getByText('Diffuseur huiles essentielles')).toBeInTheDocument()
+  expect(screen.getByText('Enzymes Digestives Manager')).toBeInTheDocument()
+  expect(screen.getByText('QINGLIN Crème Rajeunissante')).toBeInTheDocument()
+  expect(screen.getByText('Papills Sommeil')).toBeInTheDocument()
+  expect(screen.getByText('Démarreur Portable 7000A')).toBeInTheDocument()
 })
 
 test('shows correct realisation count per product', () => {
@@ -24,9 +24,9 @@ test('shows correct realisation count per product', () => {
       onSelect={() => {}}
     />
   )
-  // p1 → 3 vidéos (r1, r5, r8), p2/p3/p4 → 2 vidéos each
-  expect(screen.getAllByText('3 vidéos')).toHaveLength(1)
-  expect(screen.getAllByText('2 vidéos')).toHaveLength(3)
+  // p1–p5 + p8 have 2 vidéos each, p6 + p7 have 1 vidéo each
+  expect(screen.getAllByText('2 vidéos')).toHaveLength(6)
+  expect(screen.getAllByText('1 vidéo')).toHaveLength(2)
 })
 
 test('calls onSelect when a card is clicked', () => {
@@ -38,6 +38,6 @@ test('calls onSelect when a card is clicked', () => {
       onSelect={handler}
     />
   )
-  fireEvent.click(screen.getByText('Crème hydratante bio'))
+  fireEvent.click(screen.getByText('Enzymes Digestives Manager'))
   expect(handler).toHaveBeenCalledWith(MOCK_PRODUCTS[0])
 })

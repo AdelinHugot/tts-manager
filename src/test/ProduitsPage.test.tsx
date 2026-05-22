@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import ProduitsPage from '../pages/Produits'
+import { MOCK_PRODUCTS } from '../data/mock'
 
 test('renders page title', () => {
   render(<ProduitsPage />)
@@ -8,23 +9,22 @@ test('renders page title', () => {
 
 test('shows product count', () => {
   render(<ProduitsPage />)
-  expect(screen.getByText(/4 produits/)).toBeInTheDocument()
+  expect(screen.getByText(`${MOCK_PRODUCTS.length} produits`)).toBeInTheDocument()
 })
 
 test('renders cards view by default', () => {
   render(<ProduitsPage />)
-  expect(screen.getByText('Crème hydratante bio')).toBeInTheDocument()
+  expect(screen.getByText('Enzymes Digestives Manager')).toBeInTheDocument()
 })
 
 test('can switch to list view', () => {
   render(<ProduitsPage />)
   fireEvent.click(screen.getByTitle('Vue Liste'))
-  // table header appears
   expect(screen.getByText('Produit')).toBeInTheDocument()
 })
 
 test('clicking nouveau produit adds a product and opens panel', () => {
   render(<ProduitsPage />)
   fireEvent.click(screen.getByText('Nouveau produit'))
-  expect(screen.getByText(/5 produits/)).toBeInTheDocument()
+  expect(screen.getByText(`${MOCK_PRODUCTS.length + 1} produits`)).toBeInTheDocument()
 })

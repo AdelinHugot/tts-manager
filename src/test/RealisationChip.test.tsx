@@ -7,13 +7,16 @@ function Wrapper({ children }: { children: React.ReactNode }) {
   return <DndContext>{children}</DndContext>
 }
 
+// MOCK_REALISATIONS[0] = r1, status: 'publiee'
+// MOCK_REALISATIONS[5] = r6, status: 'script'
+
 test('renders realisation title', () => {
   render(
     <Wrapper>
       <RealisationChip realisation={MOCK_REALISATIONS[0]} />
     </Wrapper>
   )
-  expect(screen.getByText('Unboxing crème hydratante')).toBeInTheDocument()
+  expect(screen.getByText(MOCK_REALISATIONS[0].title)).toBeInTheDocument()
 })
 
 test('renders status dot with color class for publiee', () => {
@@ -22,16 +25,16 @@ test('renders status dot with color class for publiee', () => {
       <RealisationChip realisation={MOCK_REALISATIONS[0]} />
     </Wrapper>
   )
-  // MOCK_REALISATIONS[0] status = 'publiee' → dot = bg-emerald-500
+  // publiee → dot = bg-emerald-500
   expect(document.querySelector('.bg-emerald-500')).toBeInTheDocument()
 })
 
 test('renders status dot with color class for script', () => {
   render(
     <Wrapper>
-      <RealisationChip realisation={MOCK_REALISATIONS[7]} />
+      <RealisationChip realisation={MOCK_REALISATIONS[5]} />
     </Wrapper>
   )
-  // r8: status = 'script' → dot = bg-violet-500
+  // MOCK_REALISATIONS[5] = r6, status: 'script' → dot = bg-violet-500
   expect(document.querySelector('.bg-violet-500')).toBeInTheDocument()
 })

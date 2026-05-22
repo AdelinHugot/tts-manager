@@ -11,8 +11,8 @@ test('renders all product names in table', () => {
       onDelete={() => {}}
     />
   )
-  expect(screen.getByText('Crème hydratante bio')).toBeInTheDocument()
-  expect(screen.getByText('Sac en cuir végétal')).toBeInTheDocument()
+  expect(screen.getByText('Enzymes Digestives Manager')).toBeInTheDocument()
+  expect(screen.getByText('QINGLIN Crème Rajeunissante')).toBeInTheDocument()
 })
 
 test('calls onSelect when a row is clicked', () => {
@@ -25,7 +25,7 @@ test('calls onSelect when a row is clicked', () => {
       onDelete={() => {}}
     />
   )
-  fireEvent.click(screen.getByText('Crème hydratante bio'))
+  fireEvent.click(screen.getByText('Enzymes Digestives Manager'))
   expect(handler).toHaveBeenCalledWith(MOCK_PRODUCTS[0])
 })
 

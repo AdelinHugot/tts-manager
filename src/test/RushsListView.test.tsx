@@ -11,9 +11,9 @@ test('renders all rush names', () => {
       onDelete={() => {}}
     />
   )
-  expect(screen.getByText('rush_01.mp4')).toBeInTheDocument()
-  expect(screen.getByText('broll_01.mp4')).toBeInTheDocument()
-  expect(screen.getByText('final_v2.mp4')).toBeInTheDocument()
+  expect(screen.getByText(MOCK_RUSHES[0].name)).toBeInTheDocument()
+  expect(screen.getByText(MOCK_RUSHES[1].name)).toBeInTheDocument()
+  expect(screen.getByText(MOCK_RUSHES[2].name)).toBeInTheDocument()
 })
 
 test('shows "Lié" badge for rushes linked to a realisation', () => {
@@ -25,7 +25,8 @@ test('shows "Lié" badge for rushes linked to a realisation', () => {
       onDelete={() => {}}
     />
   )
-  expect(screen.getAllByText('Lié')).toHaveLength(5)
+  // All 6 rushes are linked to at least one réalisation
+  expect(screen.getAllByText('Lié')).toHaveLength(MOCK_RUSHES.length)
 })
 
 test('calls onSelect when a row is clicked', () => {
@@ -38,7 +39,7 @@ test('calls onSelect when a row is clicked', () => {
       onDelete={() => {}}
     />
   )
-  fireEvent.click(screen.getByText('rush_01.mp4'))
+  fireEvent.click(screen.getByText(MOCK_RUSHES[0].name))
   expect(onSelect).toHaveBeenCalledWith(MOCK_RUSHES[0])
 })
 

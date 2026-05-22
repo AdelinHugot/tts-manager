@@ -10,8 +10,8 @@ test('renders all realisations in the list', () => {
       onSelect={() => {}}
     />
   )
-  expect(screen.getByText('Unboxing crème hydratante')).toBeInTheDocument()
-  expect(screen.getByText('GRWM avec le sac en cuir')).toBeInTheDocument()
+  expect(screen.getByText(MOCK_REALISATIONS[0].title)).toBeInTheDocument()
+  expect(screen.getByText(MOCK_REALISATIONS[1].title)).toBeInTheDocument()
 })
 
 test('calls onSelect when a row is clicked', () => {
@@ -23,6 +23,6 @@ test('calls onSelect when a row is clicked', () => {
       onSelect={handler}
     />
   )
-  fireEvent.click(screen.getByText('Unboxing crème hydratante'))
+  fireEvent.click(screen.getByText(MOCK_REALISATIONS[0].title))
   expect(handler).toHaveBeenCalledWith(MOCK_REALISATIONS[0])
 })

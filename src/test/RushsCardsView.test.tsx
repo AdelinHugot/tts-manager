@@ -10,8 +10,8 @@ test('renders all rush names', () => {
       onSelect={() => {}}
     />
   )
-  expect(screen.getByText('rush_01.mp4')).toBeInTheDocument()
-  expect(screen.getByText('final_v2.mp4')).toBeInTheDocument()
+  expect(screen.getByText(MOCK_RUSHES[0].name)).toBeInTheDocument()
+  expect(screen.getByText(MOCK_RUSHES[2].name)).toBeInTheDocument()
 })
 
 test('calls onSelect when a card is clicked', () => {
@@ -23,7 +23,7 @@ test('calls onSelect when a card is clicked', () => {
       onSelect={onSelect}
     />
   )
-  fireEvent.click(screen.getByText('rush_01.mp4'))
+  fireEvent.click(screen.getByText(MOCK_RUSHES[0].name))
   expect(onSelect).toHaveBeenCalledWith(MOCK_RUSHES[0])
 })
 

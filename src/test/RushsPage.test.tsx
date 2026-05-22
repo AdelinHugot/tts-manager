@@ -28,5 +28,5 @@ test('shows empty state when no rushes', () => {
 
 test('renders list view by default with rush names visible', () => {
   render(<RushsPage {...defaultProps} />)
-  expect(screen.getByText('rush_01.mp4')).toBeInTheDocument()
+  expect(screen.getByText(MOCK_RUSHES[0].name)).toBeInTheDocument()
 })

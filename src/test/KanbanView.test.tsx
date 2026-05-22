@@ -24,5 +24,5 @@ test('renders card titles in correct columns', () => {
       onStatusChange={() => {}}
     />
   )
-  expect(screen.getByText('Unboxing crème hydratante')).toBeInTheDocument()
+  expect(screen.getByText(MOCK_REALISATIONS[0].title)).toBeInTheDocument()
 })

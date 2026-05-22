@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import ProductPanel from '../components/produits/ProductPanel'
 import { MOCK_PRODUCTS, MOCK_REALISATIONS } from '../data/mock'
 
+// p1 = Enzymes Digestives Manager, linked to r1 + r2
 const product = MOCK_PRODUCTS[0]
 
 test('renders nothing when product is null', () => {
@@ -74,7 +75,7 @@ test('shows linked realisations', () => {
       onDelete={() => {}}
     />
   )
-  // p1 has r1 "Unboxing crème hydratante" and r5 "Crème hydratante — before/after"
-  expect(screen.getByText('Unboxing crème hydratante')).toBeInTheDocument()
-  expect(screen.getByText('Crème hydratante — before/after')).toBeInTheDocument()
+  // p1 is linked to r1 and r2
+  expect(screen.getByText(MOCK_REALISATIONS[0].title)).toBeInTheDocument()
+  expect(screen.getByText(MOCK_REALISATIONS[1].title)).toBeInTheDocument()
 })
