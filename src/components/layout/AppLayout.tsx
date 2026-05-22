@@ -72,7 +72,9 @@ export default function AppLayout() {
     <div className="flex min-h-screen bg-[#F4F6FA]">
       <Sidebar activePage={activePage} onNavigate={setActivePage} />
       <main className="flex-1 overflow-auto">
-        {activePage === 'dashboard' && <Dashboard />}
+        {activePage === 'dashboard' && (
+          <Dashboard realisations={realisations} products={MOCK_PRODUCTS} />
+        )}
         {activePage === 'analytics' && <Analytics />}
         {activePage === 'realisation' && (
           <RealisationPage
