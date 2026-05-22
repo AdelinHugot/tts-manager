@@ -7,6 +7,7 @@ import Produits from '../../pages/Produits'
 import Parametres from '../../pages/Parametres'
 import RushsPage from '../../pages/Rushs'
 import Planning from '../../pages/Planning'
+import Ideas from '../../pages/Ideas'
 import type { Realisation, RealisationStatus } from '../../types/realisation'
 import type { Rush } from '../../types/rush'
 import { MOCK_REALISATIONS, MOCK_PRODUCTS, MOCK_RUSHES } from '../../data/mock'
@@ -99,6 +100,7 @@ export default function AppLayout() {
             onCreateRealisation={(rushId) => handleNewRealisation(rushId)}
           />
         )}
+        {activePage === 'ideas' && <Ideas />}
         {activePage === 'planning' && (
           <Planning
             realisations={realisations}
