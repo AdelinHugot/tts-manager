@@ -42,7 +42,11 @@ const FILTERS: { label: string; value: Filter }[] = [
   { label: 'Rejetées', value: 'rejected' },
 ]
 
-export default function Ideas() {
+type Props = {
+  onConvertToVideo?: (title: string) => void
+}
+
+export default function Ideas({ onConvertToVideo }: Props) {
   const [ideas, setIdeas] = useState<Idea[]>([])
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
@@ -188,6 +192,7 @@ export default function Ideas() {
               onReject={() => setStatus(idea.id, idea.status === 'rejected' ? 'pending' : 'rejected')}
               onDelete={() => deleteIdea(idea.id)}
               onDescriptionChange={(desc) => updateDescription(idea.id, desc)}
+              onConvertToVideo={onConvertToVideo ? () => onConvertToVideo(idea.text) : undefined}
             />
           ))}
         </div>
@@ -204,6 +209,7 @@ function IdeaCard({
   onReject,
   onDelete,
   onDescriptionChange,
+  onConvertToVideo,
 }: {
   idea: Idea
   expanded: boolean
@@ -212,6 +218,7 @@ function IdeaCard({
   onReject: () => void
   onDelete: () => void
   onDescriptionChange: (desc: string) => void
+  onConvertToVideo?: () => void
 }) {
   const isValidated = idea.status === 'validated'
   const isRejected = idea.status === 'rejected'
@@ -277,6 +284,20 @@ function IdeaCard({
         >
           ✕
         </button>
+
+        {/* Convert to video */}
+        {onConvertToVideo && (
+          <button
+            onClick={onConvertToVideo}
+            title="Convertir en vidéo"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:bg-brand/10 hover:text-brand transition-all"
+          >
+            <svg width="15" height="15" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.8"/>
+              <polygon points="7.5,6 13,9 7.5,12" fill="currentColor"/>
+            </svg>
+          </button>
+        )}
 
         {/* Delete */}
         <button

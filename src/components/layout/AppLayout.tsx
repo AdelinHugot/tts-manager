@@ -53,10 +53,10 @@ export default function AppLayout() {
     setRealisations((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)))
   }
 
-  function handleNewRealisation(rushId?: string) {
+  function handleNewRealisation(rushId?: string, title?: string) {
     const newReal: Realisation = {
       id: crypto.randomUUID(),
-      title: 'Nouvelle réalisation',
+      title: title ?? 'Nouvelle réalisation',
       status: 'a_tourner',
       productId: MOCK_PRODUCTS[0].id,
       publishDate: null,
@@ -100,7 +100,14 @@ export default function AppLayout() {
             onCreateRealisation={(rushId) => handleNewRealisation(rushId)}
           />
         )}
-        {activePage === 'ideas' && <Ideas />}
+        {activePage === 'ideas' && (
+          <Ideas
+            onConvertToVideo={(title) => {
+              handleNewRealisation(undefined, title)
+              setActivePage('realisation')
+            }}
+          />
+        )}
         {activePage === 'planning' && (
           <Planning
             realisations={realisations}
