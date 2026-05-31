@@ -125,7 +125,7 @@ export function computeOrderTypeBreakdown(orders: Order[]): { affiliée: number;
   }
 }
 
-function groupAndSort(orders: Order[], key: keyof Pick<Order, 'productName' | 'boutiqueName'>, limit = 10): TopItem[] {
+function groupAndSort(orders: Order[], key: keyof Pick<Order, 'productName' | 'boutiqueName'>, limit = 10, sortBy: 'ca' | 'commissions' = 'ca'): TopItem[] {
   const map = new Map<string, TopItem>()
   for (const o of orders) {
     const name = o[key]
@@ -138,13 +138,13 @@ function groupAndSort(orders: Order[], key: keyof Pick<Order, 'productName' | 'b
     })
   }
   return Array.from(map.values())
-    .sort((a, b) => b.ca - a.ca)
+    .sort((a, b) => b[sortBy] - a[sortBy])
     .slice(0, limit)
     .map(item => ({ ...item, ca: Math.round(item.ca * 100) / 100, commissions: Math.round(item.commissions * 100) / 100 }))
 }
 
-export function computeTopProducts(orders: Order[], limit = 10): TopItem[] {
-  return groupAndSort(orders, 'productName', limit)
+export function computeTopProducts(orders: Order[], limit = 10, sortBy: 'ca' | 'commissions' = 'ca'): TopItem[] {
+  return groupAndSort(orders, 'productName', limit, sortBy)
 }
 
 export function computeTopBoutiques(orders: Order[], limit = 10): TopItem[] {

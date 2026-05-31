@@ -7,6 +7,7 @@ type Idea = {
   id: string
   text: string
   description: string
+  inspirationUrl: string
   status: IdeaStatus
   createdAt: Date
 }
@@ -58,7 +59,7 @@ export default function Ideas({ onConvertToVideo }: Props) {
     const trimmed = text.trim()
     if (!trimmed) return
     setIdeas((prev) => [
-      { id: crypto.randomUUID(), text: trimmed, description: '', status: 'pending', createdAt: new Date() },
+      { id: crypto.randomUUID(), text: trimmed, description: '', inspirationUrl: '', status: 'pending', createdAt: new Date() },
       ...prev,
     ])
     setInput('')
@@ -75,6 +76,10 @@ export default function Ideas({ onConvertToVideo }: Props) {
 
   function updateDescription(id: string, description: string) {
     setIdeas((prev) => prev.map((i) => (i.id === id ? { ...i, description } : i)))
+  }
+
+  function updateInspirationUrl(id: string, inspirationUrl: string) {
+    setIdeas((prev) => prev.map((i) => (i.id === id ? { ...i, inspirationUrl } : i)))
   }
 
   function toggleExpand(id: string) {
@@ -94,6 +99,7 @@ export default function Ideas({ onConvertToVideo }: Props) {
           id: crypto.randomUUID(),
           text,
           description: '',
+          inspirationUrl: '',
           status: 'pending' as IdeaStatus,
           createdAt: new Date(),
         })),
@@ -192,6 +198,7 @@ export default function Ideas({ onConvertToVideo }: Props) {
               onReject={() => setStatus(idea.id, idea.status === 'rejected' ? 'pending' : 'rejected')}
               onDelete={() => deleteIdea(idea.id)}
               onDescriptionChange={(desc) => updateDescription(idea.id, desc)}
+              onInspirationUrlChange={(url) => updateInspirationUrl(idea.id, url)}
               onConvertToVideo={onConvertToVideo ? () => onConvertToVideo(idea.text) : undefined}
             />
           ))}
@@ -209,6 +216,7 @@ function IdeaCard({
   onReject,
   onDelete,
   onDescriptionChange,
+  onInspirationUrlChange,
   onConvertToVideo,
 }: {
   idea: Idea
@@ -218,6 +226,7 @@ function IdeaCard({
   onReject: () => void
   onDelete: () => void
   onDescriptionChange: (desc: string) => void
+  onInspirationUrlChange: (url: string) => void
   onConvertToVideo?: () => void
 }) {
   const isValidated = idea.status === 'validated'
@@ -311,7 +320,7 @@ function IdeaCard({
 
       {/* Description expandable */}
       {expanded && (
-        <div className="px-4 pb-3">
+        <div className="px-4 pb-3 flex flex-col gap-2">
           <textarea
             autoFocus
             value={idea.description}
@@ -324,6 +333,30 @@ function IdeaCard({
                 : 'bg-slate-50 border-slate-100 text-slate-600'
             }`}
           />
+          {/* Lien inspiration */}
+          <div className="flex items-center gap-2">
+            <svg width="13" height="13" viewBox="0 0 18 18" fill="none" className="text-slate-300 flex-shrink-0">
+              <path d="M7.5 10.5a4 4 0 0 0 5.657 0l2-2a4 4 0 0 0-5.656-5.657L8.25 4.09" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              <path d="M10.5 7.5a4 4 0 0 0-5.657 0l-2 2a4 4 0 0 0 5.656 5.657L9.75 13.91" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+            <input
+              type="url"
+              value={idea.inspirationUrl}
+              onChange={(e) => onInspirationUrlChange(e.target.value)}
+              placeholder="Lien vidéo d'inspiration (TikTok, YouTube…)"
+              className="flex-1 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50 border border-slate-100 text-slate-600 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand/20 transition-all"
+            />
+            {idea.inspirationUrl && (
+              <a
+                href={idea.inspirationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-semibold text-brand hover:underline flex-shrink-0"
+              >
+                Voir →
+              </a>
+            )}
+          </div>
         </div>
       )}
     </div>
