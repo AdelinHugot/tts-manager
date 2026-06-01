@@ -3,6 +3,7 @@ import type { Period } from '../types/analytics'
 import { MOCK_ORDERS } from '../data/mockAnalytics'
 import {
   filterByPeriod,
+  filterByDateRange,
   computeKPIs,
   computeDailyTrend,
   computeOrderTypeBreakdown,
@@ -13,6 +14,7 @@ import KPICard from '../components/analytics/KPICard'
 import TrendChart from '../components/analytics/TrendChart'
 import DonutChart from '../components/analytics/DonutChart'
 import TopTable from '../components/analytics/TopTable'
+import DateRangePicker, { type DateRange } from '../components/analytics/DateRangePicker'
 
 const PERIODS: { label: string; value: Period }[] = [
   { label: '7j', value: '7j' },
@@ -24,21 +26,32 @@ const PERIODS: { label: string; value: Period }[] = [
 
 type Tab = 'general' | 'products' | 'boutiques'
 
+function formatRange(range: DateRange): string {
+  const fmt = (d: Date) => d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+  return `${fmt(range.start)} – ${fmt(range.end)}`
+}
+
 export default function Analytics() {
   const [period, setPeriod] = useState<Period>('30j')
+  const [customRange, setCustomRange] = useState<DateRange | null>(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const [tab, setTab] = useState<Tab>('general')
 
-  const filtered = useMemo(
-    () => filterByPeriod(MOCK_ORDERS, period),
-    [period]
-  )
+  const filtered = useMemo(() => {
+    if (customRange) return filterByDateRange(MOCK_ORDERS, customRange.start, customRange.end)
+    return filterByPeriod(MOCK_ORDERS, period)
+  }, [period, customRange])
+
   const filteredRéglées = useMemo(
     () => filtered.filter(o => o.status === 'Réglée'),
     [filtered]
   )
   const allRéglées = useMemo(() => MOCK_ORDERS.filter(o => o.status === 'Réglée'), [])
 
-  const kpis = useMemo(() => computeKPIs(filtered, allRéglées, period), [filtered, allRéglées, period])
+  const kpis = useMemo(
+    () => computeKPIs(filtered, allRéglées, customRange ? 'tout' : period),
+    [filtered, allRéglées, period, customRange]
+  )
   const weeklyTrend = useMemo(() => computeDailyTrend(filteredRéglées), [filteredRéglées])
   const breakdown = useMemo(() => computeOrderTypeBreakdown(filteredRéglées), [filteredRéglées])
   const topProducts = useMemo(() => computeTopProducts(filteredRéglées), [filteredRéglées])
@@ -46,6 +59,12 @@ export default function Analytics() {
 
   function fmt(n: number) {
     return n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+  }
+
+  function selectPeriod(p: Period) {
+    setPeriod(p)
+    setCustomRange(null)
+    setPickerOpen(false)
   }
 
   return (
@@ -56,20 +75,60 @@ export default function Analytics() {
           <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
           <p className="text-sm text-slate-400 mt-0.5">{MOCK_ORDERS.length} commandes au total</p>
         </div>
-        <div className="flex items-center gap-2 bg-slate-100 rounded-xl p-1">
-          {PERIODS.map(p => (
+
+        {/* Period selector + custom range picker */}
+        <div className="flex items-center gap-2">
+          {/* Preset pills */}
+          <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
+            {PERIODS.map(p => (
+              <button
+                key={p.value}
+                onClick={() => selectPeriod(p.value)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  !customRange && period === p.value
+                    ? 'bg-brand text-white shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Custom range button */}
+          <div className="relative">
             <button
-              key={p.value}
-              onClick={() => setPeriod(p.value)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-                period === p.value
-                  ? 'bg-brand text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
+              onClick={() => setPickerOpen(o => !o)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all border ${
+                customRange
+                  ? 'bg-brand text-white border-brand shadow-sm'
+                  : pickerOpen
+                    ? 'bg-white border-brand/50 text-brand shadow-sm'
+                    : 'bg-white border-slate-200 text-slate-500 hover:border-brand/40 hover:text-slate-700'
               }`}
             >
-              {p.label}
+              {/* Calendar icon */}
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+                <rect x="2" y="3" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+                <path d="M6 1v4M12 1v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                <path d="M2 8h14" stroke="currentColor" strokeWidth="1.5"/>
+              </svg>
+              {customRange ? formatRange(customRange) : 'Personnalisé'}
             </button>
-          ))}
+
+            {pickerOpen && (
+              <DateRangePicker
+                value={customRange}
+                onApply={(range) => {
+                  setCustomRange(range)
+                }}
+                onClear={() => {
+                  setCustomRange(null)
+                }}
+                onClose={() => setPickerOpen(false)}
+              />
+            )}
+          </div>
         </div>
       </div>
 

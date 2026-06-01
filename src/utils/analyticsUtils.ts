@@ -1,5 +1,11 @@
 import type { Order, Period, KPIData, WeeklyPoint, TopItem } from '../types/analytics'
 
+export function filterByDateRange(orders: Order[], start: Date, end: Date): Order[] {
+  const s = new Date(start.getFullYear(), start.getMonth(), start.getDate())
+  const e = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59)
+  return orders.filter(o => o.date >= s && o.date <= e)
+}
+
 export function filterByPeriod(orders: Order[], period: Period): Order[] {
   if (period === 'tout') return orders
   const now = new Date()
