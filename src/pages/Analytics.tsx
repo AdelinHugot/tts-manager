@@ -14,11 +14,11 @@ import KPICard from '../components/analytics/KPICard'
 import TrendChart from '../components/analytics/TrendChart'
 import DonutChart from '../components/analytics/DonutChart'
 import TopTable from '../components/analytics/TopTable'
-import DateRangePicker, { type DateRange } from '../components/analytics/DateRangePicker'
+import DateRangePicker, { type DateRange, type PresetPeriod } from '../components/analytics/DateRangePicker'
 
-const PERIODS: { label: string; value: Period }[] = [
-  { label: '7j', value: '7j' },
-  { label: '30j', value: '30j' },
+const PERIODS: PresetPeriod[] = [
+  { label: '7 jours', value: '7j' },
+  { label: '30 jours', value: '30j' },
   { label: '3 mois', value: '3m' },
   { label: '6 mois', value: '6m' },
   { label: 'Tout', value: 'tout' },
@@ -76,59 +76,39 @@ export default function Analytics() {
           <p className="text-sm text-slate-400 mt-0.5">{MOCK_ORDERS.length} commandes au total</p>
         </div>
 
-        {/* Period selector + custom range picker */}
-        <div className="flex items-center gap-2">
-          {/* Preset pills */}
-          <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
-            {PERIODS.map(p => (
-              <button
-                key={p.value}
-                onClick={() => selectPeriod(p.value)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-                  !customRange && period === p.value
-                    ? 'bg-brand text-white shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Custom range button */}
-          <div className="relative">
-            <button
-              onClick={() => setPickerOpen(o => !o)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all border ${
-                customRange
+        {/* Single button that opens the combined picker */}
+        <div className="relative">
+          <button
+            onClick={() => setPickerOpen(o => !o)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all border ${
+              pickerOpen
+                ? 'bg-white border-brand/50 text-brand shadow-sm'
+                : customRange
                   ? 'bg-brand text-white border-brand shadow-sm'
-                  : pickerOpen
-                    ? 'bg-white border-brand/50 text-brand shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-500 hover:border-brand/40 hover:text-slate-700'
-              }`}
-            >
-              {/* Calendar icon */}
-              <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
-                <rect x="2" y="3" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.8"/>
-                <path d="M6 1v4M12 1v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                <path d="M2 8h14" stroke="currentColor" strokeWidth="1.5"/>
-              </svg>
-              {customRange ? formatRange(customRange) : 'Personnalisé'}
-            </button>
+                  : 'bg-white border-slate-200 text-slate-600 hover:border-brand/40 hover:text-slate-800'
+            }`}
+          >
+            <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="3" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+              <path d="M6 1v4M12 1v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              <path d="M2 8h14" stroke="currentColor" strokeWidth="1.5"/>
+            </svg>
+            {customRange
+              ? formatRange(customRange)
+              : PERIODS.find(p => p.value === period)?.label ?? 'Période'}
+          </button>
 
-            {pickerOpen && (
-              <DateRangePicker
-                value={customRange}
-                onApply={(range) => {
-                  setCustomRange(range)
-                }}
-                onClear={() => {
-                  setCustomRange(null)
-                }}
-                onClose={() => setPickerOpen(false)}
-              />
-            )}
-          </div>
+          {pickerOpen && (
+            <DateRangePicker
+              value={customRange}
+              activePeriod={customRange ? null : period}
+              periods={PERIODS}
+              onApply={(range) => setCustomRange(range)}
+              onSelectPeriod={(p) => selectPeriod(p)}
+              onClear={() => setCustomRange(null)}
+              onClose={() => setPickerOpen(false)}
+            />
+          )}
         </div>
       </div>
 

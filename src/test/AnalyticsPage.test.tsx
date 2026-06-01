@@ -20,11 +20,10 @@ test('renders 4 KPI cards', () => {
   expect(screen.getByText('Panier moyen')).toBeDefined()
 })
 
-test('renders period pills', () => {
+test('renders period button with active label', () => {
   render(<Analytics />)
-  expect(screen.getByText('7j')).toBeDefined()
-  expect(screen.getByText('30j')).toBeDefined()
-  expect(screen.getByText('Tout')).toBeDefined()
+  // Button shows the active period label (default: 30 jours)
+  expect(screen.getByText('30 jours')).toBeDefined()
 })
 
 test('renders tabs', () => {
@@ -47,8 +46,10 @@ test('switches to Top Boutiques tab on click', () => {
   expect(screen.getByText('Boutique')).toBeDefined()
 })
 
-test('changing period updates display without crashing', () => {
+test('changing period via picker updates display without crashing', () => {
   render(<Analytics />)
-  fireEvent.click(screen.getByText('7j'))
+  // Open the picker then click a preset inside it
+  fireEvent.click(screen.getByText('30 jours'))
+  fireEvent.click(screen.getByText('7 jours'))
   expect(screen.getByText('CA Généré')).toBeDefined()
 })
