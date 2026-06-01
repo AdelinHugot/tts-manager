@@ -6,7 +6,6 @@ import RealisationPage from '../../pages/Realisation'
 import Produits from '../../pages/Produits'
 import Parametres from '../../pages/Parametres'
 import RushsPage from '../../pages/Rushs'
-import Planning from '../../pages/Planning'
 import Ideas from '../../pages/Ideas'
 import type { Realisation, RealisationStatus } from '../../types/realisation'
 import type { Rush } from '../../types/rush'
@@ -41,12 +40,6 @@ export default function AppLayout() {
 
   function handleRealisationUpdate(updated: Realisation) {
     setRealisations((prev) => prev.map((r) => (r.id === updated.id ? updated : r)))
-  }
-
-  function handlePublishDateChange(id: string, date: string | null) {
-    setRealisations((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, publishDate: date } : r))
-    )
   }
 
   function handleRealisationStatusChange(id: string, status: RealisationStatus) {
@@ -108,14 +101,7 @@ export default function AppLayout() {
             }}
           />
         )}
-        {activePage === 'planning' && (
-          <Planning
-            realisations={realisations}
-            products={MOCK_PRODUCTS}
-            onPublishDateChange={handlePublishDateChange}
-          />
-        )}
-        {activePage === 'produits' && <Produits />}
+{activePage === 'produits' && <Produits />}
         {activePage === 'parametres' && <Parametres />}
       </main>
     </div>
