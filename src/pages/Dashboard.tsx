@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { MOCK_ORDERS } from '../data/mockAnalytics'
 import {
   computeKPIs,
   computeDailyTrend,
@@ -9,10 +8,12 @@ import KPICard from '../components/analytics/KPICard'
 import TrendChart from '../components/analytics/TrendChart'
 import type { Realisation, Product } from '../types/realisation'
 import { STATUS_LABELS, STATUS_COLORS } from '../types/realisation'
+import type { Order } from '../types/analytics'
 
 type Props = {
   realisations: Realisation[]
   products: Product[]
+  orders: Order[]
 }
 
 type DashPeriod = 'mois' | '30j' | 'tout'
@@ -41,13 +42,13 @@ function filterByDashPeriod(orders: typeof MOCK_ORDERS, period: DashPeriod) {
   return orders.filter((o) => o.date >= cutoff)
 }
 
-export default function Dashboard({ realisations, products }: Props) {
+export default function Dashboard({ realisations, products, orders }: Props) {
   const [period, setPeriod] = useState<DashPeriod>('mois')
   const [topSortBy, setTopSortBy] = useState<'ca' | 'commissions'>('commissions')
 
-  const allRéglées = useMemo(() => MOCK_ORDERS.filter((o) => o.status === 'Réglée'), [])
+  const allRéglées = useMemo(() => orders.filter((o) => o.status === 'Réglée'), [orders])
 
-  const filteredOrders = useMemo(() => filterByDashPeriod(MOCK_ORDERS, period), [period])
+  const filteredOrders = useMemo(() => filterByDashPeriod(orders, period), [orders, period])
   const filteredRéglées = useMemo(
     () => filteredOrders.filter((o) => o.status === 'Réglée'),
     [filteredOrders]

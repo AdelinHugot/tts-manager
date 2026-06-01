@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { Period } from '../types/analytics'
-import { MOCK_ORDERS } from '../data/mockAnalytics'
+import type { Period, Order } from '../types/analytics'
 import {
   filterByPeriod,
   filterByDateRange,
@@ -31,22 +30,24 @@ function formatRange(range: DateRange): string {
   return `${fmt(range.start)} – ${fmt(range.end)}`
 }
 
-export default function Analytics() {
+type Props = { orders: Order[] }
+
+export default function Analytics({ orders }: Props) {
   const [period, setPeriod] = useState<Period>('30j')
   const [customRange, setCustomRange] = useState<DateRange | null>(null)
   const [pickerOpen, setPickerOpen] = useState(false)
   const [tab, setTab] = useState<Tab>('general')
 
   const filtered = useMemo(() => {
-    if (customRange) return filterByDateRange(MOCK_ORDERS, customRange.start, customRange.end)
-    return filterByPeriod(MOCK_ORDERS, period)
-  }, [period, customRange])
+    if (customRange) return filterByDateRange(orders, customRange.start, customRange.end)
+    return filterByPeriod(orders, period)
+  }, [orders, period, customRange])
 
   const filteredRéglées = useMemo(
     () => filtered.filter(o => o.status === 'Réglée'),
     [filtered]
   )
-  const allRéglées = useMemo(() => MOCK_ORDERS.filter(o => o.status === 'Réglée'), [])
+  const allRéglées = useMemo(() => orders.filter(o => o.status === 'Réglée'), [orders])
 
   const kpis = useMemo(
     () => computeKPIs(filtered, allRéglées, customRange ? 'tout' : period),
@@ -73,7 +74,7 @@ export default function Analytics() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
-          <p className="text-sm text-slate-400 mt-0.5">{MOCK_ORDERS.length} commandes au total</p>
+          <p className="text-sm text-slate-400 mt-0.5">{orders.length} commandes au total</p>
         </div>
 
         {/* Single button that opens the combined picker */}

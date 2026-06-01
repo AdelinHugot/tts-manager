@@ -1,16 +1,10 @@
 import { useState, useRef } from 'react'
+import { useIdeas } from '../hooks/useFirestore'
+import { fsAddIdea, fsUpdateIdea, fsDeleteIdea, type FirestoreIdea } from '../lib/firestore'
 
 type IdeaStatus = 'pending' | 'validated' | 'rejected'
 type Filter = 'all' | IdeaStatus
-
-type Idea = {
-  id: string
-  text: string
-  description: string
-  inspirationUrl: string
-  status: IdeaStatus
-  createdAt: Date
-}
+type Idea = FirestoreIdea
 
 // Pool d'idées IA basées sur les vrais produits du compte
 const AI_SUGGESTIONS = [
@@ -48,38 +42,35 @@ type Props = {
 }
 
 export default function Ideas({ onConvertToVideo }: Props) {
-  const [ideas, setIdeas] = useState<Idea[]>([])
+  const { data: ideas } = useIdeas()
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  function addIdea(text: string) {
+  async function addIdea(text: string) {
     const trimmed = text.trim()
     if (!trimmed) return
-    setIdeas((prev) => [
-      { id: crypto.randomUUID(), text: trimmed, description: '', inspirationUrl: '', status: 'pending', createdAt: new Date() },
-      ...prev,
-    ])
+    await fsAddIdea({ text: trimmed, description: '', inspirationUrl: '', status: 'pending', createdAt: new Date() })
     setInput('')
   }
 
-  function setStatus(id: string, status: IdeaStatus) {
-    setIdeas((prev) => prev.map((i) => (i.id === id ? { ...i, status } : i)))
+  async function setStatus(id: string, status: IdeaStatus) {
+    await fsUpdateIdea(id, { status })
   }
 
-  function deleteIdea(id: string) {
-    setIdeas((prev) => prev.filter((i) => i.id !== id))
+  async function deleteIdea(id: string) {
     if (expandedId === id) setExpandedId(null)
+    await fsDeleteIdea(id)
   }
 
-  function updateDescription(id: string, description: string) {
-    setIdeas((prev) => prev.map((i) => (i.id === id ? { ...i, description } : i)))
+  async function updateDescription(id: string, description: string) {
+    await fsUpdateIdea(id, { description })
   }
 
-  function updateInspirationUrl(id: string, inspirationUrl: string) {
-    setIdeas((prev) => prev.map((i) => (i.id === id ? { ...i, inspirationUrl } : i)))
+  async function updateInspirationUrl(id: string, inspirationUrl: string) {
+    await fsUpdateIdea(id, { inspirationUrl })
   }
 
   function toggleExpand(id: string) {
@@ -88,23 +79,16 @@ export default function Ideas({ onConvertToVideo }: Props) {
 
   function handleAISuggest() {
     setAiLoading(true)
-    // Simulate a brief async call, then add 3 suggestions not already in the list
-    setTimeout(() => {
+    setTimeout(async () => {
       const existing = new Set(ideas.map((i) => i.text))
       const available = AI_SUGGESTIONS.filter((s) => !existing.has(s))
       const picks = available.sort(() => Math.random() - 0.5).slice(0, 3)
-      if (picks.length === 0) return
-      setIdeas((prev) => [
-        ...picks.map((text) => ({
-          id: crypto.randomUUID(),
-          text,
-          description: '',
-          inspirationUrl: '',
-          status: 'pending' as IdeaStatus,
-          createdAt: new Date(),
-        })),
-        ...prev,
-      ])
+      if (picks.length === 0) { setAiLoading(false); return }
+      await Promise.all(
+        picks.map((text) =>
+          fsAddIdea({ text, description: '', inspirationUrl: '', status: 'pending', createdAt: new Date() })
+        )
+      )
       setAiLoading(false)
     }, 600)
   }
