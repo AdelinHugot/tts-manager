@@ -30,6 +30,7 @@ export type Realisation = {
   notes: string
   rushIds: string[]
   createdAt: string
+  tiktokUrl?: string   // lien vers la vidéo TikTok publiée
 }
 
 export type ProductStatus = 'actif' | 'rupture_stock' | 'inactif'
@@ -41,6 +42,8 @@ export type Product = {
   description: string
   status: ProductStatus
   url?: string
+  marqueId?: string          // référence vers la collection marques
+  tiktokProductId?: string   // ID TikTok Shop du produit (pour lien direct)
 }
 
 export const PRODUCT_STATUS_LABELS: Record<ProductStatus, string> = {
@@ -53,4 +56,13 @@ export const PRODUCT_STATUS_COLORS: Record<ProductStatus, { dot: string; badge: 
   actif:         { dot: 'bg-emerald-400', badge: 'bg-emerald-50 text-emerald-600' },
   rupture_stock: { dot: 'bg-amber-400',   badge: 'bg-amber-50 text-amber-600' },
   inactif:       { dot: 'bg-slate-300',   badge: 'bg-slate-100 text-slate-500' },
+}
+
+export type Comment = {
+  id: string
+  text: string
+  authorName: string
+  authorEmail: string
+  authorPhotoURL?: string
+  createdAt: string   // ISO string
 }

@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMobileHeaderActions } from '../context/MobileHeaderContext'
 import type { Realisation, RealisationStatus, Product } from '../types/realisation'
 import { STATUS_LABELS } from '../types/realisation'
 import type { Rush } from '../types/rush'
+import type { Marque } from '../types/marque'
 
 type StatusFilter = RealisationStatus | 'all'
 import ViewSwitcher, { type ViewType } from '../components/realisation/ViewSwitcher'
@@ -9,14 +11,17 @@ import ListView from '../components/realisation/ListView'
 import KanbanView from '../components/realisation/KanbanView'
 import CardsView from '../components/realisation/CardsView'
 import RealisationPanel from '../components/realisation/RealisationPanel'
+import FilterPicker from '../components/ui/FilterPicker'
 
 type Props = {
   rushes: Rush[]
   onAddRush: (rush: Rush) => void
   realisations: Realisation[]
   products: Product[]
+  marques: Marque[]
   onUpdate: (updated: Realisation) => void
   onStatusChange: (id: string, status: RealisationStatus) => void
+  onDelete: (id: string) => void
   onNew: () => void
   initialSelectedId?: string | null
   onInitialSelectionConsumed?: () => void
@@ -27,15 +32,18 @@ export default function RealisationPage({
   onAddRush,
   realisations,
   products,
+  marques,
   onUpdate,
   onStatusChange,
+  onDelete,
   onNew,
   initialSelectedId,
   onInitialSelectionConsumed,
 }: Props) {
   const [activeView, setActiveView] = useState<ViewType>('list')
   const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId ?? null)
-  const [filterStatus, setFilterStatus] = useState<StatusFilter>('all')
+  const [filterStatus, setFilterStatus]   = useState<StatusFilter>('all')
+  const [filterMarque, setFilterMarque]   = useState<string>('all')
   const [filterProduct, setFilterProduct] = useState<string>('all')
 
   useEffect(() => {
@@ -43,48 +51,95 @@ export default function RealisationPage({
       setSelectedId(initialSelectedId)
       onInitialSelectionConsumed?.()
     }
-  }, []) // Only on mount
+  }, [initialSelectedId]) // eslint-disable-line
 
   const selected = realisations.find((r) => r.id === selectedId) ?? null
 
-  // Produits présents dans les réalisations (pour le select)
+  // Quand on change de marque, reset le filtre produit si le produit sélectionné
+  // n'appartient plus à la marque choisie
+  useEffect(() => {
+    if (filterMarque === 'all' || filterProduct === 'all') return
+    const prod = products.find((p) => p.id === filterProduct)
+    if (prod?.marqueId !== filterMarque) setFilterProduct('all')
+  }, [filterMarque]) // eslint-disable-line
+
+  // Marques présentes dans les réalisations
+  const usedMarques = useMemo(() => {
+    const productIds = new Set(realisations.map((r) => r.productId))
+    const marqueIds  = new Set(
+      products.filter((p) => productIds.has(p.id)).map((p) => p.marqueId).filter(Boolean)
+    )
+    return marques.filter((m) => marqueIds.has(m.id))
+  }, [realisations, products, marques])
+
+  // Produits filtrés par marque + présents dans les réalisations
   const usedProducts = useMemo(() => {
     const ids = new Set(realisations.map((r) => r.productId))
-    return products.filter((p) => ids.has(p.id))
-  }, [realisations, products])
+    return products.filter((p) => {
+      if (!ids.has(p.id)) return false
+      if (filterMarque !== 'all' && p.marqueId !== filterMarque) return false
+      return true
+    })
+  }, [realisations, products, filterMarque])
 
   const filtered = useMemo(() => {
     return realisations.filter((r) => {
       if (filterStatus !== 'all' && r.status !== filterStatus) return false
       if (filterProduct !== 'all' && r.productId !== filterProduct) return false
+      if (filterMarque !== 'all') {
+        const prod = products.find((p) => p.id === r.productId)
+        if (prod?.marqueId !== filterMarque) return false
+      }
       return true
     })
-  }, [realisations, filterStatus, filterProduct])
+  }, [realisations, filterStatus, filterProduct, filterMarque, products])
 
   const STATUS_FILTERS: { value: StatusFilter; label: string }[] = [
-    { value: 'all', label: 'Tous' },
+    { value: 'all',       label: 'Tous' },
     { value: 'a_tourner', label: STATUS_LABELS.a_tourner },
-    { value: 'script', label: STATUS_LABELS.script },
-    { value: 'a_monter', label: STATUS_LABELS.a_monter },
+    { value: 'script',    label: STATUS_LABELS.script },
+    { value: 'a_monter',  label: STATUS_LABELS.a_monter },
     { value: 'a_publier', label: STATUS_LABELS.a_publier },
-    { value: 'publiee', label: STATUS_LABELS.publiee },
+    { value: 'publiee',   label: STATUS_LABELS.publiee },
   ]
 
+  const hasFilters = filterStatus !== 'all' || filterMarque !== 'all' || filterProduct !== 'all'
+
+  // ── Mobile header actions ─────────────────────────────────────────────────
+  const { setActions } = useMobileHeaderActions()
+  const handleViewChange = useCallback((v: ViewType) => setActiveView(v), [])
+  useEffect(() => {
+    setActions(
+      <div className="flex items-center gap-1.5">
+        <ViewSwitcher activeView={activeView} onViewChange={handleViewChange} />
+        <button
+          onClick={onNew}
+          className="flex items-center gap-1 bg-brand text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg hover:bg-brand/90 transition-colors"
+        >
+          <span className="text-sm leading-none">+</span>
+          <span>Vidéo</span>
+        </button>
+      </div>
+    )
+    return () => setActions(null)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeView])
+
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto">
+      <div className="hidden md:flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Réalisation</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Réalisation</h1>
           <p className="text-sm text-slate-400 mt-0.5">{realisations.length} vidéos</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <ViewSwitcher activeView={activeView} onViewChange={setActiveView} />
           <button
             onClick={onNew}
-            className="flex items-center gap-2 bg-brand text-white text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-brand/90 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-brand text-white text-sm font-medium px-3 py-2 md:px-4 md:py-2.5 rounded-xl hover:bg-brand/90 transition-colors shadow-sm"
           >
             <span className="text-base leading-none">+</span>
-            Nouvelle vidéo
+            <span className="hidden sm:inline">Nouvelle vidéo</span>
           </button>
         </div>
       </div>
@@ -92,7 +147,7 @@ export default function RealisationPage({
       {activeView === 'list' && (
         <>
           {/* Filtres */}
-          <div className="flex items-center gap-3 mb-4 flex-wrap">
+          <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar">
             {/* Filtre statut */}
             <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
               {STATUS_FILTERS.map((f) => (
@@ -110,23 +165,39 @@ export default function RealisationPage({
               ))}
             </div>
 
-            {/* Filtre produit */}
-            <select
-              value={filterProduct}
-              onChange={(e) => setFilterProduct(e.target.value)}
-              className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand/50 shadow-sm cursor-pointer"
-            >
-              <option value="all">Tous les produits</option>
-              {usedProducts.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
+            <div className="w-px h-5 bg-slate-200 mx-0.5" />
 
-            {/* Compteur résultats */}
-            {(filterStatus !== 'all' || filterProduct !== 'all') && (
-              <span className="text-xs text-slate-400 font-medium">
-                {filtered.length} résultat{filtered.length !== 1 ? 's' : ''}
-              </span>
+            {/* Filtre marque */}
+            <FilterPicker
+              items={usedMarques.map((m) => ({ id: m.id, name: m.name }))}
+              value={filterMarque}
+              onChange={setFilterMarque}
+              allLabel="Toutes les marques"
+              placeholder="Chercher une marque…"
+            />
+
+            {/* Filtre produit */}
+            <FilterPicker
+              items={usedProducts.map((p) => ({ id: p.id, name: p.name }))}
+              value={filterProduct}
+              onChange={setFilterProduct}
+              allLabel="Tous les produits"
+              placeholder="Chercher un produit…"
+            />
+
+            {/* Compteur + reset */}
+            {hasFilters && (
+              <>
+                <span className="text-xs text-slate-400 font-medium">
+                  {filtered.length} résultat{filtered.length !== 1 ? 's' : ''}
+                </span>
+                <button
+                  onClick={() => { setFilterStatus('all'); setFilterMarque('all'); setFilterProduct('all') }}
+                  className="text-xs text-slate-400 hover:text-slate-600 font-semibold hover:bg-slate-100 px-2 py-1.5 rounded-lg transition-colors"
+                >
+                  Réinitialiser
+                </button>
+              </>
             )}
           </div>
 
@@ -152,6 +223,7 @@ export default function RealisationPage({
         onAddRush={onAddRush}
         onClose={() => setSelectedId(null)}
         onUpdate={onUpdate}
+        onDelete={(id) => { onDelete(id); setSelectedId(null) }}
       />
     </div>
   )

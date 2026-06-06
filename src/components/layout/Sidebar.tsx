@@ -27,6 +27,16 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    id: 'commandes',
+    label: 'Commandes',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+        <path d="M5 6h8M5 9h8M5 12h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+  {
     id: 'realisation',
     label: 'Réalisation',
     icon: (
@@ -84,11 +94,8 @@ const PARAMETRES_ITEM: NavItem = {
   ),
 }
 
-const MOCK_USER = {
-  name: 'Adelin Hugot',
-  email: 'adelin.hugot@gmail.com',
-  avatar: 'AH',
-}
+import { signOut } from 'firebase/auth'
+import { auth } from '../../lib/firebase'
 
 type SidebarProps = {
   activePage: string
@@ -96,6 +103,9 @@ type SidebarProps = {
 }
 
 export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
+  const user = auth.currentUser
+  const initials = (user?.displayName ?? user?.email ?? '?').slice(0, 2).toUpperCase()
+  const photo = user?.photoURL
   return (
     <aside className="w-60 min-h-screen bg-white border-r border-slate-100 flex flex-col py-6 px-4">
       {/* Logo */}
@@ -139,13 +149,25 @@ export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
 
         {/* User card */}
         <div className="mt-1 p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand to-indigo-400 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm">
-            {MOCK_USER.avatar}
+          <div className="w-9 h-9 rounded-full flex-shrink-0 shadow-sm overflow-hidden bg-gradient-to-br from-brand to-indigo-400 flex items-center justify-center text-white text-xs font-bold">
+            {photo
+              ? <img src={photo} alt="" className="w-full h-full object-cover" />
+              : initials
+            }
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-800 truncate leading-tight">{MOCK_USER.name}</p>
-            <p className="text-xs text-slate-400 truncate leading-tight mt-0.5">{MOCK_USER.email}</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs text-slate-500 truncate leading-tight">{user?.email ?? ''}</p>
           </div>
+          <button
+            onClick={() => signOut(auth)}
+            title="Se déconnecter"
+            className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-50 transition-colors flex-shrink-0"
+          >
+            <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+              <path d="M7 3H4a1 1 0 00-1 1v10a1 1 0 001 1h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+              <path d="M12 6l3 3-3 3M15 9H7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </div>
       </div>
     </aside>

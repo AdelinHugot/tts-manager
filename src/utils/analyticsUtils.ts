@@ -1,4 +1,5 @@
 import type { Order, Period, KPIData, WeeklyPoint, TopItem } from '../types/analytics'
+import type { Realisation, Product } from '../types/realisation'
 
 export function filterByDateRange(orders: Order[], start: Date, end: Date): Order[] {
   const s = new Date(start.getFullYear(), start.getMonth(), start.getDate())
@@ -6,32 +7,113 @@ export function filterByDateRange(orders: Order[], start: Date, end: Date): Orde
   return orders.filter(o => o.date >= s && o.date <= e)
 }
 
-export function filterByPeriod(orders: Order[], period: Period): Order[] {
-  if (period === 'tout') return orders
-  const now = new Date()
-  const msMap: Record<Exclude<Period, 'tout'>, number> = {
-    '7j': 7 * 86400000,
-    '30j': 30 * 86400000,
-    '3m': 90 * 86400000,
-    '6m': 180 * 86400000,
-  }
-  const cutoff = new Date(now.getTime() - msMap[period])
-  return orders.filter(o => o.date >= cutoff)
+/** Shift a (year, quarter 0-3) pair by delta quarters. */
+function shiftQ(y: number, q: number, delta: number): { y: number; q: number } {
+  let nq = q + delta
+  let ny = y
+  while (nq < 0) { nq += 4; ny-- }
+  while (nq >= 4) { nq -= 4; ny++ }
+  return { y: ny, q: nq }
 }
 
-function getPreviousPeriodOrders(orders: Order[], period: Period): Order[] {
-  if (period === 'tout') return []
-  const now = new Date()
-  const msMap: Record<Exclude<Period, 'tout'>, number> = {
-    '7j': 7 * 86400000,
-    '30j': 30 * 86400000,
-    '3m': 90 * 86400000,
-    '6m': 180 * 86400000,
+export function periodBounds(period: Period, now: Date): { start: Date; end: Date } {
+  const y = now.getFullYear()
+  const m = now.getMonth()          // 0-based
+  const q = Math.floor(m / 3)       // 0–3
+
+  switch (period) {
+    case 'ce_mois':
+      return { start: new Date(y, m, 1), end: now }
+
+    case 'mois_precedent':
+      return {
+        start: new Date(y, m - 1, 1),
+        end:   new Date(y, m, 0, 23, 59, 59),
+      }
+
+    case 'ce_trimestre':
+      return { start: new Date(y, q * 3, 1), end: now }
+
+    case 'trimestre_precedent': {
+      const { y: py, q: pq } = shiftQ(y, q, -1)
+      return {
+        start: new Date(py, pq * 3, 1),
+        end:   new Date(py, pq * 3 + 3, 0, 23, 59, 59),
+      }
+    }
+
+    case 'cette_annee':
+      return { start: new Date(y, 0, 1), end: now }
+
+    case 'annee_derniere':
+      return {
+        start: new Date(y - 1, 0, 1),
+        end:   new Date(y - 1, 11, 31, 23, 59, 59),
+      }
   }
-  const ms = msMap[period]
-  const end = new Date(now.getTime() - ms)
-  const start = new Date(now.getTime() - ms * 2)
-  return orders.filter(o => o.date >= start && o.date < end)
+}
+
+function prevPeriodBounds(period: Period, now: Date): { start: Date; end: Date } | null {
+  const y = now.getFullYear()
+  const m = now.getMonth()
+  const q = Math.floor(m / 3)
+
+  switch (period) {
+    case 'ce_mois':
+      return {
+        start: new Date(y, m - 1, 1),
+        end:   new Date(y, m, 0, 23, 59, 59),
+      }
+
+    case 'mois_precedent':
+      return {
+        start: new Date(y, m - 2, 1),
+        end:   new Date(y, m - 1, 0, 23, 59, 59),
+      }
+
+    case 'ce_trimestre': {
+      const { y: py, q: pq } = shiftQ(y, q, -1)
+      return {
+        start: new Date(py, pq * 3, 1),
+        end:   new Date(py, pq * 3 + 3, 0, 23, 59, 59),
+      }
+    }
+
+    case 'trimestre_precedent': {
+      const { y: py, q: pq } = shiftQ(y, q, -2)
+      return {
+        start: new Date(py, pq * 3, 1),
+        end:   new Date(py, pq * 3 + 3, 0, 23, 59, 59),
+      }
+    }
+
+    case 'cette_annee':
+      return {
+        start: new Date(y - 1, 0, 1),
+        end:   new Date(y - 1, 11, 31, 23, 59, 59),
+      }
+
+    case 'annee_derniere':
+      return {
+        start: new Date(y - 2, 0, 1),
+        end:   new Date(y - 2, 11, 31, 23, 59, 59),
+      }
+
+    default:
+      return null
+  }
+}
+
+export function filterByPeriod(orders: Order[], period: Period): Order[] {
+  const { start, end } = periodBounds(period, new Date())
+  return orders.filter(o => o.date >= start && o.date <= end)
+}
+
+function getPreviousPeriodOrders(orders: Order[], period: Period | undefined): Order[] {
+  if (!period) return []
+  const bounds = prevPeriodBounds(period, new Date())
+  if (!bounds) return []
+  return orders.filter(o => o.date >= bounds.start && o.date <= bounds.end)
 }
 
 function growth(current: number, previous: number): number | null {
@@ -39,23 +121,27 @@ function growth(current: number, previous: number): number | null {
   return Math.round(((current - previous) / previous) * 100)
 }
 
-export function computeKPIs(currentOrders: Order[], allOrders: Order[], period: Period = 'tout'): KPIData {
-  const réglées = currentOrders.filter(o => o.status === 'Réglée')
-  const totalCA = réglées.reduce((s, o) => s + o.price, 0)
-  const totalCommissions = réglées.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
-  const totalOrders = currentOrders.length
-  const validatedOrders = réglées.length
-  const averageBasket = validatedOrders > 0 ? totalCA / validatedOrders : 0
+export function computeKPIs(currentOrders: Order[], allOrders: Order[], period?: Period): KPIData {
+  const réglées        = currentOrders.filter(o => o.status === 'Réglée')
+  const enAttente      = currentOrders.filter(o => o.status === 'En attente')
+  const ineligible     = currentOrders.filter(o => o.status === 'Inéligible')
 
-  const prevOrders = getPreviousPeriodOrders(allOrders, period).filter(o => o.status === 'Réglée')
-  const prevCA = prevOrders.reduce((s, o) => s + o.price, 0)
-  const prevCommissions = prevOrders.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
+  const totalCA          = réglées.reduce((s, o) => s + o.price, 0)
+  const totalCommissions = réglées.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
+  const validatedOrders  = réglées.length
+  const averageBasket    = validatedOrders > 0 ? totalCA / validatedOrders : 0
+
+  const prevOrders       = getPreviousPeriodOrders(allOrders, period).filter(o => o.status === 'Réglée')
+  const prevCA           = prevOrders.reduce((s, o) => s + o.price, 0)
+  const prevCommissions  = prevOrders.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
 
   return {
     totalCA,
     totalCommissions,
-    totalOrders,
+    totalOrders: currentOrders.length,
     validatedOrders,
+    enAttenteOrders: enAttente.length,
+    ineligibleOrders: ineligible.length,
     averageBasket,
     caGrowth: growth(totalCA, prevCA),
     commissionsGrowth: growth(totalCommissions, prevCommissions),
@@ -155,4 +241,149 @@ export function computeTopProducts(orders: Order[], limit = 10, sortBy: 'ca' | '
 
 export function computeTopBoutiques(orders: Order[], limit = 10): TopItem[] {
   return groupAndSort(orders, 'boutiqueName', limit)
+}
+
+// ── Strategic items (with taux commission, panier moyen, part CA) ──────────
+
+export type StrategicItem = {
+  name: string
+  subLabel?: string   // boutique name for products
+  ca: number
+  commissions: number
+  orderCount: number
+  tauxCommission: number  // commissions / ca * 100
+  averageBasket: number   // ca / orderCount
+  caShare: number         // ca / totalCA * 100
+}
+
+export function computeStrategicBoutiques(orders: Order[], limit = 20): StrategicItem[] {
+  const map = new Map<string, { ca: number; commissions: number; orderCount: number }>()
+  for (const o of orders) {
+    const e = map.get(o.boutiqueName) ?? { ca: 0, commissions: 0, orderCount: 0 }
+    map.set(o.boutiqueName, {
+      ca: e.ca + o.price,
+      commissions: e.commissions + o.commissionStandard + o.commissionPub,
+      orderCount: e.orderCount + 1,
+    })
+  }
+  const totalCA = Array.from(map.values()).reduce((s, v) => s + v.ca, 0)
+  return Array.from(map.entries())
+    .map(([name, v]) => ({
+      name,
+      ca: Math.round(v.ca * 100) / 100,
+      commissions: Math.round(v.commissions * 100) / 100,
+      orderCount: v.orderCount,
+      tauxCommission: v.ca > 0 ? Math.round((v.commissions / v.ca) * 1000) / 10 : 0,
+      averageBasket: v.orderCount > 0 ? Math.round((v.ca / v.orderCount) * 100) / 100 : 0,
+      caShare: totalCA > 0 ? Math.round((v.ca / totalCA) * 1000) / 10 : 0,
+    }))
+    .sort((a, b) => b.ca - a.ca)
+    .slice(0, limit)
+}
+
+export function computeStrategicProducts(orders: Order[], limit = 20): StrategicItem[] {
+  const map = new Map<string, { ca: number; commissions: number; orderCount: number; boutique: string }>()
+  for (const o of orders) {
+    const e = map.get(o.productName) ?? { ca: 0, commissions: 0, orderCount: 0, boutique: o.boutiqueName }
+    map.set(o.productName, {
+      ca: e.ca + o.price,
+      commissions: e.commissions + o.commissionStandard + o.commissionPub,
+      orderCount: e.orderCount + 1,
+      boutique: e.boutique,
+    })
+  }
+  const totalCA = Array.from(map.values()).reduce((s, v) => s + v.ca, 0)
+  return Array.from(map.entries())
+    .map(([name, v]) => ({
+      name,
+      subLabel: v.boutique,
+      ca: Math.round(v.ca * 100) / 100,
+      commissions: Math.round(v.commissions * 100) / 100,
+      orderCount: v.orderCount,
+      tauxCommission: v.ca > 0 ? Math.round((v.commissions / v.ca) * 1000) / 10 : 0,
+      averageBasket: v.orderCount > 0 ? Math.round((v.ca / v.orderCount) * 100) / 100 : 0,
+      caShare: totalCA > 0 ? Math.round((v.ca / totalCA) * 1000) / 10 : 0,
+    }))
+    .sort((a, b) => b.ca - a.ca)
+    .slice(0, limit)
+}
+
+// ── Video (Réalisation) performance ─────────────────────────────────────────
+
+function extractTikTokVideoId(url?: string): string | null {
+  if (!url) return null
+  const m = url.match(/\/video\/(\d+)/)
+  return m ? m[1] : null
+}
+
+export type VideoPerformanceItem = {
+  realisationId: string
+  title: string
+  tiktokUrl?: string
+  tiktokVideoId?: string
+  productName: string
+  publishDate: string | null
+  ca: number
+  commissions: number
+  orderCount: number
+  tauxCommission: number
+  averageBasket: number
+  isLinked: boolean
+  // Enriched from TikTok API (optional)
+  views?: number
+  likes?: number
+  shares?: number
+  conversionRate?: number  // orderCount / views * 100
+  revenuePerView?: number  // ca / views
+}
+
+/**
+ * Croise les réalisations avec les commandes via l'ID vidéo TikTok.
+ * `orders` doit déjà être filtré par la période choisie.
+ */
+export function computeVideoPerformance(
+  realisations: Realisation[],
+  orders: Order[],
+  products: Product[],
+): VideoPerformanceItem[] {
+  const ordersByVideoId = new Map<string, Order[]>()
+  for (const o of orders) {
+    if (o.status !== 'Réglée' || !o.videoUrl) continue
+    const id = extractTikTokVideoId(o.videoUrl)
+    if (!id) continue
+    const arr = ordersByVideoId.get(id) ?? []
+    arr.push(o)
+    ordersByVideoId.set(id, arr)
+  }
+
+  const candidates = realisations.filter(
+    (r) => r.status === 'publiee' || !!r.tiktokUrl,
+  )
+
+  return candidates
+    .map((r) => {
+      const videoId = extractTikTokVideoId(r.tiktokUrl) ?? undefined
+      const linked  = videoId ? (ordersByVideoId.get(videoId) ?? []) : []
+      const product = products.find((p) => p.id === r.productId)
+
+      const ca          = linked.reduce((s, o) => s + o.price, 0)
+      const commissions = linked.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
+      const orderCount  = linked.length
+
+      return {
+        realisationId: r.id,
+        title:         r.title,
+        tiktokUrl:     r.tiktokUrl,
+        tiktokVideoId: videoId,
+        productName:   product?.name ?? '—',
+        publishDate:   r.publishDate,
+        ca:             Math.round(ca * 100) / 100,
+        commissions:    Math.round(commissions * 100) / 100,
+        orderCount,
+        tauxCommission: ca > 0 ? Math.round((commissions / ca) * 1000) / 10 : 0,
+        averageBasket:  orderCount > 0 ? Math.round((ca / orderCount) * 100) / 100 : 0,
+        isLinked:       !!r.tiktokUrl,
+      }
+    })
+    .sort((a, b) => b.ca - a.ca)
 }

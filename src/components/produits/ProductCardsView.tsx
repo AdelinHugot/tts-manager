@@ -1,5 +1,6 @@
 import type { Product, Realisation } from '../../types/realisation'
 import { PRODUCT_STATUS_LABELS, PRODUCT_STATUS_COLORS } from '../../types/realisation'
+import ProductImage from './ProductImage'
 
 type Props = {
   products: Product[]
@@ -22,10 +23,10 @@ export default function ProductCardsView({ products, realisations, onSelect }: P
           >
             {/* Image */}
             <div className="relative aspect-square bg-slate-100 overflow-hidden">
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              <ProductImage
+                imageUrl={product.imageUrl}
+                name={product.name}
+                className="group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute top-3 right-3">
                 <span className={`inline-flex items-center gap-1.5 rounded-full font-medium px-2 py-0.5 text-xs ${badge}`}>

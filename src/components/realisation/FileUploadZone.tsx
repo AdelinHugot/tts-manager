@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import type { Rush } from '../../types/rush'
-import { extractVideoMetadata, formatSize } from '../../utils/videoMetadata'
+import { extractVideoMetadata, formatSize, generateId } from '../../utils/videoMetadata'
 
 type Props = {
   rushIds: string[]
@@ -20,23 +20,23 @@ export default function FileUploadZone({ rushIds, allRushes, onAdd, onUnlink, on
     .filter((r): r is Rush => r !== undefined)
 
   async function handleFiles(fileList: FileList) {
+    if (!fileList.length) return
     setProcessing(true)
     const files = Array.from(fileList)
-    const newRushes: Rush[] = await Promise.all(
-      files.map(async (f) => {
-        const { duration, thumbnailUrl } = await extractVideoMetadata(f)
-        return {
-          id: crypto.randomUUID(),
-          name: f.name,
-          url: URL.createObjectURL(f),
-          size: f.size,
-          duration,
-          thumbnailUrl,
-        }
-      })
-    )
-    onAdd(newRushes)
-    setProcessing(false)
+    try {
+      const newRushes: Rush[] = await Promise.all(
+        files.map(async (f) => {
+          const url = URL.createObjectURL(f)
+          const { duration, thumbnailUrl } = await extractVideoMetadata(f, url)
+          return { id: generateId(), name: f.name, url, size: f.size, duration, thumbnailUrl }
+        })
+      )
+      onAdd(newRushes)
+    } catch (err) {
+      console.error('[FileUploadZone]', err)
+    } finally {
+      setProcessing(false)
+    }
   }
 
   function handleDrop(e: React.DragEvent) {
@@ -81,9 +81,12 @@ export default function FileUploadZone({ rushIds, allRushes, onAdd, onUnlink, on
           ref={inputRef}
           type="file"
           multiple
-          accept="video/*"
+          accept="video/mp4,video/quicktime,video/x-m4v,video/*"
           className="hidden"
-          onChange={(e) => e.target.files && handleFiles(e.target.files)}
+          onChange={(e) => {
+            if (e.target.files?.length) handleFiles(e.target.files)
+            e.target.value = ''
+          }}
         />
       </div>
 

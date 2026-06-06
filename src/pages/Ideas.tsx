@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { useMobileHeaderActions } from '../context/MobileHeaderContext'
 import { useIdeas } from '../hooks/useFirestore'
 import { fsAddIdea, fsUpdateIdea, fsDeleteIdea, type FirestoreIdea } from '../lib/firestore'
 
@@ -97,10 +98,31 @@ export default function Ideas({ onConvertToVideo }: Props) {
   const validatedCount = ideas.filter((i) => i.status === 'validated').length
   const pendingCount = ideas.filter((i) => i.status === 'pending').length
 
+  // ── Mobile header actions ─────────────────────────────────────────────────
+  const { setActions } = useMobileHeaderActions()
+  useEffect(() => {
+    setActions(
+      <button
+        onClick={handleAISuggest}
+        disabled={aiLoading}
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-brand text-white hover:bg-brand/90 transition-colors disabled:opacity-60"
+      >
+        {aiLoading ? (
+          <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+        ) : (
+          <span>✨</span>
+        )}
+        IA
+      </button>
+    )
+    return () => setActions(null)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiLoading])
+
   return (
-    <div className="p-8 max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto">
+      {/* Header — desktop uniquement */}
+      <div className="hidden md:flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Idées</h1>
           <p className="text-sm text-slate-400 mt-0.5">

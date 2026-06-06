@@ -1,5 +1,16 @@
 import type { Realisation, Product } from '../types/realisation'
 import type { Rush } from '../types/rush'
+import type { Marque } from '../types/marque'
+
+export const MOCK_MARQUES: Marque[] = [
+  { id: 'm1', name: 'Nuclever France',   shopUrl: '', notes: '' },
+  { id: 'm2', name: 'QINGLIN.EU',        shopUrl: '', notes: '' },
+  { id: 'm3', name: 'Papills',           shopUrl: '', notes: '' },
+  { id: 'm4', name: 'Basis Lab',         shopUrl: '', notes: '' },
+  { id: 'm5', name: 'APG',               shopUrl: '', notes: '' },
+  { id: 'm6', name: 'la marque en moins', shopUrl: '', notes: '' },
+  { id: 'm7', name: 'Vanilla Natura',    shopUrl: '', notes: '' },
+]
 
 export const MOCK_RUSHES: Rush[] = [
   { id: 'f1', name: 'rush_enzymes_01.mp4',    url: '#', size: 312_000_000, duration: 54, thumbnailUrl: '' },
@@ -19,6 +30,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Complément alimentaire à base d\'enzymes digestives pour améliorer le confort intestinal.',
     status: 'actif',
     url: '#',
+    marqueId: 'm1',
   },
   {
     id: 'p2',
@@ -27,6 +39,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Crème rajeunissante multi-effets pour peaux délicates, texture rafraîchissante non collante.',
     status: 'actif',
     url: '#',
+    marqueId: 'm2',
   },
   {
     id: 'p3',
@@ -35,6 +48,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Compléments alimentaires à base de mélatonine, lavande, camomille et valériane. Goût cranberry.',
     status: 'actif',
     url: '#',
+    marqueId: 'm3',
   },
   {
     id: 'p4',
@@ -43,6 +57,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Duo argile volcanique & argile blanche — nettoyant quotidien doux + traitement hebdomadaire des pores.',
     status: 'actif',
     url: '#',
+    marqueId: 'm4',
   },
   {
     id: 'p5',
@@ -51,6 +66,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Booster de démarrage portable 7000A — démarre voitures, camions et bateaux en toute autonomie.',
     status: 'actif',
     url: '#',
+    marqueId: 'm5',
   },
   {
     id: 'p6',
@@ -59,6 +75,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Kit complet de soins visage QINGLIN : sérum, crème de jour et contour des yeux.',
     status: 'actif',
     url: '#',
+    marqueId: 'm2',
   },
   {
     id: 'p7',
@@ -67,6 +84,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Kit d\'essai couches bébé ultra-douces de la marque en moins — rapport qualité/prix imbattable.',
     status: 'actif',
     url: '#',
+    marqueId: 'm6',
   },
   {
     id: 'p8',
@@ -75,6 +93,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Gousses de vanille Grand Cru Bourbon de Madagascar, sélection premium Vanilla Natura.',
     status: 'actif',
     url: '#',
+    marqueId: 'm7',
   },
 ]
 

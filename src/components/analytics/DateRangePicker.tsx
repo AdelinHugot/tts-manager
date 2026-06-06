@@ -49,8 +49,9 @@ export default function DateRangePicker({
   onClear,
   onClose,
 }: Props) {
-  const [leftYear, setLeftYear] = useState(2026)
-  const [leftMonth, setLeftMonth] = useState(3) // April — last two months of mock data
+  const now = new Date()
+  const [leftYear, setLeftYear] = useState(now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear())
+  const [leftMonth, setLeftMonth] = useState(now.getMonth() === 0 ? 11 : now.getMonth() - 1)
 
   const rightYear = leftMonth === 11 ? leftYear + 1 : leftYear
   const rightMonth = leftMonth === 11 ? 0 : leftMonth + 1
@@ -60,11 +61,11 @@ export default function DateRangePicker({
 
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
+    function handleOutside(e: PointerEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) onClose()
     }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+    document.addEventListener('pointerdown', handleOutside)
+    return () => document.removeEventListener('pointerdown', handleOutside)
   }, [onClose])
 
   const today = sod(new Date())
@@ -165,70 +166,115 @@ export default function DateRangePicker({
   }
 
   return (
-    <div
-      ref={ref}
-      className="absolute top-full right-0 mt-2 z-50 bg-white rounded-2xl shadow-2xl border border-slate-100 select-none overflow-hidden"
-      onMouseLeave={() => pickStart && setHover(pickStart)}
-    >
-      <div className="flex">
-        {/* Left column — preset periods */}
-        <div className="w-36 border-r border-slate-100 py-3 flex flex-col gap-0.5 px-2">
-          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide px-2 mb-1">Périodes</p>
-          {periods.map((p) => (
-            <button
-              key={p.value}
-              onClick={() => { onSelectPeriod(p.value); setPickStart(null); setHover(null) }}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activePeriod === p.value && !value
-                  ? 'bg-brand/10 text-brand font-semibold'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
+    <>
+      {/* Backdrop mobile */}
+      <div className="md:hidden fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]" onClick={onClose} />
 
-        {/* Right — calendars + footer */}
-        <div className="flex flex-col p-5">
-          {/* Two months */}
-          <div className="flex gap-4 items-start">
-            {renderMonth(leftYear, leftMonth, true, false)}
-            <div className="w-px self-stretch bg-slate-100 mx-1" />
-            {renderMonth(rightYear, rightMonth, false, true)}
+      <div
+        ref={ref}
+        onPointerDown={(e) => e.stopPropagation()}
+        onMouseLeave={() => pickStart && setHover(pickStart)}
+        className={[
+          'z-50 bg-white rounded-2xl shadow-2xl border border-slate-100 select-none overflow-hidden',
+          // Mobile : bottom sheet fixe
+          'fixed inset-x-3 bottom-[calc(5rem+env(safe-area-inset-bottom))]',
+          // Desktop : dropdown absolu
+          'md:absolute md:inset-x-auto md:bottom-auto md:top-full md:right-0 md:mt-2',
+        ].join(' ')}
+      >
+        {/* ── Mobile : presets à gauche + calendrier à droite ── */}
+        <div className="md:hidden flex">
+          {/* Left — presets */}
+          <div className="w-[118px] flex-shrink-0 border-r border-slate-100 py-2.5 flex flex-col gap-0.5 px-1.5">
+            <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide px-2 mb-1">Périodes</p>
+            {periods.map((p) => (
+              <button
+                key={p.value}
+                onClick={() => { onSelectPeriod(p.value); setPickStart(null); setHover(null) }}
+                className={`w-full text-left px-2 py-1.5 rounded-lg text-[11px] font-medium transition-colors leading-tight ${
+                  activePeriod === p.value && !value
+                    ? 'bg-brand/10 text-brand font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
           </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
-            <button
-              onClick={() => { onClear(); setPickStart(null); setHover(null) }}
-              className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
-            >
-              Effacer
-            </button>
-
-            <div className="text-xs text-center">
-              {pickStart ? (
-                <span className="text-brand font-medium animate-pulse">
-                  {display ? `${formatShort(display.start)} → ${formatShort(display.end)}` : 'Sélectionnez la date de fin'}
-                </span>
-              ) : display ? (
-                <span className="text-slate-500">{formatShort(display.start)} → {formatShort(display.end)}</span>
-              ) : (
-                <span className="text-slate-400 italic">Cliquez une date de début</span>
-              )}
+          {/* Right — calendrier + footer */}
+          <div className="flex flex-col">
+            <div className="px-2.5 pt-2.5 pb-1">
+              {renderMonth(rightYear, rightMonth, true, true)}
             </div>
+            {/* Footer */}
+            <div className="flex items-center justify-between px-3 py-2.5 border-t border-slate-100">
+              <button onClick={() => { onClear(); setPickStart(null); setHover(null) }}
+                className="text-[11px] text-slate-400">Effacer</button>
+              <div className="text-[11px] text-center">
+                {pickStart
+                  ? <span className="text-brand font-medium animate-pulse">{display ? `${formatShort(display.start)} → ${formatShort(display.end)}` : 'Date de fin ?'}</span>
+                  : display ? <span className="text-slate-500">{formatShort(display.start)} → {formatShort(display.end)}</span>
+                  : <span className="text-slate-400 italic">Sélect. une plage</span>
+                }
+              </div>
+              <button onClick={onClose} disabled={!!pickStart}
+                className="text-[11px] font-semibold text-white bg-brand px-2.5 py-1.5 rounded-lg disabled:opacity-40">
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
 
-            <button
-              onClick={onClose}
-              disabled={!!pickStart}
-              className="text-xs font-semibold text-white bg-brand px-3 py-1.5 rounded-lg hover:bg-brand/90 transition-colors disabled:opacity-40 disabled:cursor-default"
-            >
-              Fermer
-            </button>
+        {/* ── Desktop : layout complet ── */}
+        <div className="hidden md:flex">
+          {/* Left — presets */}
+          <div className="w-44 border-r border-slate-100 py-3 flex flex-col gap-0.5 px-2">
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide px-2 mb-1">Périodes</p>
+            {periods.map((p) => (
+              <button
+                key={p.value}
+                onClick={() => { onSelectPeriod(p.value); setPickStart(null); setHover(null) }}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activePeriod === p.value && !value
+                    ? 'bg-brand/10 text-brand font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Right — calendars + footer */}
+          <div className="flex flex-col p-5">
+            <div className="flex gap-4 items-start">
+              {renderMonth(leftYear, leftMonth, true, false)}
+              <div className="w-px self-stretch bg-slate-100 mx-1" />
+              {renderMonth(rightYear, rightMonth, false, true)}
+            </div>
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
+              <button onClick={() => { onClear(); setPickStart(null); setHover(null) }}
+                className="text-xs text-slate-400 hover:text-slate-600 transition-colors">Effacer</button>
+              <div className="text-xs text-center">
+                {pickStart ? (
+                  <span className="text-brand font-medium animate-pulse">
+                    {display ? `${formatShort(display.start)} → ${formatShort(display.end)}` : 'Sélectionnez la date de fin'}
+                  </span>
+                ) : display ? (
+                  <span className="text-slate-500">{formatShort(display.start)} → {formatShort(display.end)}</span>
+                ) : (
+                  <span className="text-slate-400 italic">Cliquez une date de début</span>
+                )}
+              </div>
+              <button onClick={onClose} disabled={!!pickStart}
+                className="text-xs font-semibold text-white bg-brand px-3 py-1.5 rounded-lg hover:bg-brand/90 transition-colors disabled:opacity-40 disabled:cursor-default">
+                Fermer
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

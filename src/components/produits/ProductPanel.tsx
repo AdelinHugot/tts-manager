@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Product, Realisation, ProductStatus } from '../../types/realisation'
 import { PRODUCT_STATUS_LABELS, STATUS_LABELS, STATUS_COLORS } from '../../types/realisation'
+import ProductImage from './ProductImage'
+import { uploadProductImage } from '../../lib/storage'
 
 type Props = {
   product: Product | null
@@ -16,6 +18,9 @@ const ALL_STATUSES: ProductStatus[] = ['actif', 'rupture_stock', 'inactif']
 export default function ProductPanel({ product, realisations, onClose, onUpdate, onDelete }: Props) {
   const [draft, setDraft] = useState<Product | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [dragOver, setDragOver] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     setDraft(product ? { ...product } : null)
@@ -27,6 +32,17 @@ export default function ProductPanel({ product, realisations, onClose, onUpdate,
     const updated = { ...draft, ...patch }
     setDraft(updated)
     onUpdate(updated)
+  }
+
+  async function handleImageFile(file: File) {
+    if (!draft || !file.type.startsWith('image/')) return
+    setUploading(true)
+    try {
+      const url = await uploadProductImage(draft.id, file)
+      update({ imageUrl: url })
+    } finally {
+      setUploading(false)
+    }
   }
 
   const linked = product ? realisations.filter((r) => r.productId === product.id) : []
@@ -57,11 +73,39 @@ export default function ProductPanel({ product, realisations, onClose, onUpdate,
             {/* Header */}
             <div className="flex items-start justify-between p-6 border-b border-slate-100">
               <div className="flex items-center gap-4 flex-1 pr-4">
-                <img
-                  src={draft.imageUrl}
-                  alt={draft.name}
-                  className="w-14 h-14 rounded-xl object-cover bg-slate-100 flex-shrink-0"
+                {/* Vignette — drop zone + clic pour upload */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageFile(f); e.target.value = '' }}
                 />
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f) }}
+                  title="Glisser une image ou cliquer pour uploader"
+                  className={`relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 cursor-pointer transition-all ${
+                    dragOver ? 'ring-2 ring-brand ring-offset-1 scale-105' : 'hover:ring-2 hover:ring-brand/30 hover:ring-offset-1'
+                  }`}
+                >
+                  <ProductImage imageUrl={draft.imageUrl} name={draft.name} />
+                  {/* Overlay upload */}
+                  <div className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
+                    uploading || dragOver ? 'opacity-100' : 'opacity-0 hover:opacity-100'
+                  }`}>
+                    {uploading ? (
+                      <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                        <path d="M9 12V4M5 7l4-4 4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M3 15h12" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+                      </svg>
+                    )}
+                  </div>
+                </div>
                 <div className="flex-1 min-w-0">
                   <input
                     className="text-base font-semibold text-slate-900 w-full outline-none focus:ring-2 focus:ring-brand/30 rounded-lg px-2 py-1 -mx-2 -my-1 hover:bg-slate-50 transition-colors"
@@ -106,18 +150,46 @@ export default function ProductPanel({ product, realisations, onClose, onUpdate,
                 />
               </section>
 
-              {/* URL */}
+              {/* Image & Liens */}
               <section>
                 <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-                  Lien TikTok Shop
+                  Image & Liens
                 </h3>
-                <input
-                  type="url"
-                  value={draft.url ?? ''}
-                  onChange={(e) => update({ url: e.target.value || undefined })}
-                  placeholder="https://shop.tiktok.com/…"
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand/40 placeholder-slate-300"
-                />
+                <div className="space-y-2.5">
+                  <div>
+                    <label className="text-xs text-slate-400 mb-1 block">URL de l'image</label>
+                    <input
+                      type="url"
+                      value={draft.imageUrl}
+                      onChange={(e) => update({ imageUrl: e.target.value })}
+                      placeholder="https://…"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand/40 placeholder-slate-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400 mb-1 block">Lien TikTok Shop</label>
+                    <input
+                      type="url"
+                      value={draft.url ?? ''}
+                      onChange={(e) => update({ url: e.target.value || undefined })}
+                      placeholder="https://shop.tiktok.com/…"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand/40 placeholder-slate-300"
+                    />
+                  </div>
+                  {draft.tiktokProductId && (
+                    <a
+                      href={`https://www.tiktok.com/view/product/${draft.tiktokProductId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs text-brand hover:underline"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 18 18" fill="none">
+                        <path d="M10 3h5v5M8 10l7-7M7 5H4a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Voir la fiche produit TikTok Shop
+                    </a>
+                  )}
+                </div>
               </section>
 
               {/* Réalisations liées */}
