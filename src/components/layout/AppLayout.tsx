@@ -76,10 +76,6 @@ export default function AppLayout() {
     await fsDeleteRealisation(id)
   }
 
-  async function handlePublishDateChange(id: string, date: string | null) {
-    await fsUpdateRealisation(id, { publishDate: date })
-  }
-
   async function handleRealisationStatusChange(id: string, status: RealisationStatus) {
     await fsUpdateRealisation(id, { status })
   }
@@ -96,7 +92,7 @@ export default function AppLayout() {
     }
     const id = await fsAddRealisation(newReal)
     setPendingRealisationId(id)
-    if (rushId) setActivePage('realisation')
+    if (rushIds?.length) setActivePage('realisation')
   }
 
   // ─── Products ────────────────────────────────────────────────────────────────

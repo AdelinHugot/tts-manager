@@ -7,14 +7,14 @@ import RushsListView from '../components/rushs/RushsListView'
 import RushsCardsView from '../components/rushs/RushsCardsView'
 import RushPanel from '../components/rushs/RushPanel'
 import { extractVideoMetadata, generateId } from '../utils/videoMetadata'
-import { uploadRushVideo, deleteRushVideo } from '../lib/storage'
+import { uploadRushVideo } from '../lib/storage'
 
 type Props = {
   rushes: Rush[]
   realisations: Realisation[]
   onAddRush: (rush: Rush) => void | Promise<void>
   onDeleteRush: (rushId: string) => void
-  onLinkRush: (realisationId: string, rushId: string) => void
+  onLinkRush?: (realisationId: string, rushId: string) => void
   onCreateRealisation: (rushIds: string[]) => void
 }
 
@@ -25,7 +25,7 @@ export default function RushsPage({
   realisations,
   onAddRush,
   onDeleteRush,
-  onLinkRush,
+  onLinkRush: _onLinkRush,
   onCreateRealisation,
 }: Props) {
   const [activeView, setActiveView] = useState<ViewType>('list')

@@ -30,7 +30,7 @@ export default function DonutChart({ affiliée, pub_shopping }: Props) {
           <Pie data={data} cx="50%" cy="50%" innerRadius={48} outerRadius={70} paddingAngle={3} dataKey="value">
             {data.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
           </Pie>
-          <Tooltip formatter={(v: number) => [`${v} commandes`, '']} />
+          <Tooltip formatter={(v) => [`${v} commandes`, '']} />
         </PieChart>
       </ResponsiveContainer>
       <div className="flex items-center gap-4 mt-2 text-xs">

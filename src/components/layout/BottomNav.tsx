@@ -17,7 +17,6 @@ export default function BottomNav({ activePage, onNavigate, showMore, onToggleMo
 
   const user = auth.currentUser
   const photo = user?.photoURL
-  const initials = (user?.displayName ?? user?.email ?? '?').slice(0, 2).toUpperCase()
 
   function closeAll() {
     setShowCreate(false)

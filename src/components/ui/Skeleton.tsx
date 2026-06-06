@@ -1,7 +1,7 @@
 // ─── Primitive ────────────────────────────────────────────────────────────────
 
-export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`bg-slate-200 animate-pulse rounded-lg ${className}`} />
+export function Skeleton({ className = '', style }: { className?: string; style?: React.CSSProperties }) {
+  return <div className={`bg-slate-200 animate-pulse rounded-lg ${className}`} style={style} />
 }
 
 // ─── App layout skeleton (affiché pendant le chargement initial) ───────────────

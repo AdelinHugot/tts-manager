@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { useMobileHeaderActions } from '../context/MobileHeaderContext'
 import type { Period, Order } from '../types/analytics'
 import type { Realisation, Product } from '../types/realisation'
-import type { StrategicItem } from '../utils/analyticsUtils'
 import {
   filterByPeriod,
   filterByDateRange,
@@ -31,7 +30,8 @@ const PERIODS: PresetPeriod[] = [
 ]
 
 type Tab = 'compte' | 'marques' | 'produits' | 'videos'
-type SortKey = 'ca' | 'commissions' | 'tauxCommission' | 'averageBasket' | 'orderCount' | 'views' | 'conversionRate'
+type StrategicSortKey = 'ca' | 'commissions' | 'tauxCommission' | 'averageBasket' | 'orderCount'
+type VideoSortKey = StrategicSortKey | 'views' | 'conversionRate'
 
 function formatRange(range: DateRange): string {
   const fmt = (d: Date) => d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
@@ -53,9 +53,9 @@ export default function Analytics({ orders, realisations, products }: Props) {
   const [customRange, setCustomRange] = useState<DateRange | null>(null)
   const [pickerOpen, setPickerOpen] = useState(false)
   const [tab, setTab] = useState<Tab>('compte')
-  const [sortMarques, setSortMarques] = useState<SortKey>('ca')
-  const [sortProduits, setSortProduits] = useState<SortKey>('ca')
-  const [sortVideos, setSortVideos] = useState<SortKey>('ca')
+  const [sortMarques, setSortMarques] = useState<StrategicSortKey>('ca')
+  const [sortProduits, setSortProduits] = useState<StrategicSortKey>('ca')
+  const [sortVideos, setSortVideos] = useState<VideoSortKey>('ca')
 
   // TikTok metrics
   const { status: tiktokStatus, connect: connectTikTok, getVideoMetrics } = useTikTokAuth()
