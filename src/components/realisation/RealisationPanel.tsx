@@ -6,6 +6,7 @@ import StatusBadge from './StatusBadge'
 import FileUploadZone from './FileUploadZone'
 import ProductPicker from './ProductPicker'
 import { fsFindVideoUrlForProduct, fsAddComment, fsSubscribeComments } from '../../lib/firestore'
+import { uploadFinalVideo, deleteFinalVideo } from '../../lib/storage'
 import { auth } from '../../lib/firebase'
 
 type Props = {
@@ -34,6 +35,9 @@ export default function RealisationPanel({ realisation, products, rushes, onAddR
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [urlInput, setUrlInput] = useState('')
   const [detecting, setDetecting] = useState(false)
+  const [finalVideoUploading, setFinalVideoUploading] = useState(false)
+  const [finalVideoProgress, setFinalVideoProgress] = useState(0)
+  const finalVideoInputRef = useRef<HTMLInputElement>(null)
 
   // ── Comments ──────────────────────────────────────────────────────────────
   const [comments, setComments] = useState<Comment[]>([])
@@ -144,6 +148,46 @@ export default function RealisationPanel({ realisation, products, rushes, onAddR
     update({ rushIds: [...draft.rushIds, rushId] })
   }
 
+  async function handleFinalVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file || !draft) return
+    setFinalVideoUploading(true)
+    setFinalVideoProgress(0)
+    try {
+      const url = await uploadFinalVideo(draft.id, file, setFinalVideoProgress)
+      update({ finalVideoUrl: url })
+    } catch (err) {
+      console.error('[Final video upload]', err)
+    } finally {
+      setFinalVideoUploading(false)
+      setFinalVideoProgress(0)
+    }
+  }
+
+  async function handleDeleteFinalVideo() {
+    if (!draft?.finalVideoUrl) return
+    await deleteFinalVideo(draft.finalVideoUrl)
+    update({ finalVideoUrl: undefined })
+  }
+
+  async function handleDownloadFinalVideo(url: string, title: string) {
+    try {
+      const res = await fetch(url)
+      const blob = await res.blob()
+      const ext = blob.type.includes('quicktime') ? 'mov' : blob.type.split('/')[1] ?? 'mp4'
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = `${title}.${ext}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(a.href)
+    } catch {
+      window.open(url, '_blank')
+    }
+  }
+
   const isOpen = realisation !== null
 
   // ── Shared content sections ─────────────────────────────────────────────
@@ -182,6 +226,98 @@ export default function RealisationPanel({ realisation, products, rushes, onAddR
             onAdd={handleAddRushes}
             onUnlink={handleUnlinkRush}
             onLinkExisting={handleLinkExisting}
+          />
+        </div>
+      )}
+
+      {/* ── Vidéo finale ── */}
+      {(draft.status === 'a_publier' || draft.status === 'publiee') && (
+        <div className="px-4 md:px-6 pt-4 md:pt-5 pb-4 md:pb-5 border-b border-slate-100">
+          <h3 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-3">Vidéo finale</h3>
+
+          {/* Upload en cours */}
+          {finalVideoUploading && (
+            <div className="flex items-center gap-3 px-4 py-3 bg-brand/5 border border-brand/20 rounded-xl text-sm text-brand font-medium">
+              <div className="w-4 h-4 border-2 border-brand/30 border-t-brand rounded-full animate-spin flex-shrink-0" />
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span>Upload en cours…</span>
+                  <span className="text-xs font-bold">{finalVideoProgress}%</span>
+                </div>
+                <div className="h-1.5 bg-brand/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-brand rounded-full transition-all duration-200" style={{ width: `${finalVideoProgress}%` }} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Vidéo présente */}
+          {draft.finalVideoUrl && !finalVideoUploading && (
+            <div className="space-y-3">
+              <div className="rounded-xl overflow-hidden bg-black">
+                <video
+                  src={draft.finalVideoUrl}
+                  controls
+                  playsInline
+                  className="w-full"
+                  style={{ maxHeight: 320 }}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDownloadFinalVideo(draft.finalVideoUrl!, draft.title)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-brand text-white hover:bg-brand/90 transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 2v10M5 8l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2 14h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                  Télécharger
+                </button>
+                <button
+                  onClick={() => finalVideoInputRef.current?.click()}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 text-slate-600 hover:border-brand/40 hover:text-brand transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 16v-10M5 10l4-4 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2 14h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                  Remplacer
+                </button>
+                <button
+                  onClick={handleDeleteFinalVideo}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-red-400 hover:bg-red-50 transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 3.5h10M5 3.5V2.5a1 1 0 011-1h2a1 1 0 011 1v1M3 3.5l.7 7a1 1 0 001 .9h4.6a1 1 0 001-.9l.7-7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Zone d'upload vide */}
+          {!draft.finalVideoUrl && !finalVideoUploading && (
+            <button
+              onClick={() => finalVideoInputRef.current?.click()}
+              className="w-full flex flex-col items-center gap-2 py-8 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-brand/40 hover:text-brand transition-colors"
+            >
+              <svg width="28" height="28" viewBox="0 0 18 18" fill="none">
+                <path d="M9 12V4M5 8l4-4 4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 14h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+              <span className="text-sm font-medium">Ajouter la vidéo montée</span>
+              <span className="text-xs text-slate-300">MP4, MOV, M4V…</span>
+            </button>
+          )}
+
+          <input
+            ref={finalVideoInputRef}
+            type="file"
+            accept="video/mp4,video/quicktime,video/x-m4v,video/*"
+            className="hidden"
+            onChange={handleFinalVideoChange}
           />
         </div>
       )}

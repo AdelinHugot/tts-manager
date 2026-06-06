@@ -30,7 +30,8 @@ export type Realisation = {
   notes: string
   rushIds: string[]
   createdAt: string
-  tiktokUrl?: string   // lien vers la vidéo TikTok publiée
+  tiktokUrl?: string       // lien vers la vidéo TikTok publiée
+  finalVideoUrl?: string   // vidéo montée finale uploadée dans Storage
 }
 
 export type ProductStatus = 'actif' | 'rupture_stock' | 'inactif'
