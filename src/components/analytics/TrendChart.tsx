@@ -30,7 +30,7 @@ export default function TrendChart({ data }: Props) {
   const tickInterval = data.length <= 8 ? 0 : Math.ceil(data.length / 8) - 1
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width="100%" height="100%" minHeight={220}>
       <LineChart data={data} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
         <XAxis

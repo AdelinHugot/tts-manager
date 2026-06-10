@@ -11,6 +11,7 @@ import {
   computeStrategicBoutiques,
   computeStrategicProducts,
   computeVideoPerformance,
+  isComptabilisable,
 } from '../utils/analyticsUtils'
 import KPICard from '../components/analytics/KPICard'
 import TrendChart from '../components/analytics/TrendChart'
@@ -66,12 +67,11 @@ export default function Analytics({ orders, realisations, products }: Props) {
     return filterByPeriod(orders, period)
   }, [orders, period, customRange])
 
-  const filteredRéglées = useMemo(() => filtered.filter(o => o.status === 'Réglée'), [filtered])
-  const allRéglées = useMemo(() => orders.filter(o => o.status === 'Réglée'), [orders])
+  const filteredComptabilisées = useMemo(() => filtered.filter(isComptabilisable), [filtered])
 
   const kpis = useMemo(
-    () => computeKPIs(filtered, allRéglées, customRange ? undefined : period),
-    [filtered, allRéglées, period, customRange]
+    () => computeKPIs(filtered, orders, customRange ? undefined : period),
+    [filtered, orders, period, customRange]
   )
 
   // Extra strategic metrics
@@ -81,12 +81,12 @@ export default function Analytics({ orders, realisations, products }: Props) {
     ? (kpis.validatedOrders / (kpis.validatedOrders + kpis.ineligibleOrders)) * 100
     : null
 
-  const dailyTrend = useMemo(() => computeDailyTrend(filteredRéglées), [filteredRéglées])
-  const breakdown = useMemo(() => computeOrderTypeBreakdown(filteredRéglées), [filteredRéglées])
-  const strategicMarques = useMemo(() => computeStrategicBoutiques(filteredRéglées), [filteredRéglées])
-  const strategicProduits = useMemo(() => computeStrategicProducts(filteredRéglées), [filteredRéglées])
+  const dailyTrend = useMemo(() => computeDailyTrend(filteredComptabilisées), [filteredComptabilisées])
+  const breakdown = useMemo(() => computeOrderTypeBreakdown(filteredComptabilisées), [filteredComptabilisées])
+  const strategicMarques = useMemo(() => computeStrategicBoutiques(filteredComptabilisées), [filteredComptabilisées])
+  const strategicProduits = useMemo(() => computeStrategicProducts(filteredComptabilisées), [filteredComptabilisées])
   const videoPerformance = useMemo(() => {
-    const base = computeVideoPerformance(realisations, filteredRéglées, products)
+    const base = computeVideoPerformance(realisations, filteredComptabilisées, products)
     if (tiktokMetrics.size === 0) return base
     return base.map((item) => {
       if (!item.tiktokVideoId) return item
@@ -102,7 +102,7 @@ export default function Analytics({ orders, realisations, products }: Props) {
         revenuePerView: views > 0 ? item.ca / views : 0,
       }
     })
-  }, [realisations, filteredRéglées, products, tiktokMetrics])
+  }, [realisations, filteredComptabilisées, products, tiktokMetrics])
 
   // Fetch TikTok metrics when tab is opened and account is connected
   useEffect(() => {

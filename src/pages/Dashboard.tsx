@@ -6,6 +6,7 @@ import {
   computeTopProducts,
   filterByPeriod,
   filterByDateRange,
+  isComptabilisable,
 } from '../utils/analyticsUtils'
 import KPICard from '../components/analytics/KPICard'
 import TrendChart from '../components/analytics/TrendChart'
@@ -46,22 +47,20 @@ export default function Dashboard({ realisations, products, orders }: Props) {
   const [pickerOpen, setPickerOpen] = useState(false)
   const [topSortBy, setTopSortBy] = useState<'ca' | 'commissions'>('commissions')
 
-  const allRéglées = useMemo(() => orders.filter((o) => o.status === 'Réglée'), [orders])
-
   const filteredOrders = useMemo(
     () => customRange
       ? filterByDateRange(orders, customRange.start, customRange.end)
       : filterByPeriod(orders, period),
     [orders, period, customRange]
   )
-  const filteredRéglées = useMemo(
-    () => filteredOrders.filter((o) => o.status === 'Réglée'),
+  const filteredComptabilisées = useMemo(
+    () => filteredOrders.filter(isComptabilisable),
     [filteredOrders]
   )
 
   const kpis = useMemo(
-    () => computeKPIs(filteredOrders, allRéglées, customRange ? undefined : period),
-    [filteredOrders, allRéglées, period, customRange]
+    () => computeKPIs(filteredOrders, orders, customRange ? undefined : period),
+    [filteredOrders, orders, period, customRange]
   )
 
   function selectPeriod(p: Period) {
@@ -69,10 +68,10 @@ export default function Dashboard({ realisations, products, orders }: Props) {
     setCustomRange(null)
     setPickerOpen(false)
   }
-  const dailyTrend = useMemo(() => computeDailyTrend(filteredRéglées), [filteredRéglées])
+  const dailyTrend = useMemo(() => computeDailyTrend(filteredComptabilisées), [filteredComptabilisées])
   const topProducts = useMemo(
-    () => computeTopProducts(filteredRéglées, 5, topSortBy),
-    [filteredRéglées, topSortBy]
+    () => computeTopProducts(filteredComptabilisées, 5, topSortBy),
+    [filteredComptabilisées, topSortBy]
   )
 
   const todo = useMemo(
@@ -282,7 +281,7 @@ export default function Dashboard({ realisations, products, orders }: Props) {
 
         {/* Main area */}
         <div className="flex gap-4 flex-1 min-h-0">
-          <div className="flex flex-col gap-4 flex-1 min-w-0 min-h-0">
+          <div className="flex flex-col gap-4 w-2/3 min-w-0 min-h-0">
             <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col flex-1 min-h-0">
               <h3 className="text-xs font-semibold text-slate-500 mb-3 flex-shrink-0">Évolution CA & Commissions — {capitalized}</h3>
               <div className="flex-1 min-h-0">
@@ -322,7 +321,7 @@ export default function Dashboard({ realisations, products, orders }: Props) {
               </div>
             </div>
           </div>
-          <div className="w-72 flex-shrink-0 bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-0">
+          <div className="w-1/3 flex-shrink-0 bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <h3 className="text-xs font-semibold text-slate-500">Vidéos à traiter</h3>
               <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{todo.length}</span>

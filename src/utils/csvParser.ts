@@ -82,6 +82,9 @@ type ColMap = {
   orderType: number; status: number
   videoCol: number; videoIsId: boolean  // true → wrap as /video/{id}
   commissionStandard: number; commissionPub: number
+  // Colonnes "estimées", utilisées en repli quand les colonnes réelles sont
+  // vides (commandes "En attente" / "Inéligible" pas encore réglées).
+  commissionStandardEstimated?: number; commissionPubEstimated?: number
   tiktokProductIdCol: number | null     // null = non disponible dans ce format
   minCols: number
 }
@@ -102,6 +105,7 @@ const XLSX_COLS: ColMap = {
   orderType: 12, status: 13,
   videoCol: 17, videoIsId: true,
   commissionStandard: 35, commissionPub: 36,
+  commissionStandardEstimated: 25, commissionPubEstimated: 26,
   tiktokProductIdCol: 3,   // "ID du produit"
   minCols: 46,
 }
@@ -151,6 +155,13 @@ function parseRows(rows: string[][]): ParseResult {
         ? cols[map.tiktokProductIdCol]?.trim() || undefined
         : undefined
 
+      // Pour les commandes pas encore réglées, les colonnes de commission
+      // "réelles" sont vides : on se rabat alors sur les colonnes "estimées".
+      const commissionStandard = parseAmount(cols[map.commissionStandard].trim())
+        || (map.commissionStandardEstimated !== undefined ? parseAmount(cols[map.commissionStandardEstimated].trim()) : 0)
+      const commissionPub = parseAmount(cols[map.commissionPub].trim())
+        || (map.commissionPubEstimated !== undefined ? parseAmount(cols[map.commissionPubEstimated].trim()) : 0)
+
       orders.push({
         id,
         date: parseDate(dateStr),
@@ -159,8 +170,8 @@ function parseRows(rows: string[][]): ParseResult {
         boutiqueName,
         orderType: parseType(cols[map.orderType].trim()),
         status: parseStatus(cols[map.status].trim()),
-        commissionStandard: parseAmount(cols[map.commissionStandard].trim()),
-        commissionPub: parseAmount(cols[map.commissionPub].trim()),
+        commissionStandard,
+        commissionPub,
         videoUrl,
         tiktokProductId,
       })

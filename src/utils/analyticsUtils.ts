@@ -121,19 +121,28 @@ function growth(current: number, previous: number): number | null {
   return Math.round(((current - previous) / previous) * 100)
 }
 
+// Le CA encaissé et les commissions comptabilisent les commandes réglées
+// ainsi que celles en attente (le règlement n'étant qu'une question de délai).
+export function isComptabilisable(o: Order): boolean {
+  return o.status === 'Réglée' || o.status === 'En attente'
+}
+
 export function computeKPIs(currentOrders: Order[], allOrders: Order[], period?: Period): KPIData {
   const réglées        = currentOrders.filter(o => o.status === 'Réglée')
   const enAttente      = currentOrders.filter(o => o.status === 'En attente')
   const ineligible     = currentOrders.filter(o => o.status === 'Inéligible')
+  const comptabilisées = currentOrders.filter(isComptabilisable)
 
-  const totalCA          = réglées.reduce((s, o) => s + o.price, 0)
-  const totalCommissions = réglées.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
+  const totalCA          = comptabilisées.reduce((s, o) => s + o.price, 0)
+  const totalCommissions = comptabilisées.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
   const validatedOrders  = réglées.length
-  const averageBasket    = validatedOrders > 0 ? totalCA / validatedOrders : 0
+  const averageBasket    = comptabilisées.length > 0 ? totalCA / comptabilisées.length : 0
 
-  const prevOrders       = getPreviousPeriodOrders(allOrders, period).filter(o => o.status === 'Réglée')
-  const prevCA           = prevOrders.reduce((s, o) => s + o.price, 0)
-  const prevCommissions  = prevOrders.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
+  const prevOrders       = getPreviousPeriodOrders(allOrders, period)
+  const prevComptabilisées = prevOrders.filter(isComptabilisable)
+  const prevCA           = prevComptabilisées.reduce((s, o) => s + o.price, 0)
+  const prevCommissions  = prevComptabilisées.reduce((s, o) => s + o.commissionStandard + o.commissionPub, 0)
+  const prevRéglées      = prevOrders.filter(o => o.status === 'Réglée')
 
   return {
     totalCA,
@@ -145,12 +154,12 @@ export function computeKPIs(currentOrders: Order[], allOrders: Order[], period?:
     averageBasket,
     caGrowth: growth(totalCA, prevCA),
     commissionsGrowth: growth(totalCommissions, prevCommissions),
-    ordersGrowth: growth(validatedOrders, prevOrders.length),
+    ordersGrowth: growth(validatedOrders, prevRéglées.length),
   }
 }
 
 export function computeWeeklyTrend(orders: Order[]): WeeklyPoint[] {
-  const réglées = orders.filter(o => o.status === 'Réglée')
+  const réglées = orders.filter(isComptabilisable)
   if (réglées.length === 0) return []
 
   const map = new Map<string, { ca: number; commissions: number; date: Date }>()
@@ -183,7 +192,7 @@ function getISOWeekKey(date: Date): string {
 }
 
 export function computeDailyTrend(orders: Order[]): WeeklyPoint[] {
-  const réglées = orders.filter(o => o.status === 'Réglée')
+  const réglées = orders.filter(isComptabilisable)
   if (réglées.length === 0) return []
 
   const map = new Map<string, { ca: number; commissions: number }>()
@@ -348,7 +357,7 @@ export function computeVideoPerformance(
 ): VideoPerformanceItem[] {
   const ordersByVideoId = new Map<string, Order[]>()
   for (const o of orders) {
-    if (o.status !== 'Réglée' || !o.videoUrl) continue
+    if (!isComptabilisable(o) || !o.videoUrl) continue
     const id = extractTikTokVideoId(o.videoUrl)
     if (!id) continue
     const arr = ordersByVideoId.get(id) ?? []
