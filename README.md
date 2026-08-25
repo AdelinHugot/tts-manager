@@ -229,12 +229,16 @@ nouvelles règles ferment. `tools/migrer-commandes.mjs` les rapatrie sous
 `users/{uid}/orders` en conservant l'identifiant de commande TikTok Shop comme
 identifiant de document — c'est lui qui rend les imports idempotents.
 
+Il faut une clé de compte de service (console > Paramètres du projet > Comptes
+de service > *Générer une nouvelle clé privée*) et l'uid du compte destinataire
+(console > Authentication > colonne *User UID*).
+
 ```bash
-GOOGLE_APPLICATION_CREDENTIALS=~/cle-service.json \
-  node tools/migrer-commandes.mjs --uid=LE_UID            # simulation
+node tools/migrer-commandes.mjs --uid=LE_UID --cle="/chemin/vers/cle.json"
 ```
 
-Ajouter `--appliquer` pour écrire. Le script relit la destination pour vérifier
+Simulation par défaut ; ajouter `--appliquer` pour écrire. Supprimer la clé une
+fois terminé — elle donne un accès total au projet. Le script relit la destination pour vérifier
 le compte, et ne supprime jamais la source. Réalisations, rushs, idées, produits
 et marques ne sont pas migrés — volontairement.
 

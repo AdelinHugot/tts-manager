@@ -19,18 +19,15 @@
  *
  *   1. Console Firebase > Paramètres du projet > Comptes de service
  *      > « Générer une nouvelle clé privée ». Enregistrer le fichier HORS du
- *        dépôt, par exemple dans ~/.
+ *        dépôt (le téléchargement atterrit en général dans ~/Downloads).
  *
  *   2. Récupérer l'uid du compte destinataire :
  *      Console Firebase > Authentication > onglet Users > colonne « User UID ».
  *
  *   3. Simulation (n'écrit rien) :
- *      GOOGLE_APPLICATION_CREDENTIALS=~/cle-service.json \
- *        node tools/migrer-commandes.mjs --uid=LE_UID
+ *      node tools/migrer-commandes.mjs --uid=LE_UID --cle="/chemin/vers/cle.json"
  *
- *   4. Migration réelle :
- *      GOOGLE_APPLICATION_CREDENTIALS=~/cle-service.json \
- *        node tools/migrer-commandes.mjs --uid=LE_UID --appliquer
+ *   4. Migration réelle : ajouter --appliquer
  *
  *   5. Supprimer la clé de service une fois terminé : c'est un accès total au
  *      projet, elle ne doit ni traîner ni être committée.
@@ -38,9 +35,11 @@
  * La collection racine `orders` n'est PAS supprimée : vérifier d'abord que tout
  * est arrivé, puis la supprimer à la main depuis la console.
  */
-import { cert, initializeApp, applicationDefault } from 'firebase-admin/app';
+import { cert, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { resolve } from 'node:path';
 
 const args = new Map(
   process.argv.slice(2).map((a) => {
@@ -53,21 +52,75 @@ const uid = args.get('uid');
 const appliquer = args.has('appliquer');
 const ecraser = args.has('ecraser');
 
-if (!uid || uid === true) {
-  console.error(
-    'Usage : node tools/migrer-commandes.mjs --uid=UID [--appliquer] [--ecraser]\n' +
-      '  --appliquer  écrit réellement (sans lui, simulation)\n' +
-      '  --ecraser    remplace les commandes déjà présentes chez ce compte'
-  );
+function abandonner(...lignes) {
+  console.error(lignes.join('\n'));
   process.exit(1);
 }
 
-const cheminCle = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-initializeApp(
-  cheminCle
-    ? { credential: cert(JSON.parse(readFileSync(cheminCle.replace(/^~/, process.env.HOME), 'utf8'))) }
-    : { credential: applicationDefault() }
-);
+if (!uid || uid === true) {
+  abandonner(
+    'Usage : node tools/migrer-commandes.mjs --uid=UID --cle=CHEMIN [--appliquer] [--ecraser]',
+    '',
+    '  --uid        uid du compte destinataire (console > Authentication > User UID)',
+    '  --cle        chemin du fichier de clé de compte de service',
+    '               (à défaut : variable GOOGLE_APPLICATION_CREDENTIALS)',
+    '  --appliquer  écrit réellement — sans lui, simulation',
+    '  --ecraser    remplace les commandes déjà présentes chez ce compte'
+  );
+}
+
+/** Développe `~` et renvoie un chemin absolu. */
+function cheminAbsolu(brut) {
+  const texte = String(brut).trim().replace(/^~(?=$|\/)/, homedir());
+  return resolve(texte);
+}
+
+const cleBrute = args.get('cle') !== undefined && args.get('cle') !== true
+  ? args.get('cle')
+  : process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
+if (!cleBrute) {
+  abandonner(
+    'Aucune clé de compte de service fournie.',
+    '',
+    'Console Firebase > Paramètres du projet > Comptes de service',
+    '  > « Générer une nouvelle clé privée ». Puis :',
+    '',
+    '  node tools/migrer-commandes.mjs --uid=' + uid + ' --cle="/chemin/vers/la/cle.json"'
+  );
+}
+
+const cheminCle = cheminAbsolu(cleBrute);
+
+if (!existsSync(cheminCle)) {
+  abandonner(
+    `Fichier de clé introuvable : ${cheminCle}`,
+    '',
+    'Vérifier le chemin. Les clés téléchargées atterrissent en général dans',
+    '~/Downloads, avec un nom du type « … Firebase Admin SDK.json ».',
+    'Les espaces dans le chemin doivent être entre guillemets :',
+    '',
+    '  node tools/migrer-commandes.mjs --uid=' + uid + ' \\',
+    '    --cle="$HOME/Downloads/TTS Manager Firebase Admin SDK.json"'
+  );
+}
+
+let identifiants;
+try {
+  identifiants = JSON.parse(readFileSync(cheminCle, 'utf8'));
+} catch (err) {
+  abandonner(`Clé illisible (${cheminCle}) : ${err.message}`);
+}
+
+if (identifiants.type !== 'service_account' || !identifiants.project_id) {
+  abandonner(
+    `Ce fichier n'est pas une clé de compte de service : ${cheminCle}`,
+    'Attendu un JSON contenant "type": "service_account".'
+  );
+}
+
+console.log(`  projet : ${identifiants.project_id}`);
+initializeApp({ credential: cert(identifiants) });
 
 const db = getFirestore();
 const LOT = 400;

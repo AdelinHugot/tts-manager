@@ -15,7 +15,8 @@ dist/
 *serviceaccount*.json
 *service-account*.json
 *cle-service*.json
-firebase-adminsdk-*.json
+*adminsdk*.json
+*Admin SDK*.json
 
 # Système / éditeurs
 .DS_Store
