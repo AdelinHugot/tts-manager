@@ -11,6 +11,12 @@ dist/
 .env.*
 !.env.example
 
+# Clés de compte de service Firebase — accès total au projet
+*serviceaccount*.json
+*service-account*.json
+*cle-service*.json
+firebase-adminsdk-*.json
+
 # Système / éditeurs
 .DS_Store
 *.log

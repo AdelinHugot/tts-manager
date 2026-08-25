@@ -214,6 +214,30 @@ rien ne le référence. C'est ce qui garantit que le stock de rushs reste borné
 firebase deploy --only firestore:rules,storage
 ```
 
+Si le déploiement échoue sur un `403 Permission denied to get service
+[firebasestorage.googleapis.com]`, c'est que le compte connecté au CLI n'a pas
+le droit `serviceusage.services.get` sur le projet — souvent parce que
+`firebase login` pointe un autre compte Google que le propriétaire. Vérifier
+avec `firebase login:list` et `firebase projects:list`. À défaut, les deux
+fichiers se collent directement dans la console Firebase, onglet *Rules* de
+Firestore et de Storage.
+
+### Migrer les commandes de la V1
+
+Les commandes de la V1 vivent dans la collection racine `orders`, que les
+nouvelles règles ferment. `tools/migrer-commandes.mjs` les rapatrie sous
+`users/{uid}/orders` en conservant l'identifiant de commande TikTok Shop comme
+identifiant de document — c'est lui qui rend les imports idempotents.
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=~/cle-service.json \
+  node tools/migrer-commandes.mjs --uid=LE_UID            # simulation
+```
+
+Ajouter `--appliquer` pour écrire. Le script relit la destination pour vérifier
+le compte, et ne supprime jamais la source. Réalisations, rushs, idées, produits
+et marques ne sont pas migrés — volontairement.
+
 ### Tester les règles
 
 Les tests de cloisonnement vérifient qu'un compte ne peut ni lire ni écrire chez
