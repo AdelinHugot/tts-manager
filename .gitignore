@@ -17,3 +17,6 @@ dist/
 npm-debug.log*
 .idea/
 .vscode/
+
+# Réglages locaux Claude Code
+.claude/
