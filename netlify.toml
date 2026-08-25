@@ -1,12 +1,48 @@
-[build]
-  command   = "npm run build"
-  publish   = "dist"
+# Configuration de déploiement Netlify.
 
-# SPA — toutes les routes renvoient vers index.html
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
+  # Ne jamais définir de secret ici : ce fichier est versionné.
+  # ANTHROPIC_API_KEY se configure dans Netlify › Site settings › Environment variables.
+
+[dev]
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888
+  framework = "#custom"
+
+# ---------------------------------------------------------------- en-têtes ---
+# La fonction /api/claude est routée par `export const config = { path }` dans
+# netlify/functions/claude.js — aucune règle de redirection n'est nécessaire.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Politique de sécurité du contenu.
+    #  - script-src 'self'  : uniquement le bundle servi par le site.
+    #  - style-src           : 'unsafe-inline' est requis, l'interface repose sur
+    #                          des styles inline (attributs `style`) issus du design.
+    #  - connect-src 'self'  : le client ne parle qu'à notre propre /api/claude.
+    #  - blob:               : prévisualisations locales des vidéos et de l'avatar.
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), geolocation=(), payment=(), usb=(), microphone=(self)"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Cross-Origin-Opener-Policy = "same-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"

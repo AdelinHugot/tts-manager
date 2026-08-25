@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Vérifier que la vue générée est à jour
+        run: |
+          npm run gen:view
+          git diff --exit-code src/view.jsx src/logic.js src/styles.css
+
+      - name: Audit des dépendances
+        run: npm audit --audit-level=high
+
+      - name: Aucune clé d'API dans le code livré
+        run: |
+          if grep -rInE 'sk-ant-[A-Za-z0-9_-]{10,}|ANTHROPIC_API_KEY\s*=\s*["'"'"'][^"'"'"']+' \
+               src netlify index.html; then
+            echo "::error::Secret potentiel détecté dans les sources"; exit 1
+          fi

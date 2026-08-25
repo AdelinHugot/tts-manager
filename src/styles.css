@@ -1,0 +1,12 @@
+/* Généré depuis le bloc <helmet><style> du fichier design.
+   Ne pas éditer à la main : voir tools/dc-to-jsx.mjs. */
+:root{--bg:#F6F4FD;--sidebar:#FFFFFF;--card:#FFFFFF;--border:#EFECF9;--border-2:#E5E1F3;--primary:#7C6FF7;--primary-2:#6356E6;--primary-soft:#EEEBFE;--primary-softer:#F6F4FE;--secondary:#4FA688;--secondary-soft:#E5F3EC;--text:#211E33;--text-2:#5E5A72;--text-3:#9A96AC;--pos:#2E9E76;--pos-soft:#E4F4ED;--neg:#D96A6A;--neg-soft:#FBEAEA;--amber:#BC8A22;--amber-soft:#FAEFD4;--blue:#5184C6;--blue-soft:#E7F0FA;--green:#2E9E76;--green-soft:#E4F4ED;}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:11px;height:11px;}
+::-webkit-scrollbar-thumb{background:#dedaee;border-radius:9px;border:3px solid transparent;background-clip:content-box;}
+::-webkit-scrollbar-thumb:hover{background:#cfc9e6;border:3px solid transparent;background-clip:content-box;}
+input,button,select{font-family:inherit;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:none;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
