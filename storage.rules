@@ -79,7 +79,7 @@ service firebase.storage {
     }
 
     // Refus par défaut, y compris sur les anciens chemins non cloisonnés de la
-    // V1 (rushes/, avatars/, products/) — voir tools/migrate-firestore.mjs.
+    // V1 (rushes/, avatars/, products/) — voir tools/migrer-commandes.mjs.
     match /{chemin=**} {
       allow read, write: if false;
     }

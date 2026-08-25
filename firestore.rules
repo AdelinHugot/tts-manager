@@ -28,7 +28,7 @@ service cloud.firestore {
     // Refus par défaut. Cela couvre notamment :
     //  - les anciennes collections racine de la V1 (realisations, rushes,
     //    ideas, products, marques, orders), qui doivent être migrées sous
-    //    users/{uid}/ — voir tools/migrate-firestore.mjs ;
+    //    users/{uid}/ — voir tools/migrer-commandes.mjs ;
     //  - les requêtes collectionGroup(), tant qu'aucune règle explicite ne les
     //    autorise. En ajouter une reviendrait à percer le cloisonnement : ne le
     //    faire qu'avec une condition sur request.auth.uid.
