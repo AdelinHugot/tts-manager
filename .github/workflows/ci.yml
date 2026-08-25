@@ -44,3 +44,29 @@ jobs:
                src netlify index.html; then
             echo "::error::Secret potentiel détecté dans les sources"; exit 1
           fi
+
+  regles-securite:
+    name: Règles Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # L'émulateur Firestore/Storage tourne sur la JVM.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - run: npm ci
+
+      - run: npm i -g firebase-tools
+
+      # Vérifie que le cloisonnement par compte tient réellement :
+      # qu'un compte ne peut ni lire ni écrire chez un autre.
+      - name: Tests des règles
+        run: npm run test:rules

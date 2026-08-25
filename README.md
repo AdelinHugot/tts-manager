@@ -57,8 +57,19 @@ src/
   lib/style.js               Styles inline + pseudo-classes (`style-hover`)
   lib/claude.js              Client de l'assistant — appelle /api/claude
 
+  components/Login.jsx       Écran de connexion (écrit à la main)
+  lib/firebase.js            Initialisation — app + auth uniquement
+  lib/auth.js                Connexion, session, uid
+  lib/chemins.js             Construction des chemins `users/{uid}/…`
+  lib/firestore.js           Fiches, cloisonnées par compte
+  lib/storage.js             Fichiers, miniatures, suppression atomique
+
+firestore.rules              Règles Firestore — cloisonnement par compte
+storage.rules                Règles Storage — idem
+firebase.json / .firebaserc  Déploiement des règles et émulateurs
+
 netlify/functions/claude.js  Proxy serveur vers l'API Anthropic (détient la clé)
-tests/                       Tests de la fonction serverless
+tests/                       Tests : fonction serverless, chemins, règles
 ```
 
 ### Pourquoi un transpileur plutôt qu'une réécriture à la main
@@ -174,6 +185,50 @@ pas de routage client, aucun *rewrite* SPA n'est déclaré non plus.
 
 ---
 
+## Données — Firestore et Storage
+
+Tout vit sous `users/{uid}/…`, dans Firestore comme dans Storage. **Le
+cloisonnement tient au chemin, pas à un filtre applicatif** : il n'y a pas de
+`where('ownerId', …)` qu'un appelant pourrait oublier de poser, et une requête
+hors de son espace est refusée par le serveur, pas silencieusement élargie.
+
+L'uid n'est jamais un paramètre de fonction : `lib/storage.js` et
+`lib/firestore.js` le lisent sur la session courante, pour qu'aucun appelant ne
+puisse écrire ailleurs que chez lui, même par erreur.
+
+Collections : `rushes`, `videos`, `ideas`, `products`, `marques`, `orders`.
+Dossiers Storage : `rushes`, `videos`, `ideas`, `thumbnails`, `products`,
+`avatar`.
+
+### Suppression atomique
+
+`supprimerAvecFichiers()` supprime les objets Storage **avant** la fiche
+Firestore. L'ordre est délibéré : si un fichier résiste, la fiche subsiste,
+l'élément reste visible et l'opération peut être relancée. L'ordre inverse
+produirait un objet orphelin — facturé indéfiniment et invisible puisque plus
+rien ne le référence. C'est ce qui garantit que le stock de rushs reste borné.
+
+### Déployer les règles
+
+```bash
+firebase deploy --only firestore:rules,storage
+```
+
+### Tester les règles
+
+Les tests de cloisonnement vérifient qu'un compte ne peut ni lire ni écrire chez
+un autre. Ils ont besoin de l'émulateur Firebase, donc d'un runtime Java :
+
+```bash
+npm run test:rules
+```
+
+Si Java manque : `brew install --cask temurin`. Ces tests tournent aussi en CI,
+où Java est préinstallé. `npm test` ne les inclut pas, pour ne pas imposer Java
+en développement.
+
+---
+
 ## Stockage vidéo
 
 Le lecteur des cartes Idées est fonctionnel (contrôles natifs, `preload="metadata"`
@@ -198,8 +253,9 @@ Ces points sont conservés tels quels par fidélité — à corriger si souhait�
 - **Données de démonstration.** Marques, produits, commandes et vidéos sont des
   jeux de données statiques définis dans `src/logic.js` ; il n'y a pas encore de
   backend TikTok Shop.
-- **Persistance.** L'état vit en mémoire : un rechargement remet l'application à
-  zéro (profil, idées, rushs, fichiers importés). Les vidéos importées sont des
-  `blob:` locales, valables le temps de la session — voir « Stockage vidéo ».
+- **Persistance de l'interface.** La couche de données existe et est cloisonnée,
+  mais les écrans issus du design ne l'appellent pas encore : leur état vit
+  toujours en mémoire, et un rechargement remet l'application à zéro. Le
+  branchement écran par écran reste à faire.
 - **Dictée vocale.** Repose sur l'API `SpeechRecognition`, disponible sur
   Chrome/Edge/Safari mais pas sur Firefox — le bouton se masque tout seul.

@@ -1,0 +1,39 @@
+rules_version = '2';
+
+// Règles Firestore — TTS Manager
+//
+// Modèle : multi-locataire, cloisonné par utilisateur.
+//
+// Toutes les données métier vivent sous `users/{uid}/…`. Le cloisonnement est
+// donc structurel : il tient au chemin, pas à un filtre que du code applicatif
+// pourrait oublier de poser. Une requête mal écrite échoue, elle ne fuit pas.
+//
+// Les requêtes transversales restent possibles via collectionGroup(), mais
+// elles sont refusées par défaut — voir le bloc en fin de fichier.
+//
+// Déploiement :  firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Tout ce qui appartient à un utilisateur, et rien d'autre.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /{sousCollection=**} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // Refus par défaut. Cela couvre notamment :
+    //  - les anciennes collections racine de la V1 (realisations, rushes,
+    //    ideas, products, marques, orders), qui doivent être migrées sous
+    //    users/{uid}/ — voir tools/migrate-firestore.mjs ;
+    //  - les requêtes collectionGroup(), tant qu'aucune règle explicite ne les
+    //    autorise. En ajouter une reviendrait à percer le cloisonnement : ne le
+    //    faire qu'avec une condition sur request.auth.uid.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

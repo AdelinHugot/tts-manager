@@ -1,0 +1,87 @@
+rules_version = '2';
+
+// Règles Firebase Storage — TTS Manager
+//
+// Même modèle que Firestore : tout est rangé sous `users/{uid}/…`, donc le
+// cloisonnement tient au chemin. Un utilisateur ne peut ni lire ni écrire hors
+// de son propre espace, quelle que soit l'URL qu'il fabrique.
+//
+// Les plafonds de taille protègent la facture autant que les données : sans
+// eux, un compte compromis fait grimper le stockage sans limite.
+//
+// ⚠️  Les URL de téléchargement Firebase (getDownloadURL) restent des URL
+// signées, partageables hors application par qui les possède. Ces règles
+// contrôlent qui peut les obtenir, pas qui peut les transmettre ensuite.
+//
+// Déploiement :  firebase deploy --only storage
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /users/{uid} {
+
+      function estLeProprietaire() {
+        return request.auth != null && request.auth.uid == uid;
+      }
+
+      function estUneVideo() {
+        return request.resource.contentType.matches('video/.*');
+      }
+
+      function estUneImage() {
+        return request.resource.contentType.matches('image/.*');
+      }
+
+      // Rushs — volumineux et transitoires : supprimés une fois la vidéo
+      // montée versée dans la bibliothèque.
+      match /rushes/{fichier} {
+        allow read, delete: if estLeProprietaire();
+        allow write: if estLeProprietaire() && estUneVideo()
+                     && request.resource.size < 3 * 1024 * 1024 * 1024;
+      }
+
+      // Vidéos montées — conservées.
+      match /videos/{fichier} {
+        allow read, delete: if estLeProprietaire();
+        allow write: if estLeProprietaire() && estUneVideo()
+                     && request.resource.size < 1024 * 1024 * 1024;
+      }
+
+      // Vidéos jointes au mur d'idées.
+      match /ideas/{fichier} {
+        allow read, delete: if estLeProprietaire();
+        allow write: if estLeProprietaire() && estUneVideo()
+                     && request.resource.size < 512 * 1024 * 1024;
+      }
+
+      // Miniatures générées à l'import : elles évitent de télécharger la vidéo
+      // entière pour afficher une carte, et c'est le principal levier sur la
+      // bande passante.
+      match /thumbnails/{fichier} {
+        allow read, delete: if estLeProprietaire();
+        allow write: if estLeProprietaire() && estUneImage()
+                     && request.resource.size < 2 * 1024 * 1024;
+      }
+
+      // Images produit.
+      match /products/{fichier} {
+        allow read, delete: if estLeProprietaire();
+        allow write: if estLeProprietaire() && estUneImage()
+                     && request.resource.size < 5 * 1024 * 1024;
+      }
+
+      // Avatar du compte.
+      match /avatar/{fichier} {
+        allow read, delete: if estLeProprietaire();
+        allow write: if estLeProprietaire() && estUneImage()
+                     && request.resource.size < 5 * 1024 * 1024;
+      }
+    }
+
+    // Refus par défaut, y compris sur les anciens chemins non cloisonnés de la
+    // V1 (rushes/, avatars/, products/) — voir tools/migrate-firestore.mjs.
+    match /{chemin=**} {
+      allow read, write: if false;
+    }
+  }
+}
