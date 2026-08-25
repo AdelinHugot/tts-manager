@@ -183,6 +183,44 @@ L'endpoint `/api/claude` est routé par `export const config = { path }` dans la
 fonction — aucune règle de redirection n'est nécessaire. L'application n'ayant
 pas de routage client, aucun *rewrite* SPA n'est déclaré non plus.
 
+### Variables d'environnement
+
+| Variable | Nécessaire ? | Où |
+| --- | --- | --- |
+| `ANTHROPIC_API_KEY` | **Oui**, pour l'assistant et la dictée | Netlify, scope *Functions* |
+| `ALLOWED_ORIGINS` | Seulement avec un domaine personnalisé secondaire | Netlify, scope *Functions* |
+| `VITE_FIREBASE_*` | Non | — |
+
+**Rien à publier pour Firebase.** La configuration web est compilée dans le
+bundle avec les valeurs du projet `tts-manager-d4135` (voir `src/lib/firebase.js`),
+et ce n'est pas un secret : ces identifiants sont publics par conception. Les
+variables `VITE_FIREBASE_*` ne servent qu'à pointer un projet de test.
+
+Sans `ANTHROPIC_API_KEY`, tout fonctionne sauf l'assistant et la dictée, qui
+affichent une erreur explicite — la fonction répond `503`, elle ne divulgue rien.
+
+`ALLOWED_ORIGINS` est superflu tant que le site est servi sur son URL Netlify ou
+sur son domaine principal : la fonction accepte déjà `URL`, `DEPLOY_PRIME_URL`
+et `DEPLOY_URL`. Elle n'est utile qu'avec un alias de domaine supplémentaire.
+
+### Checklist de déploiement
+
+1. Variables d'environnement ci-dessus.
+2. Règles Firebase déployées (`firebase deploy --only firestore:rules,storage`,
+   ou copiées dans la console).
+3. Au moins un compte créé dans *Authentication* — l'application n'a pas
+   d'inscription, les comptes se créent depuis la console.
+4. Après un changement de `netlify.toml`, vérifier les en-têtes :
+   `curl -sI https://<site>.netlify.app | grep -i content-security`.
+
+La CSP autorise exactement quatre hôtes Firebase : `identitytoolkit`
+(connexion), `securetoken` (renouvellement du jeton), `firestore` et
+`firebasestorage`. **Toute nouvelle dépendance réseau doit y être ajoutée**,
+sinon elle est bloquée silencieusement et l'application signale une panne
+réseau. C'est la cause la plus probable d'une erreur inexplicable en production
+qui ne se reproduit pas en développement — le serveur Vite n'applique pas ces
+en-têtes.
+
 ---
 
 ## Données — Firestore et Storage

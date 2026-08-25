@@ -24,12 +24,22 @@
   for = "/*"
   [headers.values]
     # Politique de sécurité du contenu.
+    #
     #  - script-src 'self'  : uniquement le bundle servi par le site.
     #  - style-src           : 'unsafe-inline' est requis, l'interface repose sur
     #                          des styles inline (attributs `style`) issus du design.
-    #  - connect-src 'self'  : le client ne parle qu'à notre propre /api/claude.
-    #  - blob:               : prévisualisations locales des vidéos et de l'avatar.
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    #  - connect-src         : notre propre /api/claude, plus les seuls hôtes
+    #                          Firebase réellement appelés :
+    #                            identitytoolkit  → connexion
+    #                            securetoken      → renouvellement du jeton
+    #                            firestore        → fiches
+    #                            firebasestorage  → fichiers
+    #                          Aucun autre domaine Google n'est ouvert : les flux
+    #                          par popup ou redirection (apis.google.com, iframe
+    #                          sur authDomain) ne sont pas utilisés.
+    #  - img-src / media-src : miniatures et vidéos servies depuis Storage.
+    #  - blob:               : prévisualisations locales avant envoi.
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://firebasestorage.googleapis.com; media-src 'self' blob: https://firebasestorage.googleapis.com; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://firebasestorage.googleapis.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
