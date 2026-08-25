@@ -49,23 +49,75 @@ export default function App() {
   );
 }
 
-/** Écran d'attente le temps que Firebase restaure la session. */
+/**
+ * Écran d'attente.
+ *
+ * Au-delà d'un délai raisonnable, on cesse de faire tourner un indicateur dans
+ * le vide : si le fragment de code ne répond jamais (plutôt que d'échouer
+ * franchement, auquel cas la limite d'erreur prend le relais), l'attente
+ * silencieuse est indiscernable d'une application cassée. On propose donc une
+ * sortie.
+ */
 function Chargement() {
+  const [longue, setLongue] = useState(false);
+
+  useEffect(() => {
+    const minuteur = setTimeout(() => setLongue(true), 10000);
+    return () => clearTimeout(minuteur);
+  }, []);
+
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--bg)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'var(--text-3)',
-        fontFamily: "'Inter', system-ui, sans-serif",
-        fontSize: '13px',
-        fontWeight: 600,
-      }}
-    >
-      Chargement…
+    <div style={stylesChargement.page}>
+      <div style={stylesChargement.texte}>Chargement…</div>
+      {longue ? (
+        <>
+          <div style={stylesChargement.aide}>
+            Cela prend plus de temps que prévu. La connexion est peut-être
+            interrompue.
+          </div>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            style={stylesChargement.bouton}
+          >
+            Recharger
+          </button>
+        </>
+      ) : null}
     </div>
   );
 }
+
+const stylesChargement = {
+  page: {
+    minHeight: '100vh',
+    background: 'var(--bg)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
+    padding: '24px',
+    fontFamily: "'Inter', system-ui, sans-serif",
+  },
+  texte: { color: 'var(--text-3)', fontSize: '13px', fontWeight: 600 },
+  aide: {
+    color: 'var(--text-3)',
+    fontSize: '12.5px',
+    maxWidth: '280px',
+    textAlign: 'center',
+    lineHeight: 1.5,
+  },
+  bouton: {
+    marginTop: '2px',
+    padding: '9px 16px',
+    border: '1px solid var(--border-2)',
+    borderRadius: '11px',
+    background: 'var(--card)',
+    color: 'var(--text-2)',
+    fontSize: '12.5px',
+    fontWeight: 600,
+    fontFamily: 'inherit',
+    cursor: 'pointer',
+  },
+};
