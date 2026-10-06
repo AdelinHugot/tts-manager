@@ -1,6 +1,7 @@
 import {
   browserLocalPersistence,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
   signOut,
@@ -63,6 +64,29 @@ export async function connexion(email, motDePasse) {
   await persistenceReady;
   const { user } = await signInWithEmailAndPassword(auth, email.trim(), motDePasse);
   return user;
+}
+
+/**
+ * Envoie un lien de réinitialisation.
+ *
+ * Sans ce chemin, un mot de passe oublié enferme définitivement dehors : les
+ * comptes sont créés à la main, il n'y a pas d'inscription par laquelle
+ * repasser.
+ *
+ * On ne dit jamais si l'adresse existe. Répondre « compte inconnu » laisserait
+ * n'importe qui vérifier, une adresse à la fois, qui possède un compte ici.
+ */
+export async function reinitialiserMotDePasse(email) {
+  const adresse = String(email ?? '').trim();
+  if (!adresse) throw new Error('Renseigne ton adresse e-mail.');
+  try {
+    await sendPasswordResetEmail(auth, adresse);
+  } catch (err) {
+    // Une adresse inconnue ou mal formée ne doit rien révéler ; le reste
+    // (réseau coupé, trop de tentatives) mérite d'être signalé.
+    if (err?.code === 'auth/user-not-found' || err?.code === 'auth/invalid-email') return;
+    throw err;
+  }
 }
 
 export async function deconnexion() {

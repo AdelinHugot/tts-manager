@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { connexion, messageErreur } from '../lib/auth.js';
+import { connexion, messageErreur, reinitialiserMotDePasse } from '../lib/auth.js';
 
 /**
  * Écran de connexion.
@@ -18,6 +18,8 @@ export default function Login() {
   const [motDePasse, setMotDePasse] = useState('');
   const [erreur, setErreur] = useState(null);
   const [enCours, setEnCours] = useState(false);
+  const [envoiLien, setEnvoiLien] = useState(false);
+  const [lienEnvoye, setLienEnvoye] = useState(false);
 
   async function envoyer(e) {
     e.preventDefault();
@@ -33,13 +35,50 @@ export default function Login() {
     }
   }
 
+  /**
+   * Demande un lien de réinitialisation.
+   *
+   * Le message de confirmation est le même que l'adresse existe ou non : dire
+   * « compte inconnu » permettrait de découvrir qui possède un compte ici, une
+   * adresse à la fois.
+   */
+  async function motDePasseOublie() {
+    if (envoiLien) return;
+    const adresse = email.trim();
+    if (!adresse) {
+      setErreur('Renseigne ton adresse e-mail, puis redemande le lien.');
+      return;
+    }
+    setErreur(null);
+    setEnvoiLien(true);
+    try {
+      await reinitialiserMotDePasse(adresse);
+      setLienEnvoye(true);
+    } catch (err) {
+      setErreur(messageErreur(err));
+    }
+    setEnvoiLien(false);
+  }
+
   return (
     <div style={styles.page}>
       <div style={styles.colonne}>
         <div style={styles.enTete}>
-          <div style={styles.logo}>T</div>
+          <div style={styles.logo}>
+            {/* Le signe occupe 96 % de la pastille — la proportion arrêtée sur la planche. */}
+            <svg width="36" height="36" viewBox="0 0 64 64" aria-hidden="true">
+              <path
+                d="M11 47 A 28 28 0 0 1 53 22"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="6.5"
+                strokeLinecap="round"
+              />
+              <circle cx="47" cy="46" r="5.5" fill="currentColor" />
+            </svg>
+          </div>
           <div>
-            <div style={styles.titre}>TTS Manager</div>
+            <div style={styles.titre}>Rekolt</div>
             <div style={styles.sousTitre}>Creator Revenue Studio</div>
           </div>
         </div>
@@ -84,6 +123,22 @@ export default function Login() {
             </div>
           ) : null}
 
+          {lienEnvoye ? (
+            <div role="status" style={styles.confirmation}>
+              Si un compte existe pour cette adresse, un lien de réinitialisation vient d’y être
+              envoyé. Pense à regarder les indésirables.
+            </div>
+          ) : null}
+
+          <button
+            type="button"
+            onClick={motDePasseOublie}
+            disabled={envoiLien}
+            style={styles.lien}
+          >
+            {envoiLien ? 'Envoi du lien…' : 'Mot de passe oublié ?'}
+          </button>
+
           <button type="submit" disabled={enCours} style={styles.bouton(enCours)}>
             {enCours ? 'Connexion…' : 'Se connecter'}
           </button>
@@ -125,7 +180,7 @@ const styles = {
     width: '38px',
     height: '38px',
     borderRadius: '12px',
-    background: 'linear-gradient(135deg,var(--primary),var(--primary-2))',
+    background: 'var(--primary)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -173,6 +228,29 @@ const styles = {
     padding: '9px 11px',
     fontSize: '12.5px',
     fontWeight: 600,
+  },
+  confirmation: {
+    background: 'var(--secondary-soft)',
+    color: 'var(--secondary)',
+    borderRadius: '10px',
+    padding: '9px 11px',
+    fontSize: '12.5px',
+    fontWeight: 600,
+    lineHeight: 1.45,
+  },
+  // Un vrai <button> plutôt qu'un lien stylé : il n'y a pas de page à ouvrir,
+  // et le clavier doit l'atteindre comme n'importe quelle action.
+  lien: {
+    alignSelf: 'flex-start',
+    padding: '4px 0',
+    border: 'none',
+    background: 'transparent',
+    color: 'var(--primary-2)',
+    fontSize: '12.5px',
+    fontWeight: 600,
+    fontFamily: 'inherit',
+    cursor: 'pointer',
+    textDecoration: 'underline',
   },
   bouton: (enCours) => ({
     marginTop: '2px',
