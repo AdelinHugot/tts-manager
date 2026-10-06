@@ -5,6 +5,8 @@ node_modules/
 dist/
 .netlify/
 .vite/
+# Empreinte des dépendances Deno des fonctions edge, écrite par `netlify dev`
+deno.lock
 
 # Secrets — ne JAMAIS committer
 .env
