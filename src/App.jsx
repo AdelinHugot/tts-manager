@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 
 import Login from './components/Login.jsx';
 import { appConfig } from './config/appConfig.js';
-import { observeUser } from './lib/auth.js';
+import { deconnexion, observeUser } from './lib/auth.js';
 
 /**
  * L'application authentifiée est chargée à la demande : l'écran de connexion
@@ -44,7 +44,7 @@ export default function App() {
 
   return (
     <Suspense fallback={<Chargement />}>
-      <Logic key={user.uid} {...appConfig} user={user} />
+      <Logic key={user.uid} {...appConfig} user={user} deconnexion={deconnexion} />
     </Suspense>
   );
 }

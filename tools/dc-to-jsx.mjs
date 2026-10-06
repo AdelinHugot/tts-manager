@@ -397,10 +397,14 @@ fs.writeFileSync(
 import React from 'react';
 import { DCLogic } from './lib/dc.js';
 import { complete } from './lib/claude.js';
+import * as donnees from './lib/commandesFirestore.js';
 
 const window_claude = { complete };
+const window_donnees = donnees;
 
-${logic.replace(/window\.claude\.complete\(/g, 'window_claude.complete(')}
+${logic
+  .replace(/window\.claude\.complete\(/g, 'window_claude.complete(')
+  .replace(/window\.donnees\b/g, 'window_donnees')}
 `
 );
 

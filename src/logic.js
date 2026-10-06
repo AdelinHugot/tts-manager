@@ -5,14 +5,17 @@
 import React from 'react';
 import { DCLogic } from './lib/dc.js';
 import { complete } from './lib/claude.js';
+import * as donnees from './lib/commandesFirestore.js';
 
 const window_claude = { complete };
+const window_donnees = donnees;
 
 export class Logic extends DCLogic {
   constructor(props){
     super(props);
     this.rootRef = React.createRef();
     this.fileInputRef = React.createRef();
+    this.importInputRef = React.createRef();
     this.recognition = null;
     this.chartRef = (el)=>{
       if(el && el!==this._chartEl){
@@ -32,9 +35,18 @@ export class Logic extends DCLogic {
       periodOpen:false, hoverIdx:null,
       sort:{ marques:{key:'ca',dir:'desc'}, produits:{key:'ca',dir:'desc'}, videos:{key:'ca',dir:'desc'}, partenaires:{key:'ca',dir:'desc'}, partnerProducts:{key:'ca',dir:'desc'}, commandes:{key:'dateKey',dir:'desc'} },
       ordFilters:{ vendeur:'Tous les vendeurs', statut:'Tous les statuts', from:'', to:'' },
+      ordLoading:false, ordErr:null, ordPage:1,
+      importEnCours:false, importMsg:null, importErr:null,
+      dashLoading:false, dashErr:null,
+      ideasErr:null, ideasEnvoi:null,
+      bibErr:null, bibEnvoi:null,
+      deconnexionEnCours:false,
       dpOpen:false, dpMonth:'2026-08', dpStart:null, dpEnd:null,
       customRange:null,
-      profile:{name:'Camille Léon',handle:'@camilleleon',email:'camille@ttsmanager.fr',phone:'+33 6 12 34 56 78'},
+      profile: window_donnees
+        ? {name:'',handle:'',email:'',phone:''}
+        : {name:'Camille Léon',handle:'@camilleleon',email:'camille@ttsmanager.fr',phone:'+33 6 12 34 56 78'},
+      profilErr:null, profilEnvoi:false,
       avatarUrl:null, profileSaved:false,
       pwd:{current:'',next:'',confirm:''}, pwdMsg:null, pwdMsgOk:false,
       notifs:{daily:true,newOrder:false,brandMail:true,payout:true},
@@ -42,21 +54,9 @@ export class Logic extends DCLogic {
       selectedProspectId:null,
       threadReply:{subject:'',body:''},
       chat:[], chatInput:'', chatBusy:false, chatErr:null,
-      vidView:'grid', vidFolder:null, vidQuery:'', vidDrag:false, vidOverId:null, vidFilter:'Tous',
-      vidRenameId:null, vidRenameVal:'', vidPreviewId:null, vidMenuId:null, vidNextId:200,
-      vidItems:[
-        {id:11,kind:'folder',name:'Lumière Skincare',parent:null,createdAt:Date.now()-1000*60*60*90},
-        {id:12,kind:'folder',name:'NordTech',parent:null,createdAt:Date.now()-1000*60*60*60},
-        {id:13,kind:'file',name:'3 erreurs skincare à éviter',parent:null,createdAt:Date.now()-1000*60*60*20,size:96000000,ext:'MP4',duration:34,status:'Postée'},
-        {id:14,kind:'file',name:'Ma routine du soir en 2 min',parent:null,createdAt:Date.now()-1000*60*60*46,size:142000000,ext:'MP4',duration:118,status:'Postée'},
-        {id:15,kind:'file',name:'Avant/après sérum — v2',parent:null,createdAt:Date.now()-1000*60*180,size:210000000,ext:'MOV',duration:41,status:'En cours de modifs'},
-        {id:16,kind:'file',name:'Hook unboxing écouteurs',parent:null,createdAt:Date.now()-1000*60*60*8,size:88000000,ext:'MP4',duration:22,status:'Prête à poster'},
-        {id:17,kind:'file',name:'Comparatif palettes nude',parent:null,createdAt:Date.now()-1000*60*60*30,size:64000000,ext:'MP4',duration:57,status:'À monter'},
-        {id:18,kind:'file',name:'Routine peau grasse été',parent:11,createdAt:Date.now()-1000*60*60*70,size:120000000,ext:'MP4',duration:73,status:'Postée'}
-      ],
       rushView:'grid', rushFolder:null, rushQuery:'', rushDrag:false, rushOverId:null,
       rushRenameId:null, rushRenameVal:'', rushPreviewId:null, rushNextId:100,
-      rushItems:[
+      rushItems: window_donnees ? [] : [
         {id:1,kind:'folder',name:'Sérum Vitamine C',parent:null,createdAt:Date.now()-1000*60*60*72},
         {id:2,kind:'folder',name:'Rituel Nuit — août',parent:null,createdAt:Date.now()-1000*60*60*50},
         {id:3,kind:'folder',name:'À trier',parent:null,createdAt:Date.now()-1000*60*60*30},
@@ -66,9 +66,23 @@ export class Logic extends DCLogic {
         {id:7,kind:'file',name:'voix_off_routine.webm',parent:null,createdAt:Date.now()-1000*60*60*26,size:14000000,ext:'WEBM',duration:96},
         {id:8,kind:'file',name:'avant_apres_semaine2.mkv',parent:1,createdAt:Date.now()-1000*60*60*40,size:640000000,ext:'MKV',duration:52}
       ],
+      vidView:'grid', vidFolder:null, vidQuery:'', vidDrag:false, vidOverId:null, vidFilter:'Tous',
+      vidRenameId:null, vidRenameVal:'', vidPreviewId:null, vidMenuId:null, vidNextId:200,
+      vidItems: window_donnees ? [] : [
+        {id:11,kind:'folder',name:'Lumière Skincare',parent:null,createdAt:Date.now()-1000*60*60*90},
+        {id:12,kind:'folder',name:'NordTech',parent:null,createdAt:Date.now()-1000*60*60*60},
+        {id:13,kind:'file',name:'3 erreurs skincare à éviter',parent:null,createdAt:Date.now()-1000*60*60*20,size:96000000,ext:'MP4',duration:34,status:'Postée'},
+        {id:14,kind:'file',name:'Ma routine du soir en 2 min',parent:null,createdAt:Date.now()-1000*60*60*46,size:142000000,ext:'MP4',duration:118,status:'Postée'},
+        {id:15,kind:'file',name:'Avant/après sérum — v2',parent:null,createdAt:Date.now()-1000*60*180,size:210000000,ext:'MOV',duration:41,status:'En cours de modifs'},
+        {id:16,kind:'file',name:'Hook unboxing écouteurs',parent:null,createdAt:Date.now()-1000*60*60*8,size:88000000,ext:'MP4',duration:22,status:'Prête à poster'},
+        {id:17,kind:'file',name:'Comparatif palettes nude',parent:null,createdAt:Date.now()-1000*60*60*30,size:64000000,ext:'MP4',duration:57,status:'À monter'},
+        {id:18,kind:'file',name:'Routine peau grasse été',parent:11,createdAt:Date.now()-1000*60*60*70,size:120000000,ext:'MP4',duration:73,status:'Postée'}
+      ],
       view:'pinterest', composerText:'', isRecording:false, aiProcessing:false, dragOver:false,
       nextIdeaId:4,
-      ideas:[
+      // Dans l'application, les idees viennent de Firestore : partir du jeu de
+      // demonstration le ferait clignoter avant la premiere reponse du serveur.
+      ideas: window_donnees ? [] : [
         {id:1,type:'text',text:'Vidéo "3 signes que tu dois changer ta routine skincare" — format liste rapide, hook fort dans les 2 premières secondes.',pinned:true,createdAt:Date.now()-1000*60*60*5},
         {id:2,type:'link',url:'https://www.tiktok.com/@exemple/video/123456',pinned:false,createdAt:Date.now()-1000*60*60*20},
         {id:3,type:'text',text:"Idée : comparatif avant/après avec le sérum vitamine C sur 2 semaines, format split-screen.",pinned:false,createdAt:Date.now()-1000*60*60*30}
@@ -126,10 +140,9 @@ export class Logic extends DCLogic {
       analytics:{title:'Analytics',sub:'Performances détaillées par compte, marque, produit et vidéo'},
       commandes:{title:'Commandes',sub:'Suivi des commandes affiliées'},
       videos:{title:'Vidéos',sub:'Bibliothèque de contenus publiés'},
-      rushs:{title:'Rushs',sub:'Tes fichiers bruts en attente de montage'},
       idees:{title:'Idées',sub:"Ton mur de brainstorming — textes, liens, vidéos"},
+      rushs:{title:'Rushs',sub:'Tes fichiers bruts en attente de montage'},
       assistant:{title:'Assistant',sub:'Ton conseiller data — il lit tes chiffres et te dit quoi pousser'},
-      produits:{title:'Produits',sub:'Catalogue et produits affiliés'},
       partenaires:{title:'Partenaires',sub:'Marques avec qui tu collabores'},
       prospection:{title:'Prospection',sub:'Partenaires en cours de prospection et envoi d\u2019emails'},
       parametres:{title:'Paramètres',sub:'Préférences du compte'}
@@ -180,9 +193,29 @@ export class Logic extends DCLogic {
     ];
   }
 
-  componentDidMount(){ this.applyTheme(); }
-  componentWillUnmount(){ if(this._chartRO) this._chartRO.disconnect(); }
-  componentDidUpdate(){ this.applyTheme(); }
+  componentDidMount(){ this.applyTheme(); this.chargerCommandes(); this.chargerTableauDeBord(); this.ecouterIdees(); this.ecouterBibliotheques(); this.chargerResume(); this.ecouterProfil(); }
+  // Ecoute continue plutot que chargement ponctuel : une idee jetee depuis le
+  // telephone doit apparaitre ici sans recharger la page.
+  ecouterIdees(){
+    const api = window_donnees;
+    if(!api) return;
+    this._stopIdees = api.ecouterIdees(
+      idees=>this.setState({ideas:idees, ideasErr:null}),
+      ()=>this.setState({ideasErr:'Les idées ne se synchronisent plus. Recharge la page.'})
+    );
+  }
+  componentWillUnmount(){ if(this._chartRO) this._chartRO.disconnect(); if(this._stopIdees) this._stopIdees(); if(this._stopBib) this._stopBib.forEach(f=>f()); if(this._stopProfil) this._stopProfil(); }
+  componentDidUpdate(){
+    this.applyTheme();
+    // La periode affichee pilote ce qui est charge : changer les dates recharge,
+    // changer vendeur/statut/tri ne recharge pas — ces filtres s'appliquent en
+    // memoire sur la periode deja en main.
+    if(!window_donnees) return;
+    if(this._dashCle !== this.state.period) this.chargerTableauDeBord();
+    if(this._chargementEnCours) return;
+    const F=this.state.ordFilters;
+    if(this._periode !== F.from+'→'+F.to) this.chargerCommandes();
+  }
   applyTheme(){
     const t = this.THEMES[this.props.palette] || this.THEMES.Lavande;
     if(this.rootRef.current){ for(const k in t) this.rootRef.current.style.setProperty(k,t[k]); }
@@ -191,16 +224,26 @@ export class Logic extends DCLogic {
   /* ---------- helpers ---------- */
   hash(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
   rng(seed){ let a=seed>>>0; return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
-  fmtEur(n,dec){ dec=dec||0; return Number(n).toLocaleString('fr-FR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' €'; }
+  fmtEur(n,dec){ if(n===null||n===undefined||!isFinite(n)) return '—'; dec=dec||0; return Number(n).toLocaleString('fr-FR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' €'; }
   fmtNum(n){ return Number(n).toLocaleString('fr-FR'); }
-  fmtPct(n,dec){ dec=(dec==null)?1:dec; return Number(n).toLocaleString('fr-FR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' %'; }
-  fmtViews(n){ if(n>=1e6) return (n/1e6).toLocaleString('fr-FR',{maximumFractionDigits:1})+'M'; if(n>=1e3) return (n/1e3).toLocaleString('fr-FR',{maximumFractionDigits:1})+'k'; return this.fmtNum(n); }
+  fmtPct(n,dec){ if(n===null||n===undefined||!isFinite(n)) return '—'; dec=(dec==null)?1:dec; return Number(n).toLocaleString('fr-FR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' %'; }
+  // Les libelles produits de TikTok Shop depassent couramment 150 caracteres et
+  // rendent le tableau illisible. Le nom complet reste accessible au survol.
+  tronquer(t,max){
+    const s=String(t||'');
+    return s.length>max ? s.slice(0,max-1).replace(/[\s\u00A0]+$/,'')+'…' : s;
+  }
+  fmtViews(n){ if(n===null||n===undefined) return '—'; if(n>=1e6) return (n/1e6).toLocaleString('fr-FR',{maximumFractionDigits:1})+'M'; if(n>=1e3) return (n/1e3).toLocaleString('fr-FR',{maximumFractionDigits:1})+'k'; return this.fmtNum(n); }
   fmtTrend(t){ return (t>0?'+':'')+Number(t).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' %'; }
-  trendObj(t){ const up=t>=0; return { trend:this.fmtTrend(t), trendBg:up?'var(--pos-soft)':'var(--neg-soft)', trendFg:up?'var(--pos)':'var(--neg)', trendIcon:this.iconEl(up?'arrow-up':'arrow-down',11,2.4) }; }
+  trendObj(t){
+    // Sans periode de comparaison exploitable, on affiche un tiret plutot qu'un
+    // pourcentage calcule a partir de zero, qui ne voudrait rien dire.
+    if(t===null||t===undefined||!isFinite(t)) return { trend:'—', trendBg:'#F1F0F5', trendFg:'var(--text-3)', trendIcon:null };
+    const up=t>=0; return { trend:this.fmtTrend(t), trendBg:up?'var(--pos-soft)':'var(--neg-soft)', trendFg:up?'var(--pos)':'var(--neg)', trendIcon:this.iconEl(up?'arrow-up':'arrow-down',11,2.4) }; }
   tauxBadge(t){ if(t>=10) return {bg:'var(--green-soft)',fg:'var(--green)'}; if(t>=5) return {bg:'var(--blue-soft)',fg:'var(--blue)'}; return {bg:'var(--amber-soft)',fg:'var(--amber)'}; }
   convBadge(c){ if(c>=1) return {bg:'var(--green-soft)',fg:'var(--green)'}; if(c>=0.3) return {bg:'var(--blue-soft)',fg:'var(--blue)'}; return {bg:'var(--amber-soft)',fg:'var(--amber)'}; }
 
-  iconEl(name,size,sw){
+  iconEl(name,size,sw,remplissage){
     size=size||18; sw=sw||1.8;
     const M={
       home:[['path',{d:'m3 9.5 9-7 9 7V20a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z'}],['path',{d:'M9 21.5V12h6v9.5'}]],
@@ -238,14 +281,22 @@ export class Logic extends DCLogic {
       play:[['path',{d:'M8 5.5 18.5 12 8 18.5z'}]],
       film:[['rect',{x:3,y:4,width:18,height:16,rx:2.5}],['path',{d:'M7.5 4v16M16.5 4v16'}],['path',{d:'M3 8h4.5M3 12h4.5M3 16h4.5M16.5 8H21M16.5 12H21M16.5 16H21'}]],
       spark:[['path',{d:'M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z'}],['path',{d:'M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z'}]],
-      pin:[['path',{d:'M12 2.5c-3 0-5.4 2.4-5.4 5.4 0 3.8 5.4 10.6 5.4 10.6s5.4-6.8 5.4-10.6c0-3-2.4-5.4-5.4-5.4z'}],['circle',{cx:12,cy:7.9,r:2}]]
+      pin:[['path',{d:'M12 2.5c-3 0-5.4 2.4-5.4 5.4 0 3.8 5.4 10.6 5.4 10.6s5.4-6.8 5.4-10.6c0-3-2.4-5.4-5.4-5.4z'}],['circle',{cx:12,cy:7.9,r:2}]],
+      logout:[['path',{d:'M15 4.5h3.5A1.5 1.5 0 0 1 20 6v12a1.5 1.5 0 0 1-1.5 1.5H15'}],['path',{d:'M10.5 15.5 14 12l-3.5-3.5'}],['path',{d:'M14 12H4'}]],
+      star:[['path',{d:'M12 3.1l2.65 5.6 5.85.86-4.25 4.3 1 6.14L12 17.1l-5.25 2.9 1-6.14-4.25-4.3 5.85-.86z'}]],
+      chantier:[['path',{d:'M12 9v4.5'}],['path',{d:'M12 17.2h.01'}],['path',{d:'M10.3 3.9 2.6 17.4a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'}]]
     };
     const kids=(M[name]||[]).map((c,i)=>React.createElement(c[0],Object.assign({key:i},c[1])));
-    return React.createElement('svg',{width:size,height:size,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:sw,strokeLinecap:'round',strokeLinejoin:'round'},kids);
+    return React.createElement('svg',{width:size,height:size,viewBox:'0 0 24 24',fill:remplissage||'none',stroke:'currentColor',strokeWidth:sw,strokeLinecap:'round',strokeLinejoin:'round'},kids);
   }
 
   /* ---------- charts ---------- */
   genSeries(p){
+    if(this._dash && this._dash.cle===this.state.period && this._dash.serie) return this._dash.serie;
+    if(this.enLigne()){
+      const vides = p.gran==='day'?30 : p.gran==='week'?13 : 12;
+      return Array.from({length:vides},()=>({ca:0,com:0,label:''}));
+    }
     const n = p.gran==='day'?15 : p.gran==='week'?13 : 12;
     const r = this.rng(this.hash(p.id));
     const ratio = p.com/p.ca;
@@ -269,8 +320,12 @@ export class Logic extends DCLogic {
     const W=Math.round(this.state.chartW)||760, H=Math.round(this.state.chartH)||276;
     const padL=48,padR=54,padT=18,padB=30;
     const plotW=W-padL-padR, plotH=H-padT-padB, base=padT+plotH;
-    const caMax=Math.max.apply(null,data.map(d=>d.ca))*1.16;
-    const comMax=Math.max.apply(null,data.map(d=>d.com))*1.5;
+    // Plancher a 1 : sur une periode sans commande, tous les points valent zero
+    // et une division par zero produirait des coordonnees NaN, donc un graphique
+    // vide mais casse plutot qu'un graphique vide et propre.
+    const sommet=(cle,marge)=>Math.max(1,Math.max.apply(null,[0].concat(data.map(d=>d[cle]))))*marge;
+    const caMax=sommet('ca',1.16);
+    const comMax=sommet('com',1.5);
     const X=i=> padL + plotW*(n===1?0.5:i/(n-1));
     const yCa=v=> base - plotH*v/caMax;
     const yCom=v=> base - plotH*v/comMax;
@@ -342,15 +397,85 @@ export class Logic extends DCLogic {
   }
 
   /* ---------- paramètres ---------- */
-  setProfile(k,v){ this.setState(s=>({profile:Object.assign({},s.profile,{[k]:v}),profileSaved:false})); }
+  /**
+   * Carte du compte, en bas du menu.
+   *
+   * Le nom saisi prime, l'adresse de connexion sert de repli : un compte sans
+   * profil rempli doit quand meme s'identifier, et afficher un nom invente
+   * serait pire que d'afficher l'e-mail.
+   */
+  carteCompte(){
+    const S=this.state;
+    if(!this.enLigne()) return {nom:'Camille Léon', sous:'Créatrice · Pro', initiales:'CL', photo:null, sansPhoto:true};
+    const email=(this.props.user&&this.props.user.email)||'';
+    const nom=(S.profile.name||'').trim()||email||'Mon compte';
+    const pseudo=(S.profile.handle||'').trim();
+    return {
+      nom:nom,
+      sous:pseudo||email,
+      initiales:(nom.trim().charAt(0)||'?').toUpperCase(),
+      photo:S.avatarUrl||null,
+      sansPhoto:!S.avatarUrl
+    };
+  }
+
+  ecouterProfil(){
+    const api=window_donnees;
+    if(!api) return;
+    const email=(this.props.user&&this.props.user.email)||'';
+    this._stopProfil = api.ecouterProfil(p=>{
+      // Les champs en cours d'edition ne sont pas ecrases par l'ecoute : sinon
+      // taper son nom deviendrait impossible des qu'une ecriture revient.
+      if(this._profilTouche) return;
+      this.setState({
+        profile:{name:p.name||'', handle:p.handle||'', email:email, phone:p.phone||''},
+        avatarUrl:p.avatarUrl||null
+      });
+      this._avatarPath = p.avatarPath||null;
+    }, ()=>this.setState({profilErr:'Le profil ne se synchronise plus. Recharge la page.'}));
+  }
+
+  enregistrerProfil(){
+    const api=window_donnees;
+    if(!api) return this.setState({profileSaved:true});
+    const P=this.state.profile;
+    this.setState({profilErr:null});
+    api.enregistrerProfil({name:(P.name||'').trim(), handle:(P.handle||'').trim(), phone:(P.phone||'').trim()})
+      .then(()=>{ this._profilTouche=false; this.setState({profileSaved:true}); })
+      .catch(err=>{ console.error('Profil non enregistre', err); this.setState({profilErr:"Le profil n'a pas pu être enregistré."}); });
+  }
+
+  setProfile(k,v){
+    if(window_donnees) this._profilTouche = true; this.setState(s=>({profile:Object.assign({},s.profile,{[k]:v}),profileSaved:false})); }
   setPwd(k,v){ this.setState(s=>({pwd:Object.assign({},s.pwd,{[k]:v}),pwdMsg:null})); }
   toggleNotif(k){ this.setState(s=>({notifs:Object.assign({},s.notifs,{[k]:!s.notifs[k]})})); }
   pickAvatar(e){
-    const f=e.target.files&&e.target.files[0]; if(!f) return;
+    const f=e.target.files&&e.target.files[0];
+    e.target.value='';
+    if(!f) return;
+    const api=window_donnees;
+    if(api){
+      this.setState({profilEnvoi:true, profilErr:null});
+      return api.envoyerAvatar(f)
+        .then(({chemin})=>{ this._avatarPath=chemin; this.setState({profilEnvoi:false}); })
+        .catch(err=>{
+          console.error('Envoi de la photo interrompu', err);
+          this.setState({profilEnvoi:false, profilErr:err.message||"La photo n'a pas pu être envoyée."});
+        });
+    }
     if(this.state.avatarUrl) URL.revokeObjectURL(this.state.avatarUrl);
     this.setState({avatarUrl:URL.createObjectURL(f),profileSaved:false});
   }
-  removeAvatar(){ if(this.state.avatarUrl) URL.revokeObjectURL(this.state.avatarUrl); this.setState({avatarUrl:null,profileSaved:false}); }
+  removeAvatar(){
+    const api=window_donnees;
+    if(api){
+      return api.retirerAvatar(this._avatarPath)
+        .then(()=>{ this._avatarPath=null; })
+        .catch(err=>{ console.error('Retrait de la photo impossible', err); this.setState({profilErr:"La photo n'a pas pu être retirée."}); });
+    }
+    if(this.state.avatarUrl) URL.revokeObjectURL(this.state.avatarUrl);
+    this.setState({avatarUrl:null,profileSaved:false});
+  }
   pwdScore(p){
     let s=0; if(p.length>=8) s++; if(/[A-Z]/.test(p)) s++; if(/[0-9]/.test(p)) s++; if(/[^A-Za-z0-9]/.test(p)) s++;
     return s;
@@ -363,8 +488,253 @@ export class Logic extends DCLogic {
     this.setState({pwd:{current:'',next:'',confirm:''},pwdMsg:'Mot de passe mis à jour.',pwdMsgOk:true});
   }
 
+  /* ---------- session ---------- */
+  // La fonction vient d'App.jsx en prop : la logique issue du design ne connait
+  // pas Firebase. Hors application — apercu du design — elle est absente, et le
+  // bouton reste alors sans effet plutot que de casser la maquette.
+  seDeconnecter(){
+    const partir = this.props.deconnexion;
+    if(!partir || this.state.deconnexionEnCours) return;
+    this.setState({deconnexionEnCours:true});
+    Promise.resolve(partir()).catch(err=>{
+      // En cas d'echec on redonne la main : laisser le bouton fige donnerait
+      // l'illusion d'une deconnexion qui n'a pas eu lieu.
+      console.error('Deconnexion impossible', err);
+      this.setState({deconnexionEnCours:false});
+    });
+  }
+
+  /* ---------- tableau de bord ---------- */
+  // La periode selectionnee est chargee avec celle qui lui sert de comparaison,
+  // puis tout — totaux, evolutions, serie du graphique, top produits — se calcule
+  // en memoire. Les regroupements par produit ne sont pas faisables cote serveur :
+  // Firestore ne sait pas grouper.
+  chargerTableauDeBord(){
+    const api = window_donnees;
+    if(!api || this._dashEnCours) return;
+
+    const id = this.state.period;
+    this._dashEnCours = true;
+    this._dashCle = id;   // retenu avant l'appel : un echec ne doit pas boucler
+    this.setState({dashLoading:true, dashErr:null});
+
+    let bornes;
+    try { bornes = api.bornesPeriode(id); }
+    catch(err){
+      console.error('Periode inconnue', err);
+      this._dashEnCours = false;
+      return this.setState({dashLoading:false, dashErr:'Période inconnue.'});
+    }
+
+    api.chargerPeriodeEtPrecedente(bornes).then(({courant, precedent})=>{
+      const t = api.totaux(courant);
+      this._dash = {
+        cle:id, bornes:bornes, commandes:courant, totaux:t,
+        evolutions:api.evolutions(t, api.totaux(precedent)),
+        serie:api.serie(courant, api.intervalles(bornes))
+      };
+      this.setState({dashLoading:false});
+    }).catch(err=>{
+      console.error('Chargement du tableau de bord interrompu', err);
+      this._dash = null;
+      this.setState({dashLoading:false, dashErr:'Impossible de charger les indicateurs.'});
+    }).then(()=>{ this._dashEnCours = false; });
+  }
+
+  /**
+   * Vrai dans l'application, faux dans l'apercu du design.
+   *
+   * C'est la frontiere qui decide si le jeu de demonstration a le droit de
+   * s'afficher. Dans l'application, il ne doit JAMAIS apparaitre : le voir
+   * clignoter une fraction de seconde avant les vrais chiffres donne a croire
+   * a des donnees qui n'existent pas.
+   */
+  enLigne(){ return !!window_donnees; }
+
+  /** Periode affichee : reelle des que chargee, jeu de demonstration sinon. */
+  periodeCourante(){
+    const base = this.PERIODS.find(p=>p.id===this.state.period) || this.PERIODS[0];
+    const d = this._dash;
+    if(d && d.cle === this.state.period) return Object.assign({}, base, d.totaux, d.evolutions);
+    if(this.enLigne()) return Object.assign({}, base, {ca:0,com:0,orders:0,reglees:0,attente:0,ineligibles:0,panier:0,caT:null,comT:null,ordT:null,panierT:null});
+    return base;
+  }
+
+  /** Les indicateurs sont-ils prets a etre lus ? Faux pendant le chargement. */
+  dashPret(){
+    if(!this.enLigne()) return true;   // apercu du design : le jeu de demonstration fait foi
+    return !this.state.dashLoading && !!(this._dash && this._dash.cle === this.state.period);
+  }
+
+  /* ---------- bibliotheques (videos et rushs) ---------- */
+  // Les deux pages partagent ces methodes : meme structure, donc meme code.
+  // Hors ligne — apercu du design — elles rendent la main et chaque page garde
+  // son comportement en memoire.
+  ecouterBibliotheques(){
+    const api = window_donnees;
+    if(!api) return;
+    this._stopBib = [
+      api.ecouterBibliotheque(api.VIDEOS, items=>this.setState({vidItems:items}), ()=>this.bibPanne()),
+      api.ecouterBibliotheque(api.RUSHES, items=>this.setState({rushItems:items}), ()=>this.bibPanne())
+    ];
+  }
+  bibPanne(){ this.setState({bibErr:'La bibliothèque ne se synchronise plus. Recharge la page.'}); }
+  bibEchec(err,msg){ console.error(msg, err); this.setState({bibEnvoi:null, bibErr:msg}); }
+
+  bibEnvoyer(collection, dossier, files){
+    const api = window_donnees;
+    if(!files.length) return;
+    this.setState({bibErr:null, bibEnvoi:0});
+    // En serie plutot qu'en parallele : plusieurs envois simultanes se volent la
+    // bande passante et rendent la progression illisible.
+    files.reduce(
+      (chaine,f)=>chaine.then(()=>api.envoyerDansBibliotheque(collection,f,dossier,pct=>this.setState({bibEnvoi:pct}))),
+      Promise.resolve()
+    ).then(()=>this.setState({bibEnvoi:null}))
+     .catch(err=>this.bibEchec(err,"L'envoi n'a pas abouti."));
+  }
+
+  bibNouveauDossier(collection, dossier, nom, cleRenomme, cleValeur){
+    window_donnees.creerDossier(collection, nom, dossier)
+      .then(id=>this.setState({[cleRenomme]:id, [cleValeur]:nom}))
+      .catch(err=>this.bibEchec(err,"Le dossier n'a pas pu être créé."));
+  }
+
+  bibSupprimer(collection, items, id, clePreview){
+    const element = items.find(i=>i.id===id);
+    if(!element) return;
+    window_donnees.supprimerElement(collection, element, items)
+      .catch(err=>this.bibEchec(err,"La suppression n'a pas abouti."));
+    this.setState(s=>({[clePreview]: s[clePreview]===id ? null : s[clePreview]}));
+  }
+
+  /* ---------- rushs ---------- */
+  rushChildren(){
+    const S=this.state, q=S.rushQuery.trim().toLowerCase();
+    let arr=S.rushItems.filter(i=>i.parent===S.rushFolder);
+    if(q) arr=S.rushItems.filter(i=>i.name.toLowerCase().indexOf(q)>=0);
+    return arr.sort((a,b)=>(a.kind===b.kind ? b.createdAt-a.createdAt : (a.kind==='folder'?-1:1)));
+  }
+  rushAddFiles(files){
+    if(window_donnees) return this.bibEnvoyer(window_donnees.RUSHES, this.state.rushFolder, files);
+    if(!files.length) return;
+    const items=files.map((f,k)=>{
+      const id=this.state.rushNextId+k;
+      const ext=(f.name.split('.').pop()||'').toUpperCase();
+      const item={id,kind:'file',name:f.name,parent:this.state.rushFolder,createdAt:Date.now(),size:f.size,ext:ext,url:URL.createObjectURL(f),duration:null};
+      const v=document.createElement('video');
+      v.preload='metadata';
+      v.onloadedmetadata=()=>{ const d=v.duration; this.setState(s=>({rushItems:s.rushItems.map(i=>i.id===id?Object.assign({},i,{duration:d}):i)})); };
+      v.src=item.url;
+      return item;
+    });
+    this.setState(s=>({rushItems:s.rushItems.concat(items),rushNextId:s.rushNextId+items.length,rushDrag:false}));
+  }
+  rushNewFolderFn(){
+    if(window_donnees){
+      const nom='Nouveau dossier '+(this.state.rushItems.filter(i=>i.kind==='folder').length+1);
+      return this.bibNouveauDossier(window_donnees.RUSHES, this.state.rushFolder, nom, 'rushRenameId', 'rushRenameVal');
+    }
+    const id=this.state.rushNextId;
+    const n=this.state.rushItems.filter(i=>i.kind==='folder').length+1;
+    this.setState(s=>({
+      rushItems:s.rushItems.concat([{id,kind:'folder',name:'Nouveau dossier '+n,parent:s.rushFolder,createdAt:Date.now()}]),
+      rushNextId:id+1, rushRenameId:id, rushRenameVal:'Nouveau dossier '+n
+    }));
+  }
+  rushDelete(id){
+    if(window_donnees) return this.bibSupprimer(window_donnees.RUSHES, this.state.rushItems, id, 'rushPreviewId');
+    this.setState(s=>{
+      const target=s.rushItems.find(i=>i.id===id);
+      if(target&&target.url) URL.revokeObjectURL(target.url);
+      return {rushItems:s.rushItems.filter(i=>i.id!==id&&i.parent!==id), rushPreviewId:s.rushPreviewId===id?null:s.rushPreviewId};
+    });
+  }
+  rushMove(id,parent){
+    if(id===parent) return;
+    if(window_donnees){ this.setState({rushOverId:null});
+      return window_donnees.deplacer(window_donnees.RUSHES,id,parent).catch(e=>this.bibEchec(e,"Le déplacement n'a pas abouti.")); }
+    this.setState(s=>({rushItems:s.rushItems.map(i=>i.id===id?Object.assign({},i,{parent:parent}):i), rushOverId:null}));
+  }
+  rushSaveName(){
+    if(window_donnees){
+      const id=this.state.rushRenameId, v=(this.state.rushRenameVal||'').trim();
+      this.setState({rushRenameId:null});
+      if(!v) return;
+      return window_donnees.renommer(window_donnees.RUSHES,id,v).catch(e=>this.bibEchec(e,"Le renommage n'a pas abouti."));
+    }
+    const id=this.state.rushRenameId, v=this.state.rushRenameVal.trim();
+    if(!v) return this.setState({rushRenameId:null});
+    this.setState(s=>({rushItems:s.rushItems.map(i=>i.id===id?Object.assign({},i,{name:v}):i), rushRenameId:null}));
+  }
+
+  /* ---------- import ---------- */
+  ouvrirImport(){ if(this.importInputRef.current) this.importInputRef.current.click(); }
+  onFichierImport(e){
+    const fichier = e.target.files && e.target.files[0];
+    e.target.value = '';   // permet de reimporter le meme fichier d'affilee
+    if(!fichier) return;
+    const api = window_donnees;
+    if(!api) return;
+
+    this.setState({importEnCours:true, importMsg:'Lecture du fichier…', importErr:null});
+
+    api.analyserFichier(fichier).then(r=>{
+      if(!r.commandes.length){
+        this.setState({importEnCours:false, importMsg:null,
+          importErr:"Aucune commande lisible dans ce fichier. Verifie qu'il s'agit bien d'un export de commissions TikTok Shop."});
+        return;
+      }
+      return api.importerCommandes(r.commandes, (faites,total)=>{
+        this.setState({importMsg:'Ecriture — '+this.fmtNum(faites)+' / '+this.fmtNum(total)});
+      }).then(bilan=>{
+        const pluriel=(n,mot,suffixe)=>this.fmtNum(n)+' '+mot+(n>1?(suffixe||'s'):'');
+        const parties=[pluriel(bilan.ajoutees,'ajoutée'), pluriel(bilan.misesAJour,'mise')+(bilan.misesAJour>1?' à jour':' à jour')];
+        if(r.doublonsDansLeFichier) parties.push(pluriel(r.doublonsDansLeFichier,'doublon')+' dans le fichier');
+        if(r.ignorees) parties.push(pluriel(r.ignorees,'ligne')+' ignorée'+(r.ignorees>1?'s':''));
+        this._periode = null;   // force le rechargement de la periode affichee
+        this.setState({importEnCours:false, importMsg:parties.join(' · ')});
+      });
+    }).catch(err=>{
+      console.error('Import interrompu', err);
+      this.setState({importEnCours:false, importMsg:null,
+        importErr:'Import impossible : '+((err && err.message) || 'fichier illisible')});
+    });
+  }
+
   /* ---------- commandes ---------- */
+  // Charge les commandes du compte connecte depuis Firestore. Hors application
+  // — apercu du design — `window_donnees` n'existe pas : on garde alors le jeu
+  // de demonstration genere par genOrders(), pour que la maquette reste lisible.
+  oublierCachesCommandes(){ this.ORDERS = null; this._ordersCache = null; }
+  chargerCommandes(){
+    const api = window_donnees;
+    if(!api || this._chargementEnCours) return;
+    const F = this.state.ordFilters;
+    const choisie = (F.from || F.to) ? {from:F.from, to:F.to} : null;
+
+    this._chargementEnCours = true;
+    // Retenu avant meme l'appel : en cas d'echec, componentDidUpdate ne doit pas
+    // relancer la meme requete en boucle.
+    this._periode = F.from+'→'+F.to;
+    this.setState({ordLoading:true, ordErr:null});
+
+    Promise.resolve(choisie || api.periodeParDefaut()).then(p=>{
+      if(!p){ this._commandes=[]; this.oublierCachesCommandes(); this.setState({ordLoading:false}); return; }
+      return api.chargerPeriode(p).then(rows=>{
+        this._commandes = rows;
+        this._periode = p.from+'→'+p.to;
+        this.oublierCachesCommandes();   // caches bâtis sur le jeu de démonstration
+        this.setState(s=>({ ordLoading:false, ordPage:1,
+          ordFilters:Object.assign({},s.ordFilters,{from:p.from,to:p.to}) }));
+      });
+    }).catch(err=>{
+      console.error('Chargement des commandes interrompu', err);
+      this.setState({ordLoading:false, ordErr:'Impossible de charger les commandes.'});
+    }).then(()=>{ this._chargementEnCours = false; });
+  }
   genOrders(){
+    if(this.enLigne()) return this._commandes || [];
     let s=987654321; const rnd=()=>{ s=(s*1103515245+12345)%2147483648; return s/2147483648; };
     const dist=[['Réglée',0.58],['En attente',0.2],['Inéligible',0.12],['Remboursée',0.1]];
     const out=[];
@@ -435,7 +805,7 @@ export class Logic extends DCLogic {
     }
     return cells;
   }
-  setOrdFilter(k,v){ this.setState(s=>({ ordFilters:Object.assign({},s.ordFilters,{[k]:v}) })); }
+  setOrdFilter(k,v){ this.setState(s=>({ ordPage:1, ordFilters:Object.assign({},s.ordFilters,{[k]:v}) })); }
 
   /* ---------- partenaires & prospection ---------- */
   statusColor(status){
@@ -478,6 +848,12 @@ export class Logic extends DCLogic {
   }
 
   /* ---------- idées / brainstorming ---------- */
+  /** Ce qu'on affiche d'une idee en une ligne, selon ce qu'elle contient. */
+  libelleIdee(it){
+    if(it.type==='link') return this.domainOf(it.url)||it.url;
+    if(it.type==='video') return it.videoName||'Vidéo';
+    return it.text||'';
+  }
   fmtIdeaTime(ts){ const d=new Date(ts); return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})+' · '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
   domainOf(url){ try{ return new URL(url).hostname.replace('www.',''); }catch(e){ return url; } }
   addIdea(){
@@ -485,11 +861,44 @@ export class Logic extends DCLogic {
     if(!txt) return;
     const isLink=/^https?:\/\/\S+$/i.test(txt);
     const id=this.state.nextIdeaId;
-    const item=isLink?{id,type:'link',url:txt,pinned:false,createdAt:Date.now()}:{id,type:'text',text:txt,pinned:false,createdAt:Date.now()};
+    const contenu=isLink?{type:'link',url:txt}:{type:'text',text:txt};
+    const api=window_donnees;
+    if(api){
+      // On vide le champ tout de suite : l'ecoute ramenera l'idee d'elle-meme.
+      this.setState({composerText:''});
+      api.ajouterIdee(contenu).catch(err=>{
+        console.error('Idee non enregistree', err);
+        this.setState({composerText:txt, ideasErr:"L'idée n'a pas pu être enregistrée."});
+      });
+      return;
+    }
+    const item=Object.assign({id,pinned:false,createdAt:Date.now()},contenu);
     this.setState(s=>({ideas:[item,...s.ideas],nextIdeaId:s.nextIdeaId+1,composerText:''}));
   }
-  removeIdea(id){ this.setState(s=>({ideas:s.ideas.filter(i=>i.id!==id)})); }
-  togglePinIdea(id){ this.setState(s=>({ideas:s.ideas.map(i=>i.id===id?Object.assign({},i,{pinned:!i.pinned}):i)})); }
+  removeIdea(id){
+    const api=window_donnees;
+    if(api){
+      const idee=this.state.ideas.find(i=>i.id===id);
+      if(idee) api.supprimerIdee(idee).catch(err=>{
+        console.error('Suppression impossible', err);
+        this.setState({ideasErr:"L'idée n'a pas pu être supprimée."});
+      });
+      return;
+    }
+    this.setState(s=>({ideas:s.ideas.filter(i=>i.id!==id)}));
+  }
+  togglePinIdea(id){
+    const api=window_donnees;
+    if(api){
+      const idee=this.state.ideas.find(i=>i.id===id);
+      if(idee) api.marquerIdee(id,!idee.pinned).catch(err=>{
+        console.error('Marquage impossible', err);
+        this.setState({ideasErr:"Le marquage n'a pas pu être enregistré."});
+      });
+      return;
+    }
+    this.setState(s=>({ideas:s.ideas.map(i=>i.id===id?Object.assign({},i,{pinned:!i.pinned}):i)}));
+  }
   onDragOver(e){ e.preventDefault(); if(!this.state.dragOver) this.setState({dragOver:true}); }
   onDragLeave(){ this.setState({dragOver:false}); }
   onDrop(e){
@@ -505,6 +914,17 @@ export class Logic extends DCLogic {
     e.target.value='';
   }
   addVideoIdea(file){
+    const api=window_donnees;
+    if(api){
+      this.setState({ideasEnvoi:0, ideasErr:null});
+      api.ajouterIdeeVideo(file, pct=>this.setState({ideasEnvoi:pct}))
+        .then(()=>this.setState({ideasEnvoi:null}))
+        .catch(err=>{
+          console.error('Envoi de la video interrompu', err);
+          this.setState({ideasEnvoi:null, ideasErr:"La vidéo n'a pas pu être envoyée."});
+        });
+      return;
+    }
     const url=URL.createObjectURL(file);
     const id=this.state.nextIdeaId;
     const item={id,type:'video',videoUrl:url,videoName:file.name,pinned:false,createdAt:Date.now(),stored:false};
@@ -536,58 +956,13 @@ export class Logic extends DCLogic {
     }
   }
 
-  /* ---------- rushs ---------- */
-  rushFmtSize(b){ if(!b) return '—'; if(b>=1073741824) return (b/1073741824).toFixed(1).replace('.',',')+' Go'; if(b>=1048576) return Math.round(b/1048576)+' Mo'; return Math.round(b/1024)+' Ko'; }
-  rushFmtDur(s){ if(!s) return null; const m=Math.floor(s/60), r=Math.round(s%60); return m+':'+(r<10?'0':'')+r; }
-  rushAgo(ts){
+  fmtTaille(b){ if(!b) return '—'; if(b>=1073741824) return (b/1073741824).toFixed(1).replace('.',',')+' Go'; if(b>=1048576) return Math.round(b/1048576)+' Mo'; return Math.round(b/1024)+' Ko'; }
+  fmtDuree(s){ if(!s) return null; const m=Math.floor(s/60), r=Math.round(s%60); return m+':'+(r<10?'0':'')+r; }
+  ilYA(ts){
     const d=Math.floor((Date.now()-ts)/60000);
     if(d<60) return 'il y a '+Math.max(1,d)+' min';
     if(d<1440) return 'il y a '+Math.floor(d/60)+' h';
     return 'il y a '+Math.floor(d/1440)+' j';
-  }
-  rushChildren(){
-    const S=this.state, q=S.rushQuery.trim().toLowerCase();
-    let arr=S.rushItems.filter(i=>i.parent===S.rushFolder);
-    if(q) arr=S.rushItems.filter(i=>i.name.toLowerCase().indexOf(q)>=0);
-    return arr.sort((a,b)=>(a.kind===b.kind ? b.createdAt-a.createdAt : (a.kind==='folder'?-1:1)));
-  }
-  rushAddFiles(files){
-    if(!files.length) return;
-    const items=files.map((f,k)=>{
-      const id=this.state.rushNextId+k;
-      const ext=(f.name.split('.').pop()||'').toUpperCase();
-      const item={id,kind:'file',name:f.name,parent:this.state.rushFolder,createdAt:Date.now(),size:f.size,ext:ext,url:URL.createObjectURL(f),duration:null};
-      const v=document.createElement('video');
-      v.preload='metadata';
-      v.onloadedmetadata=()=>{ const d=v.duration; this.setState(s=>({rushItems:s.rushItems.map(i=>i.id===id?Object.assign({},i,{duration:d}):i)})); };
-      v.src=item.url;
-      return item;
-    });
-    this.setState(s=>({rushItems:s.rushItems.concat(items),rushNextId:s.rushNextId+items.length,rushDrag:false}));
-  }
-  rushNewFolderFn(){
-    const id=this.state.rushNextId;
-    const n=this.state.rushItems.filter(i=>i.kind==='folder').length+1;
-    this.setState(s=>({
-      rushItems:s.rushItems.concat([{id,kind:'folder',name:'Nouveau dossier '+n,parent:s.rushFolder,createdAt:Date.now()}]),
-      rushNextId:id+1, rushRenameId:id, rushRenameVal:'Nouveau dossier '+n
-    }));
-  }
-  rushDelete(id){
-    this.setState(s=>{
-      const target=s.rushItems.find(i=>i.id===id);
-      if(target&&target.url) URL.revokeObjectURL(target.url);
-      return {rushItems:s.rushItems.filter(i=>i.id!==id&&i.parent!==id), rushPreviewId:s.rushPreviewId===id?null:s.rushPreviewId};
-    });
-  }
-  rushMove(id,parent){
-    if(id===parent) return;
-    this.setState(s=>({rushItems:s.rushItems.map(i=>i.id===id?Object.assign({},i,{parent:parent}):i), rushOverId:null}));
-  }
-  rushSaveName(){
-    const id=this.state.rushRenameId, v=this.state.rushRenameVal.trim();
-    if(!v) return this.setState({rushRenameId:null});
-    this.setState(s=>({rushItems:s.rushItems.map(i=>i.id===id?Object.assign({},i,{name:v}):i), rushRenameId:null}));
   }
 
   /* ---------- vidéos (bibliothèque) ---------- */
@@ -609,6 +984,7 @@ export class Logic extends DCLogic {
     return arr.sort((a,b)=>(a.kind===b.kind ? b.createdAt-a.createdAt : (a.kind==='folder'?-1:1)));
   }
   vidAddFiles(files){
+    if(window_donnees) return this.bibEnvoyer(window_donnees.VIDEOS, this.state.vidFolder, files);
     if(!files.length) return;
     const items=files.map((f,k)=>{
       const id=this.state.vidNextId+k;
@@ -623,6 +999,10 @@ export class Logic extends DCLogic {
     this.setState(s=>({vidItems:s.vidItems.concat(items),vidNextId:s.vidNextId+items.length,vidDrag:false}));
   }
   vidNewFolderFn(){
+    if(window_donnees){
+      const nom='Nouveau dossier '+(this.state.vidItems.filter(i=>i.kind==='folder').length+1);
+      return this.bibNouveauDossier(window_donnees.VIDEOS, this.state.vidFolder, nom, 'vidRenameId', 'vidRenameVal');
+    }
     const id=this.state.vidNextId;
     const n=this.state.vidItems.filter(i=>i.kind==='folder').length+1;
     this.setState(s=>({
@@ -631,26 +1011,37 @@ export class Logic extends DCLogic {
     }));
   }
   vidDelete(id){
+    if(window_donnees) return this.bibSupprimer(window_donnees.VIDEOS, this.state.vidItems, id, 'vidPreviewId');
     this.setState(s=>{
       const t=s.vidItems.find(i=>i.id===id);
       if(t&&t.url) URL.revokeObjectURL(t.url);
       return {vidItems:s.vidItems.filter(i=>i.id!==id&&i.parent!==id), vidPreviewId:s.vidPreviewId===id?null:s.vidPreviewId};
     });
   }
-  vidMove(id,parent){ if(id===parent) return; this.setState(s=>({vidItems:s.vidItems.map(i=>i.id===id?Object.assign({},i,{parent:parent}):i), vidOverId:null})); }
+  vidMove(id,parent){ if(id===parent) return;
+    if(window_donnees){ this.setState({vidOverId:null});
+      return window_donnees.deplacer(window_donnees.VIDEOS,id,parent).catch(e=>this.bibEchec(e,"Le déplacement n'a pas abouti.")); } this.setState(s=>({vidItems:s.vidItems.map(i=>i.id===id?Object.assign({},i,{parent:parent}):i), vidOverId:null})); }
   vidSaveName(){
+    if(window_donnees){
+      const id=this.state.vidRenameId, v=(this.state.vidRenameVal||'').trim();
+      this.setState({vidRenameId:null});
+      if(!v) return;
+      return window_donnees.renommer(window_donnees.VIDEOS,id,v).catch(e=>this.bibEchec(e,"Le renommage n'a pas abouti."));
+    }
     const id=this.state.vidRenameId, v=this.state.vidRenameVal.trim();
     if(!v) return this.setState({vidRenameId:null});
     this.setState(s=>({vidItems:s.vidItems.map(i=>i.id===id?Object.assign({},i,{name:v}):i), vidRenameId:null}));
   }
-  vidSetStatus(id,st){ this.setState(s=>({vidItems:s.vidItems.map(i=>i.id===id?Object.assign({},i,{status:st}):i), vidMenuId:null})); }
+  vidSetStatus(id,st){
+    if(window_donnees){ this.setState({vidMenuId:null});
+      return window_donnees.changerStatut(window_donnees.VIDEOS,id,st).catch(e=>this.bibEchec(e,"Le statut n'a pas pu être changé.")); } this.setState(s=>({vidItems:s.vidItems.map(i=>i.id===id?Object.assign({},i,{status:st}):i), vidMenuId:null})); }
 
   /* ---------- assistant IA ---------- */
   allOrders(){ return this._ordersCache || (this._ordersCache = this.genOrders()); }
 
   dataDigest(){
     const S=this.state;
-    const cur=this.PERIODS.find(p=>p.id===S.period)||this.PERIODS[0];
+    const cur=this.periodeCourante();
     const orders=this.allOrders();
     const n1=v=>Math.round(v*10)/10;
     const rate=o=>o.ca?n1(o.com/o.ca*100):0;
@@ -675,23 +1066,52 @@ export class Logic extends DCLogic {
 
     const L=[];
     L.push('# PROFIL');
-    L.push('Créatrice : '+S.profile.name+' ('+S.profile.handle+'). Marché : France, TikTok Shop affiliation.');
-    L.push('Date du jour : 21/08/2026. Mois en cours = 2026-08.');
+    const compte=(this.props.user&&this.props.user.email)||S.profile.name;
+    L.push('Créatrice : '+compte+'. Marché : France, TikTok Shop affiliation.');
+    // Date calculee, pas ecrite en dur : un assistant qui se croit en aout 2026
+    // alors qu'on est en octobre raconte n'importe quoi sur « ce mois-ci ».
+    const now=new Date();
+    L.push('Date du jour : '+this.frDate(this.iso(now))+'. Mois en cours = '+this.iso(now).slice(0,7)+'.');
     L.push('');
     L.push('# PERIODE SELECTIONNEE DANS L\'OUTIL : '+(S.customRange ? (S.customRange.from+' → '+S.customRange.to) : cur.label));
     L.push('CA '+cur.ca+' € | Commissions '+cur.com+' € | Commandes '+cur.orders+' | Réglées '+cur.reglees+' | En attente '+cur.attente+' | Inéligibles '+cur.ineligibles);
     L.push('');
-    L.push('# MARQUES (cumul) — nom | commandes | CA € | commissions € | taux com % | panier moyen € | vues');
-    this.BRANDS.forEach(b=>L.push(b.name+' | '+b.orders+' | '+b.ca+' | '+b.com+' | '+rate(b)+' | '+b.panier+' | '+b.vues));
+    // Tout ce qui suit est calcule depuis les commandes de la periode. Les
+    // tableaux de demonstration ne doivent JAMAIS partir au modele : il
+    // raisonnerait avec aplomb sur des marques et des produits inexistants.
+    if(this.enLigne()){
+      const api=window_donnees;
+      const top=(liste,cle,combien)=>liste.slice().sort((a,b)=>b[cle]-a[cle]).slice(0,combien);
+      L.push('Les vues TikTok ne sont pas disponibles : ne raisonne pas dessus et ne les invente pas.');
+      L.push('');
+      L.push('# MARQUES (sur la période) — nom | commandes | CA € | commissions € | taux com % | panier moyen €');
+      top(api.parVendeur(orders),'ca',20).forEach(b=>L.push(b.name+' | '+b.orders+' | '+n1(b.ca)+' | '+n1(b.com)+' | '+n1(b.taux)+' | '+n1(b.panier)));
+      L.push('');
+      L.push('# PRODUITS (sur la période) — nom | marque | commandes | CA € | commissions € | taux com % | panier €');
+      top(api.parProduit(orders),'ca',30).forEach(p=>L.push(p.name+' | '+p.boutique+' | '+p.orders+' | '+n1(p.ca)+' | '+n1(p.com)+' | '+n1(p.taux)+' | '+n1(p.panier)));
+      L.push('');
+      L.push('# VIDEOS (sur la période) — produit | url | commandes | CA € | commissions €');
+      top(api.parVideo(orders),'ca',20).forEach(v=>L.push(v.titre+' | '+v.url+' | '+v.orders+' | '+n1(v.ca)+' | '+n1(v.com)));
+    } else {
+      L.push('# MARQUES (cumul) — nom | commandes | CA € | commissions € | taux com % | panier moyen € | vues');
+      this.BRANDS.forEach(b=>L.push(b.name+' | '+b.orders+' | '+b.ca+' | '+b.com+' | '+rate(b)+' | '+b.panier+' | '+b.vues));
+      L.push('');
+      L.push('# PRODUITS (cumul) — nom | marque | commandes | CA € | commissions € | taux com % | panier € | vues');
+      this.PRODUCTS.forEach(p=>L.push(p.name+' | '+p.boutique+' | '+p.orders+' | '+p.ca+' | '+p.com+' | '+rate(p)+' | '+p.panier+' | '+p.vues));
+      L.push('');
+      L.push('# VIDEOS — titre | produit | commandes | CA € | commissions € | vues | conv % | € par 1000 vues');
+      this.VIDEOS.forEach(v=>L.push(v.titre+' | '+v.produit+' | '+v.orders+' | '+v.ca+' | '+v.com+' | '+v.vues+' | '+n1(v.orders/v.vues*100)+' | '+n1(v.ca/v.vues*1000)));
+    }
     L.push('');
-    L.push('# PRODUITS (cumul) — nom | marque | commandes | CA € | commissions € | taux com % | panier € | vues');
-    this.PRODUCTS.forEach(p=>L.push(p.name+' | '+p.boutique+' | '+p.orders+' | '+p.ca+' | '+p.com+' | '+rate(p)+' | '+p.panier+' | '+p.vues));
-    L.push('');
-    L.push('# VIDEOS — titre | produit | commandes | CA € | commissions € | vues | conv % | € par 1000 vues');
-    this.VIDEOS.forEach(v=>L.push(v.titre+' | '+v.produit+' | '+v.orders+' | '+v.ca+' | '+v.com+' | '+v.vues+' | '+n1(v.orders/v.vues*100)+' | '+n1(v.ca/v.vues*1000)));
-    L.push('');
-    L.push('# COMMANDES par mois — mois | nb | GMV € | commissions €');
-    monthKeys.forEach(m=>L.push(m+' | '+months[m].n+' | '+n1(months[m].gmv)+' | '+n1(months[m].com)));
+    L.push('# TOUT L\'HISTORIQUE, mois par mois — mois | commandes | GMV € | commissions €');
+    if(this._resume && this._resume.length){
+      this._resume.forEach(m=>L.push(m.mois+' | '+m.nb+' | '+n1(m.ca)+' | '+n1(m.com)));
+      const tot=this._resume.reduce((a,m)=>({nb:a.nb+m.nb,ca:a.ca+m.ca,com:a.com+m.com}),{nb:0,ca:0,com:0});
+      L.push('TOTAL depuis le debut : '+tot.nb+' commandes | '+n1(tot.ca)+' € | '+n1(tot.com)+' €');
+      L.push("Le detail par marque, produit et video ci-dessus ne porte QUE sur la periode selectionnee, pas sur tout l'historique. Ne confonds pas les deux.");
+    } else {
+      monthKeys.forEach(m=>L.push(m+' | '+months[m].n+' | '+n1(months[m].gmv)+' | '+n1(months[m].com)));
+    }
     L.push('Statuts (toutes commandes) : '+Object.keys(perStatus).map(k=>k+' '+perStatus[k]).join(', '));
     L.push('');
     L.push('# COMMANDES DU MOIS EN COURS ('+lastMonth+') par produit — produit | marque | nb | GMV € | commissions €');
@@ -699,24 +1119,76 @@ export class Logic extends DCLogic {
       const b=prodMonth[k]; L.push(k+' | '+b.vendeur+' | '+b.n+' | '+n1(b.gmv)+' | '+n1(b.com));
     });
     L.push('');
-    L.push('# CONTENUS A TOURNER');
-    this.FILE.forEach(f=>L.push(f.titre+' | '+f.produit+' | '+f.statut));
+    L.push('# VIDEOS EN PRODUCTION — nom | statut');
+    if(this.enLigne()){
+      S.vidItems.filter(v=>v.kind==='file'&&v.status!=='Postée')
+        .forEach(v=>L.push(v.name+' | '+v.status));
+    } else {
+      this.FILE.forEach(f=>L.push(f.titre+' | '+f.produit+' | '+f.statut));
+    }
     L.push('');
     L.push('# IDEES NOTEES PAR LA CREATRICE');
     S.ideas.slice(0,8).forEach(i=>L.push('- '+(i.type==='text'?i.text:(i.type==='link'?'lien : '+i.url:'vidéo importée'))));
     return L.join('\n');
   }
 
+  /**
+   * Decoupe une reponse en segments pour un rendu structure.
+   *
+   * Le modele a pour consigne de repondre en trois temps : une phrase, des
+   * puces chiffrees, une action. Rendre ces trois temps differemment vaut mieux
+   * que les aplatir dans un pave : la ligne d'action est ce qu'on vient
+   * chercher, elle merite de sauter aux yeux.
+   */
+  segmentsReponse(texte){
+    const sortie=[];
+    String(texte||'').split('\n').map(l=>l.trim()).filter(Boolean).forEach(ligne=>{
+      const action=/^(à|a) faire\b/i.test(ligne);
+      const puce=!action && /^[•\-*]\s*/.test(ligne);
+      sortie.push({
+        key:sortie.length,
+        estAction:action, estPuce:puce, estTexte:!action && !puce,
+        texte:ligne.replace(/^[•\-*]\s*/,'').replace(/^(à|a) faire\s*(aujourd['’]hui)?\s*:?\s*/i,'')
+      });
+    });
+    return sortie;
+  }
+
+  /** Nombre de valeurs distinctes sur la periode chargee. */
+  compteConnecte(cle){
+    if(!this.enLigne()) return cle==='produit'?this.PRODUCTS.length:(cle==='vendeur'?this.BRANDS.length:this.VIDEOS.length);
+    const vus=new Set();
+    this.allOrders().forEach(o=>{ if(o[cle]) vus.add(o[cle]); });
+    return vus.size;
+  }
+
+  /**
+   * Resume mensuel de tout l'historique, charge une fois par session.
+   *
+   * Sans lui, l'assistant ne connait que la periode affichee et annonce deux
+   * mille commandes quand le compte en compte dix fois plus.
+   */
+  chargerResume(){
+    const api=window_donnees;
+    if(!api || this._resumeDemande) return;
+    this._resumeDemande = true;
+    api.resumeMensuel()
+      .then(r=>{ this._resume = r; this.forceUpdate(); })
+      .catch(err=>console.error('Resume mensuel indisponible', err));
+  }
+
   agentSystem(){
     return [
-      "Tu es le conseiller data personnel d'une créatrice TikTok Shop, intégré à son outil TTS Manager.",
+      "Tu es le conseiller data personnel d'une créatrice TikTok Shop, intégré à son outil Rekolt.",
       "Tu réponds en français, tutoiement, ton direct et chaleureux, jamais corporate.",
       "",
       "Règles :",
       "- Réponds TOUJOURS à partir des données ci-dessous. Cite les chiffres exacts (CA, commissions, taux, vues) qui justifient ton raisonnement.",
       "- Si une donnée n'existe pas dans le contexte, dis-le franchement au lieu d'inventer.",
-      "- Sois court : 120 mots max, sauf si on te demande une analyse détaillée.",
-      "- Structure : une phrase de réponse directe, puis 2-3 puces de preuves chiffrées, puis une ligne « À faire aujourd'hui : … » avec une action concrète.",
+      "- SOIS BREF. 80 mots maximum. C'est une contrainte stricte, pas une suggestion.",
+      "- Structure imposée : une phrase de réponse directe, puis 2 puces chiffrées au maximum, puis une ligne « À faire : … ». Rien d'autre.",
+      "- Pas de préambule (« Ok, parfait, je vais te… »), pas de reformulation de la question, pas de conclusion ni de relance (« Ça match ? »). Tu entres dans le vif immédiatement.",
+      "- Une seule recommandation par réponse. Si tu hésites entre deux, choisis la meilleure et tais l'autre.",
       "- Raisonne comme un analyste : compare le taux de commission, le panier moyen, la conversion par vue et le volume — pas seulement le CA brut.",
       "- Pas de markdown lourd : pas de titres #, pas de gras. Puces avec « • ».",
       "",
@@ -736,7 +1208,7 @@ export class Logic extends DCLogic {
     try{
       const out=await window_claude.complete({
         model: this.props.assistantModel==='Approfondi' ? 'claude-sonnet-4-5' : 'claude-haiku-4-5',
-        max_tokens: 900,
+        max_tokens: 400,   // plafond assumé : une reponse longue est une reponse qui noie
         system: this.agentSystem(),
         messages: hist.slice(-8).map(m=>({role:m.role,content:m.content}))
       });
@@ -772,7 +1244,7 @@ export class Logic extends DCLogic {
 
   renderVals(){
     const S=this.state;
-    const cur=this.PERIODS.find(p=>p.id===S.period)||this.PERIODS[0];
+    const cur=this.periodeCourante();
     const tiktok=this.props.tiktokConnected!==false;
     const setPage=id=>this.setState({page:id,periodOpen:false});
 
@@ -798,6 +1270,10 @@ export class Logic extends DCLogic {
       border:assistantOn?'transparent':'var(--border-2)'
     };
     const settingsActive=S.page==='parametres';
+    const deconnexionItem={
+      label:S.deconnexionEnCours?'Déconnexion…':'Se déconnecter',
+      icon:this.iconEl('logout',18,1.8),
+      onClick:()=>this.seDeconnecter() };
     const settingsItem={ label:'Paramètres', icon:this.iconEl('settings',18,1.8), onClick:()=>setPage('parametres'), bg:settingsActive?'var(--primary-soft)':'#F4F3F7', fg:settingsActive?'var(--primary-2)':'var(--text-2)', border:settingsActive?'var(--border-2)':'var(--border)' };
 
     const periodOptions=this.PERIODS.map(p=>{ const active=p.id===S.period&&!S.customRange; return { label:p.label, active, bg:active?'var(--primary-soft)':'transparent', fg:active?'var(--primary-2)':'var(--text)', onClick:()=>this.setState({period:p.id,periodOpen:false,hoverIdx:null,customRange:null,dpStart:null,dpEnd:null}) }; });
@@ -826,26 +1302,61 @@ export class Logic extends DCLogic {
     const elig=(total-cur.ineligibles)/total*100;
 
     // top produits
-    const topSorted=this.PRODUCTS.slice().sort((a,b)=>b[S.topMetric]-a[S.topMetric]).slice(0,5);
-    const topProduits=topSorted.map((p,i)=>({ rank:i+1, name:p.name, ventes:this.fmtNum(p.orders), amount:this.fmtEur(p[S.topMetric]), rankBg:i===0?'var(--primary)':'var(--primary-soft)', rankFg:i===0?'#fff':'var(--primary-2)' }));
+    const topSorted=this.enLigne()
+      ? ((this._dash && this._dash.cle===S.period) ? window_donnees.topProduits(this._dash.commandes, S.topMetric, 5) : [])
+      : this.PRODUCTS.slice().sort((a,b)=>b[S.topMetric]-a[S.topMetric]).slice(0,5);
+    const topProduits=topSorted.map((p,i)=>({ rank:i+1, name:this.tronquer(p.name,45), nameComplet:p.name, ventes:this.fmtNum(p.orders), amount:this.fmtEur(p[S.topMetric]), rankBg:i===0?'var(--primary)':'var(--primary-soft)', rankFg:i===0?'#fff':'var(--primary-2)' }));
     const topToggle={ ca:{onClick:()=>this.setState({topMetric:'ca'}),bg:S.topMetric==='ca'?'var(--card)':'transparent',fg:S.topMetric==='ca'?'var(--primary-2)':'var(--text-3)'}, com:{onClick:()=>this.setState({topMetric:'com'}),bg:S.topMetric==='com'?'var(--card)':'transparent',fg:S.topMetric==='com'?'var(--primary-2)':'var(--text-3)'} };
 
     // file de travail
     const statutMap={'À tourner':['var(--primary-soft)','var(--primary-2)'],'Script':['var(--blue-soft)','var(--blue)'],'À monter':['var(--amber-soft)','var(--amber)'],'À publier':['var(--green-soft)','var(--green)']};
     const fileDeTravail=this.FILE.map(f=>({titre:f.titre,produit:f.produit,statut:f.statut,badgeBg:statutMap[f.statut][0],badgeFg:statutMap[f.statut][1]}));
 
+    // Pretes a poster, de la plus ancienne a la plus recente : c'est l'ordre
+    // dans lequel on veut les publier, pas celui dans lequel on les a montees.
+    const aPoster=S.vidItems
+      .filter(v=>v.kind==='file' && v.status==='Prête à poster')
+      .sort((a,b)=>a.createdAt-b.createdAt)
+      .map(v=>({ nom:this.tronquer(v.name,52), nomComplet:v.name,
+                 quand:this.fmtIdeaTime(v.createdAt), duree:this.fmtDuree(v.duration), ext:v.ext }));
+
+    const ideesMarquees=S.ideas
+      .filter(i=>i.pinned)
+      .sort((a,b)=>b.createdAt-a.createdAt)
+      .map(i=>{ const t=this.libelleIdee(i);
+        return { libelle:this.tronquer(t,64), libelleComplet:t, quand:this.fmtIdeaTime(i.createdAt) }; });
+
     // tables
-    const marquesRaw=this.BRANDS.map(b=>Object.assign({},b,{taux:b.com/b.ca*100}));
+    // Les tableaux Analytics se calculent depuis les commandes de la periode
+    // deja chargee pour le tableau de bord : aucune requete supplementaire, et
+    // les chiffres ne peuvent pas diverger de ceux affiches au-dessus.
+    const cmdPeriode=(this._dash && this._dash.cle===S.period) ? this._dash.commandes : null;
+    const reel=this.enLigne();
+    // Les vues viennent de l'API TikTok, pas des commandes : tant qu'elle n'est
+    // pas branchee, on affiche un tiret plutot qu'un zero qui passerait pour une
+    // vidéo sans audience.
+    const sansVues=o=>Object.assign({vues:null},o);
+
+    const rushKids=this.rushChildren();
+    const rushFolderObj=S.rushFolder!=null?S.rushItems.find(i=>i.id===S.rushFolder):null;
+    const rushPrev=S.rushPreviewId!=null?S.rushItems.find(i=>i.id===S.rushPreviewId):null;
+    const marquesRaw=reel
+      ? (cmdPeriode ? window_donnees.parVendeur(cmdPeriode).map(sansVues) : [])
+      : this.BRANDS.map(b=>Object.assign({},b,{taux:b.com/b.ca*100}));
     const ms=S.sort.marques;
     const marquesRows=this.sortRows(marquesRaw,ms.key,ms.dir).map(b=>{ const t=this.tauxBadge(b.taux); return {name:b.name,orders:this.fmtNum(b.orders),ca:this.fmtEur(b.ca),com:this.fmtEur(b.com),tauxStr:this.fmtPct(b.taux,1),tauxBg:t.bg,tauxFg:t.fg,panier:this.fmtEur(b.panier,2)}; });
     const marquesSort=this.sortUI('marques',['name','orders','ca','com','taux','panier']);
 
-    const prodRaw=this.PRODUCTS.map(p=>Object.assign({},p,{taux:p.com/p.ca*100}));
+    const prodRaw=reel
+      ? (cmdPeriode ? window_donnees.parProduit(cmdPeriode).map(sansVues) : [])
+      : this.PRODUCTS.map(p=>Object.assign({},p,{taux:p.com/p.ca*100}));
     const ps=S.sort.produits;
     const produitsRows=this.sortRows(prodRaw,ps.key,ps.dir).map(p=>{ const t=this.tauxBadge(p.taux); return {name:p.name,boutique:p.boutique,orders:this.fmtNum(p.orders),ca:this.fmtEur(p.ca),com:this.fmtEur(p.com),tauxStr:this.fmtPct(p.taux,1),tauxBg:t.bg,tauxFg:t.fg,panier:this.fmtEur(p.panier,2)}; });
     const produitsSort=this.sortUI('produits',['name','boutique','orders','ca','com','taux','panier']);
 
-    const vidRaw=this.VIDEOS.map(v=>Object.assign({},v,{conv:v.orders/v.vues*100,revvue:v.ca/v.vues}));
+    const vidRaw=reel
+      ? (cmdPeriode ? window_donnees.parVideo(cmdPeriode).map(v=>sansVues(Object.assign({},v,{conv:null,revvue:null}))) : [])
+      : this.VIDEOS.map(v=>Object.assign({},v,{conv:v.orders/v.vues*100,revvue:v.ca/v.vues}));
     const vs=S.sort.videos;
     const videosRows=this.sortRows(vidRaw,vs.key,vs.dir).map(v=>{ const c=this.convBadge(v.conv); return {titre:v.titre,produit:v.produit,orders:this.fmtNum(v.orders),ca:this.fmtEur(v.ca),com:this.fmtEur(v.com),vues:this.fmtViews(v.vues),convStr:this.fmtPct(v.conv,2),convBg:c.bg,convFg:c.fg,revvue:this.fmtEur(v.revvue,3)}; });
     const videosSort=this.sortUI('videos',['titre','produit','orders','ca','com','vues','conv','revvue']);
@@ -854,7 +1365,9 @@ export class Logic extends DCLogic {
     const analyticsTabs=tabs.map(t=>{ const active=S.tab===t[0]; return {label:t[1],onClick:()=>this.setState({tab:t[0]}),color:active?'var(--text)':'var(--text-3)',border:active?'var(--primary)':'transparent'}; });
 
     // partenaires
-    const partnersBase=this.BRANDS.map(b=>Object.assign({},b,{taux:b.com/b.ca*100,nbProduits:this.PRODUCTS.filter(p=>p.boutique===b.name).length}));
+    const partnersBase=reel
+      ? (cmdPeriode ? window_donnees.parPartenaire(cmdPeriode).map(sansVues) : [])
+      : this.BRANDS.map(b=>Object.assign({},b,{taux:b.com/b.ca*100,nbProduits:this.PRODUCTS.filter(p=>p.boutique===b.name).length}));
     const pas=S.sort.partenaires;
     const partenairesRows=this.sortRows(partnersBase,pas.key,pas.dir).map(b=>{ const t=this.tauxBadge(b.taux); return { name:b.name, initial:b.name.charAt(0), nbProduits:b.nbProduits, orders:this.fmtNum(b.orders), ca:this.fmtEur(b.ca), com:this.fmtEur(b.com), tauxStr:this.fmtPct(b.taux,1), tauxBg:t.bg, tauxFg:t.fg, vues:this.fmtViews(b.vues), onClick:()=>this.openPartner(b.name) }; });
     const partenairesSort=this.sortUI('partenaires',['name','nbProduits','orders','ca','com','taux','vues']);
@@ -874,15 +1387,29 @@ export class Logic extends DCLogic {
     // commandes
     if(!this.ORDERS) this.ORDERS=this.genOrders();
     const F=S.ordFilters;
-    const vendeurOptions=['Tous les vendeurs'].concat(this.BRANDS.map(b=>b.name));
-    const statutOptions=['Tous les statuts','Réglée','En attente','Inéligible','Remboursée'];
+    const uniques=(cle,defaut)=> this._commandes
+      ? Array.from(new Set(this.ORDERS.map(o=>o[cle]))).filter(Boolean).sort((a,b)=>a.localeCompare(b,'fr'))
+      : defaut;
+    const vendeurOptions=['Tous les vendeurs'].concat(uniques('vendeur',this.BRANDS.map(b=>b.name)));
+    const statutOptions=['Tous les statuts'].concat(uniques('statut',['Réglée','En attente','Inéligible','Remboursée']));
     const filtered=this.ORDERS.filter(o=>
       (F.vendeur==='Tous les vendeurs'||o.vendeur===F.vendeur) &&
       (F.statut==='Tous les statuts'||o.statut===F.statut) &&
       (!F.from||o.dateKey>=F.from) && (!F.to||o.dateKey<=F.to));
     const cs=S.sort.commandes;
-    const commandesRows=this.sortRows(filtered,cs.key,cs.dir).map(o=>{ const c=this.orderStatusColor(o.statut); return {
-      date:o.dateLabel, produit:o.produit, vendeur:o.vendeur, statut:o.statut, statutBg:c.bg, statutFg:c.fg,
+    const triees=this.sortRows(filtered,cs.key,cs.dir);
+
+    // Le tableau n'affiche qu'une page ; les totaux ci-dessous restent calcules
+    // sur `filtered`, c'est-a-dire la periode entiere. Un total qui ne porterait
+    // que sur les 30 lignes visibles serait faux sans en avoir l'air.
+    const parPage=30;
+    const nbPages=Math.max(1,Math.ceil(triees.length/parPage));
+    const pageCourante=Math.min(Math.max(1,S.ordPage||1),nbPages);
+    const debut=(pageCourante-1)*parPage;
+    const visibles=triees.slice(debut,debut+parPage);
+
+    const commandesRows=visibles.map(o=>{ const c=this.orderStatusColor(o.statut); return {
+      date:o.dateLabel, produit:this.tronquer(o.produit,70), produitComplet:o.produit, vendeur:o.vendeur, statut:o.statut, statutBg:c.bg, statutFg:c.fg,
       gmv:this.fmtEur(o.gmv,2), com:this.fmtEur(o.com,2) }; });
     const cmdSort=this.sortUI('commandes',['dateKey','produit','vendeur','statut','gmv','com']);
     const totGmv=filtered.reduce((a,o)=>a+o.gmv,0), totCom=filtered.reduce((a,o)=>a+o.com,0);
@@ -891,6 +1418,15 @@ export class Logic extends DCLogic {
       {label:'GMV total',value:this.fmtEur(totGmv,2)},
       {label:'Commissions',value:this.fmtEur(totCom,2)}
     ];
+    const pagination={
+      visible: triees.length>parPage,
+      resume: this.fmtNum(debut+1)+'–'+this.fmtNum(Math.min(debut+parPage,triees.length))+' sur '+this.fmtNum(triees.length),
+      page: 'Page '+pageCourante+' / '+nbPages,
+      precOp: pageCourante<=1?'0.4':'1', precPe: pageCourante<=1?'none':'auto',
+      suivOp: pageCourante>=nbPages?'0.4':'1', suivPe: pageCourante>=nbPages?'none':'auto',
+      prec:()=>this.setState(s=>({ordPage:Math.max(1,(s.ordPage||1)-1)})),
+      suiv:()=>this.setState(s=>({ordPage:(s.ordPage||1)+1}))
+    };
 
     // prospection
     const prospectRows=S.prospects.map(p=>{ const c=this.statusColor(p.status); return {
@@ -926,7 +1462,10 @@ export class Logic extends DCLogic {
         isText:it.type==='text', isLink:it.type==='link', isVideo:it.type==='video',
         bg:cardBgCycle[i%cardBgCycle.length], time:this.fmtIdeaTime(it.createdAt),
         onRemove:()=>this.removeIdea(it.id), onPin:()=>this.togglePinIdea(it.id),
-        pinBg:it.pinned?'var(--primary)':'rgba(255,255,255,0.7)', pinFg:it.pinned?'#fff':'var(--text-2)'
+        pinBg:it.pinned?'var(--amber-soft)':'rgba(255,255,255,0.7)', pinFg:it.pinned?'var(--amber)':'var(--text-3)',
+        // Pleine quand l'idee est marquee, en contour sinon : l'etat se lit sans
+        // avoir a comparer deux nuances de fond.
+        pinIcon:this.iconEl('star',13,2,it.pinned?'currentColor':null)
       };
       if(it.type==='text') return Object.assign(base,{text:it.text});
       if(it.type==='link') return Object.assign(base,{url:it.url,domain:this.domainOf(it.url)});
@@ -942,18 +1481,128 @@ export class Logic extends DCLogic {
     };
 
     const meta=this.PAGES[S.page]||this.PAGES.dashboard;
-    const rushKids=this.rushChildren();
     const vidKids=this.vidChildren();
     const vidFolderObj=S.vidFolder!=null?S.vidItems.find(i=>i.id===S.vidFolder):null;
     const vidPrev=S.vidPreviewId!=null?S.vidItems.find(i=>i.id===S.vidPreviewId):null;
-    const rushFolderObj=S.rushFolder!=null?S.rushItems.find(i=>i.id===S.rushFolder):null;
-    const rushPrev=S.rushPreviewId!=null?S.rushItems.find(i=>i.id===S.rushPreviewId):null;
 
     return {
       rootRef:this.rootRef,
       settingsItem,
       pageTitle:meta.title, pageSubtitle:meta.sub,
+      tableauDeBord:{
+        visible: !!(S.dashErr || S.dashLoading || (this._dash && this._dash.cle===S.period && this._dash.totaux.orders===0)),
+        texte: S.dashErr
+          ? S.dashErr
+          : S.dashLoading
+            ? 'Chargement des indicateurs…'
+            : 'Aucune commande sur cette période. Les indicateurs restent à zéro tant qu’aucun import ne la couvre.',
+        bg: S.dashErr?'var(--neg-soft)':'var(--primary-softer)',
+        fg: S.dashErr?'var(--neg)':'var(--text-2)'
+      },
+      compte:this.carteCompte(),
+      profil:{
+        visible: !!(S.profilErr || S.profilEnvoi),
+        texte: S.profilErr || 'Envoi de la photo…',
+        bg: S.profilErr?'var(--neg-soft)':'var(--primary-softer)',
+        fg: S.profilErr?'var(--neg)':'var(--text-2)'
+      },
+      vrai:true,
+      dashPret:this.dashPret(), dashOccupe:!this.dashPret(),
+      idees:{
+        visible: !!(S.ideasErr || S.ideasEnvoi!==null),
+        texte: S.ideasErr || ('Envoi de la vidéo… '+S.ideasEnvoi+' %'),
+        bg: S.ideasErr?'var(--neg-soft)':'var(--primary-softer)',
+        fg: S.ideasErr?'var(--neg)':'var(--text-2)'
+      },
+      bibliotheque:{
+        visible: !!(S.bibErr || S.bibEnvoi!==null),
+        texte: S.bibErr || ('Envoi en cours… '+S.bibEnvoi+' %'),
+        bg: S.bibErr?'var(--neg-soft)':'var(--primary-softer)',
+        fg: S.bibErr?'var(--neg)':'var(--text-2)'
+      },
       isDashboard:S.page==='dashboard', isAnalytics:S.page==='analytics',
+      isRushs:S.page==='rushs',
+      rushQuery:S.rushQuery,
+      onRushQuery:e=>this.setState({rushQuery:e.target.value}),
+      rushIsGrid:S.rushView==='grid'&&rushKids.length>0,
+      rushIsList:S.rushView==='list'&&rushKids.length>0,
+      rushEmpty:rushKids.length===0,
+      rushGridBtn:{onClick:()=>this.setState({rushView:'grid'}),bg:S.rushView==='grid'?'var(--card)':'transparent',fg:S.rushView==='grid'?'var(--primary-2)':'var(--text-3)'},
+      rushListBtn:{onClick:()=>this.setState({rushView:'list'}),bg:S.rushView==='list'?'var(--card)':'transparent',fg:S.rushView==='list'?'var(--primary-2)':'var(--text-3)'},
+      rushInFolder:!!rushFolderObj, rushFolderName:rushFolderObj?rushFolderObj.name:'',
+      rushRootFg:rushFolderObj?'var(--text-3)':'var(--text)',
+      rushGoRoot:()=>this.setState({rushFolder:null,rushQuery:''}),
+      rushNewFolder:()=>this.rushNewFolderFn(),
+      rushInputRef:this.rushRef||(this.rushRef=React.createRef()),
+      rushBrowse:()=>this.rushRef.current&&this.rushRef.current.click(),
+      onRushPick:e=>{ this.rushAddFiles(Array.from(e.target.files||[])); e.target.value=''; },
+      onRushDragOver:e=>{ e.preventDefault(); if(!S.rushDrag) this.setState({rushDrag:true}); },
+      onRushDragLeave:e=>{ e.preventDefault(); this.setState({rushDrag:false}); },
+      onRushDrop:e=>{
+        e.preventDefault();
+        const files=Array.from((e.dataTransfer&&e.dataTransfer.files)||[]).filter(f=>f.type.indexOf('video/')===0||/\.(mp4|mov|avi|mkv|webm|m4v|mpg|mpeg|wmv|flv)$/i.test(f.name));
+        this.setState({rushDrag:false});
+        if(files.length) this.rushAddFiles(files);
+      },
+      rushDropBorder:S.rushDrag?'var(--primary)':'var(--border-2)',
+      rushDropBg:S.rushDrag?'var(--primary-softer)':'transparent',
+      rushCards:rushKids.map(it=>{
+        const isFolder=it.kind==='folder';
+        const over=S.rushOverId===it.id;
+        const count=isFolder?S.rushItems.filter(x=>x.parent===it.id).length:0;
+        const dur=this.fmtDuree(it.duration);
+        const meta=isFolder
+          ? (count?count+(count>1?' éléments':' élément'):'Vide')+' · '+this.ilYA(it.createdAt)
+          : [it.ext,dur,this.fmtTaille(it.size),this.ilYA(it.createdAt)].filter(Boolean).join(' · ');
+        return {
+          key:it.id, name:it.name, meta:meta,
+          draggable:true,
+          border:over?'var(--primary)':'var(--border)',
+          rowAccent:over?'var(--primary)':'transparent',
+          thumbBg:isFolder?'var(--primary-soft)':'#0E0A1A',
+          thumbFg:isFolder?'var(--primary-2)':'rgba(255,255,255,0.72)',
+          smallIcon:this.iconEl(isFolder?'folder':'film',17,1.8),
+          thumb: isFolder
+            ? this.iconEl('folder',34,1.6)
+            : (it.url
+                ? React.createElement('video',{src:it.url,preload:'metadata',muted:true,style:{width:'100%',height:'100%',objectFit:'cover',display:'block'}})
+                : React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',gap:6}},
+                    this.iconEl('play',22,1.8),
+                    React.createElement('span',{style:{fontSize:10.5,fontWeight:700,letterSpacing:'0.06em'}},it.ext||'VIDÉO'))),
+          onOpen:()=> isFolder ? this.setState({rushFolder:it.id,rushQuery:''}) : this.setState({rushPreviewId:it.id}),
+          onRename:e=>{ e.stopPropagation(); this.setState({rushRenameId:it.id,rushRenameVal:it.name}); },
+          onDelete:e=>{ e.stopPropagation(); this.rushDelete(it.id); },
+          onDragStart:e=>{ e.dataTransfer.setData('text/tts-rush',String(it.id)); e.dataTransfer.effectAllowed='move'; },
+          onDragOver:e=>{ if(isFolder){ e.preventDefault(); e.stopPropagation(); if(S.rushOverId!==it.id) this.setState({rushOverId:it.id}); } },
+          onDragLeave:e=>{ if(isFolder&&S.rushOverId===it.id) this.setState({rushOverId:null}); },
+          onDrop:e=>{
+            if(!isFolder) return;
+            e.preventDefault(); e.stopPropagation();
+            const id=parseInt(e.dataTransfer.getData('text/tts-rush'),10);
+            const files=Array.from((e.dataTransfer&&e.dataTransfer.files)||[]);
+            if(!isNaN(id)) this.rushMove(id,it.id);
+            else if(files.length){ this.setState({rushFolder:it.id,rushOverId:null},()=>this.rushAddFiles(files)); }
+            else this.setState({rushOverId:null});
+          }
+        };
+      }),
+      rushRenameOpen:S.rushRenameId!=null, rushRenameVal:S.rushRenameVal,
+      onRushRenameVal:e=>this.setState({rushRenameVal:e.target.value}),
+      onRushRenameKey:e=>{ if(e.key==='Enter') this.rushSaveName(); if(e.key==='Escape') this.setState({rushRenameId:null}); },
+      rushRenameClose:()=>this.setState({rushRenameId:null}),
+      rushRenameSave:()=>this.rushSaveName(),
+      rushPreviewOpen:!!rushPrev,
+      rushPreviewName:rushPrev?rushPrev.name:'',
+      rushPreviewMeta:rushPrev?[rushPrev.ext,this.fmtDuree(rushPrev.duration),this.fmtTaille(rushPrev.size),'importé '+this.ilYA(rushPrev.createdAt)].filter(Boolean).join(' · '):'',
+      rushPreviewMedia:rushPrev
+        ? (rushPrev.url
+            ? React.createElement('video',{src:rushPrev.url,controls:true,autoPlay:false,style:{width:'100%',maxHeight:'62vh',display:'block',background:'#000'}})
+            : React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',gap:10,color:'rgba(255,255,255,0.75)',padding:'50px 30px',textAlign:'center'}},
+                this.iconEl('film',30,1.6),
+                React.createElement('div',{style:{fontSize:13,fontWeight:600,maxWidth:280,lineHeight:1.5}},'Aperçu indisponible — ce rush est stocké côté TikTok Shop. Réimporte le fichier pour le lire ici.')))
+        : null,
+      rushPreviewClose:()=>this.setState({rushPreviewId:null}),
+      rushPreviewRename:()=>this.setState({rushRenameId:rushPrev.id,rushRenameVal:rushPrev.name,rushPreviewId:null}),
       isPartenaires:S.page==='partenaires', isProspection:S.page==='prospection', isIdees:S.page==='idees',
       isCommandes:S.page==='commandes',
       isParametres:S.page==='parametres',
@@ -998,12 +1647,12 @@ export class Logic extends DCLogic {
         const isFolder=it.kind==='folder';
         const over=S.vidOverId===it.id;
         const count=isFolder?S.vidItems.filter(x=>x.parent===it.id).length:0;
-        const dur=this.rushFmtDur(it.duration);
+        const dur=this.fmtDuree(it.duration);
         const st=this.vidStatusColor(it.status);
         const statuses=this.VID_STATUSES();
         const meta=isFolder
-          ? (count?count+(count>1?' vidéos':' vidéo'):'Vide')+' · '+this.rushAgo(it.createdAt)
-          : [dur,this.rushFmtSize(it.size),this.rushAgo(it.createdAt)].filter(Boolean).join(' · ');
+          ? (count?count+(count>1?' vidéos':' vidéo'):'Vide')+' · '+this.ilYA(it.createdAt)
+          : [dur,this.fmtTaille(it.size),this.ilYA(it.createdAt)].filter(Boolean).join(' · ');
         return {
           key:it.id, name:it.name, meta:meta, isFile:!isFolder, draggable:true,
           status:it.status, stBg:st.bg, stFg:st.fg,
@@ -1051,7 +1700,7 @@ export class Logic extends DCLogic {
       vidRenameSave:()=>this.vidSaveName(),
       vidPreviewOpen:!!vidPrev,
       vidPreviewName:vidPrev?vidPrev.name:'',
-      vidPreviewMeta:vidPrev?[vidPrev.ext,this.rushFmtDur(vidPrev.duration),this.rushFmtSize(vidPrev.size),'ajoutée '+this.rushAgo(vidPrev.createdAt)].filter(Boolean).join(' · '):'',
+      vidPreviewMeta:vidPrev?[vidPrev.ext,this.fmtDuree(vidPrev.duration),this.fmtTaille(vidPrev.size),'ajoutée '+this.ilYA(vidPrev.createdAt)].filter(Boolean).join(' · '):'',
       vidPreviewStatuses:vidPrev?this.VID_STATUSES().map(s2=>{
         const c=this.vidStatusColor(s2), on=vidPrev.status===s2;
         return {label:s2,bg:on?c.bg:'var(--card)',fg:on?c.fg:'var(--text-3)',border:on?'transparent':'var(--border-2)',onClick:()=>this.vidSetStatus(vidPrev.id,s2)};
@@ -1065,7 +1714,6 @@ export class Logic extends DCLogic {
         : null,
       vidPreviewClose:()=>this.setState({vidPreviewId:null}),
 
-      isRushs:S.page==='rushs',
       chevronRIcon:this.iconEl('chevronR',15,2),
       folderPlusIcon:this.iconEl('folderPlus',16,1.8),
       uploadIcon:this.iconEl('upload',16,1.9),
@@ -1074,87 +1722,6 @@ export class Logic extends DCLogic {
       listIcon:this.iconEl('list',15,1.9),
       penIcon:this.iconEl('pen',14,1.8),
       trashIcon2:this.iconEl('trash',14,1.8),
-      rushQuery:S.rushQuery,
-      onRushQuery:e=>this.setState({rushQuery:e.target.value}),
-      rushIsGrid:S.rushView==='grid'&&rushKids.length>0,
-      rushIsList:S.rushView==='list'&&rushKids.length>0,
-      rushEmpty:rushKids.length===0,
-      rushGridBtn:{onClick:()=>this.setState({rushView:'grid'}),bg:S.rushView==='grid'?'var(--card)':'transparent',fg:S.rushView==='grid'?'var(--primary-2)':'var(--text-3)'},
-      rushListBtn:{onClick:()=>this.setState({rushView:'list'}),bg:S.rushView==='list'?'var(--card)':'transparent',fg:S.rushView==='list'?'var(--primary-2)':'var(--text-3)'},
-      rushInFolder:!!rushFolderObj, rushFolderName:rushFolderObj?rushFolderObj.name:'',
-      rushRootFg:rushFolderObj?'var(--text-3)':'var(--text)',
-      rushGoRoot:()=>this.setState({rushFolder:null,rushQuery:''}),
-      rushNewFolder:()=>this.rushNewFolderFn(),
-      rushInputRef:this.rushRef||(this.rushRef=React.createRef()),
-      rushBrowse:()=>this.rushRef.current&&this.rushRef.current.click(),
-      onRushPick:e=>{ this.rushAddFiles(Array.from(e.target.files||[])); e.target.value=''; },
-      onRushDragOver:e=>{ e.preventDefault(); if(!S.rushDrag) this.setState({rushDrag:true}); },
-      onRushDragLeave:e=>{ e.preventDefault(); this.setState({rushDrag:false}); },
-      onRushDrop:e=>{
-        e.preventDefault();
-        const files=Array.from((e.dataTransfer&&e.dataTransfer.files)||[]).filter(f=>f.type.indexOf('video/')===0||/\.(mp4|mov|avi|mkv|webm|m4v|mpg|mpeg|wmv|flv)$/i.test(f.name));
-        this.setState({rushDrag:false});
-        if(files.length) this.rushAddFiles(files);
-      },
-      rushDropBorder:S.rushDrag?'var(--primary)':'var(--border-2)',
-      rushDropBg:S.rushDrag?'var(--primary-softer)':'transparent',
-      rushCards:rushKids.map(it=>{
-        const isFolder=it.kind==='folder';
-        const over=S.rushOverId===it.id;
-        const count=isFolder?S.rushItems.filter(x=>x.parent===it.id).length:0;
-        const dur=this.rushFmtDur(it.duration);
-        const meta=isFolder
-          ? (count?count+(count>1?' éléments':' élément'):'Vide')+' · '+this.rushAgo(it.createdAt)
-          : [it.ext,dur,this.rushFmtSize(it.size),this.rushAgo(it.createdAt)].filter(Boolean).join(' · ');
-        return {
-          key:it.id, name:it.name, meta:meta,
-          draggable:true,
-          border:over?'var(--primary)':'var(--border)',
-          rowAccent:over?'var(--primary)':'transparent',
-          thumbBg:isFolder?'var(--primary-soft)':'#0E0A1A',
-          thumbFg:isFolder?'var(--primary-2)':'rgba(255,255,255,0.72)',
-          smallIcon:this.iconEl(isFolder?'folder':'film',17,1.8),
-          thumb: isFolder
-            ? this.iconEl('folder',34,1.6)
-            : (it.url
-                ? React.createElement('video',{src:it.url,preload:'metadata',muted:true,style:{width:'100%',height:'100%',objectFit:'cover',display:'block'}})
-                : React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',gap:6}},
-                    this.iconEl('play',22,1.8),
-                    React.createElement('span',{style:{fontSize:10.5,fontWeight:700,letterSpacing:'0.06em'}},it.ext||'VIDÉO'))),
-          onOpen:()=> isFolder ? this.setState({rushFolder:it.id,rushQuery:''}) : this.setState({rushPreviewId:it.id}),
-          onRename:e=>{ e.stopPropagation(); this.setState({rushRenameId:it.id,rushRenameVal:it.name}); },
-          onDelete:e=>{ e.stopPropagation(); this.rushDelete(it.id); },
-          onDragStart:e=>{ e.dataTransfer.setData('text/tts-rush',String(it.id)); e.dataTransfer.effectAllowed='move'; },
-          onDragOver:e=>{ if(isFolder){ e.preventDefault(); e.stopPropagation(); if(S.rushOverId!==it.id) this.setState({rushOverId:it.id}); } },
-          onDragLeave:e=>{ if(isFolder&&S.rushOverId===it.id) this.setState({rushOverId:null}); },
-          onDrop:e=>{
-            if(!isFolder) return;
-            e.preventDefault(); e.stopPropagation();
-            const id=parseInt(e.dataTransfer.getData('text/tts-rush'),10);
-            const files=Array.from((e.dataTransfer&&e.dataTransfer.files)||[]);
-            if(!isNaN(id)) this.rushMove(id,it.id);
-            else if(files.length){ this.setState({rushFolder:it.id,rushOverId:null},()=>this.rushAddFiles(files)); }
-            else this.setState({rushOverId:null});
-          }
-        };
-      }),
-      rushRenameOpen:S.rushRenameId!=null, rushRenameVal:S.rushRenameVal,
-      onRushRenameVal:e=>this.setState({rushRenameVal:e.target.value}),
-      onRushRenameKey:e=>{ if(e.key==='Enter') this.rushSaveName(); if(e.key==='Escape') this.setState({rushRenameId:null}); },
-      rushRenameClose:()=>this.setState({rushRenameId:null}),
-      rushRenameSave:()=>this.rushSaveName(),
-      rushPreviewOpen:!!rushPrev,
-      rushPreviewName:rushPrev?rushPrev.name:'',
-      rushPreviewMeta:rushPrev?[rushPrev.ext,this.rushFmtDur(rushPrev.duration),this.rushFmtSize(rushPrev.size),'importé '+this.rushAgo(rushPrev.createdAt)].filter(Boolean).join(' · '):'',
-      rushPreviewMedia:rushPrev
-        ? (rushPrev.url
-            ? React.createElement('video',{src:rushPrev.url,controls:true,autoPlay:false,style:{width:'100%',maxHeight:'62vh',display:'block',background:'#000'}})
-            : React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',gap:10,color:'rgba(255,255,255,0.75)',padding:'50px 30px',textAlign:'center'}},
-                this.iconEl('film',30,1.6),
-                React.createElement('div',{style:{fontSize:13,fontWeight:600,maxWidth:280,lineHeight:1.5}},'Aperçu indisponible — ce rush est stocké côté TikTok Shop. Réimporte le fichier pour le lire ici.')))
-        : null,
-      rushPreviewClose:()=>this.setState({rushPreviewId:null}),
-      rushPreviewRename:()=>this.setState({rushRenameId:rushPrev.id,rushRenameVal:rushPrev.name,rushPreviewId:null}),
 
       isAssistant:S.page==='assistant',
       sparkIcon:this.iconEl('spark',24,1.7),
@@ -1170,6 +1737,9 @@ export class Logic extends DCLogic {
       resetChat:()=>this.setState({chat:[],chatErr:null}),
       chatMsgs:S.chat.map((m,i)=>({
         key:i, who:m.role==='user'?'Toi':'Assistant',
+        estAssistant:m.role!=='user', estUtilisateur:m.role==='user',
+        initiales:m.role==='user'?((S.profile.name||'?').charAt(0)):'',
+        segments:m.role==='user'?[]:this.segmentsReponse(m.content),
         text:m.content.replace(/\*\*/g,'').replace(/^\s*[-*]\s+/gm,'• '),
         justify:m.role==='user'?'flex-end':'flex-start',
         align:m.role==='user'?'right':'left',
@@ -1178,10 +1748,10 @@ export class Logic extends DCLogic {
         border:m.role==='user'?'var(--border-2)':'var(--border)'
       })),
       ctxChips:[
-        {label:this.allOrders().length+' commandes'},
-        {label:this.PRODUCTS.length+' produits'},
-        {label:this.BRANDS.length+' marques'},
-        {label:this.VIDEOS.length+' vidéos'},
+        {label:this.fmtNum(this._resume?this._resume.reduce((a,m)=>a+m.nb,0):this.allOrders().length)+' commandes'},
+        {label:this.fmtNum(this.compteConnecte('produit'))+' produits'},
+        {label:this.fmtNum(this.compteConnecte('vendeur'))+' marques'},
+        {label:this.fmtNum(this.compteConnecte('videoUrl'))+' vidéos'},
         {label:S.customRange?(this.frDate(S.customRange.from)+' → '+this.frDate(S.customRange.to)):cur.label}
       ],
       suggestions:[
@@ -1203,7 +1773,7 @@ export class Logic extends DCLogic {
       onAvatarBrowse:()=>this.avatarRef.current&&this.avatarRef.current.click(),
       onAvatarPick:e=>this.pickAvatar(e),
       onAvatarRemove:()=>this.removeAvatar(),
-      saveProfile:()=>this.setState({profileSaved:true}),
+      saveProfile:()=>this.enregistrerProfil(),
       profileSaved:S.profileSaved,
 
       pwdCurrent:S.pwd.current, pwdNext:S.pwd.next, pwdConfirm:S.pwd.confirm,
@@ -1225,8 +1795,23 @@ export class Logic extends DCLogic {
       ].map(r=>({ label:r[1], sub:r[2], on:S.notifs[r[0]],
         knobLeft:S.notifs[r[0]]?'22px':'3px', trackBg:S.notifs[r[0]]?'var(--primary)':'var(--border-2)',
         onClick:()=>this.toggleNotif(r[0]) })),
-      commandesRows, cmdSort, ordersKpis, vendeurOptions, statutOptions,
-      noCommandes:commandesRows.length===0,
+      commandesRows, cmdSort, ordersKpis, vendeurOptions, statutOptions, pagination,
+      importCommandes:{
+        onClick:()=>this.ouvrirImport(),
+        label:S.importEnCours?'Import en cours…':'Importer',
+        op:S.importEnCours?'0.6':'1', pe:S.importEnCours?'none':'auto',
+        ref:this.importInputRef, onFichier:e=>this.onFichierImport(e),
+        texte:S.importErr||S.importMsg||'',
+        visible:!!(S.importErr||S.importMsg),
+        bg:S.importErr?'var(--neg-soft)':'var(--primary-softer)',
+        fg:S.importErr?'var(--neg)':'var(--text-2)'
+      },
+      // Largeurs inegales : des barres toutes identiques ressemblent a un tableau
+      // vide plutot qu'a un contenu en cours d'arrivee.
+      squelettes:[96,78,88,70,92,82,74,86].map((l,i)=>({key:i,largeur:l+'%'})),
+      chargementCommandes:S.ordLoading,
+      messageVide:S.ordErr||'Aucune commande ne correspond à ces filtres.',
+      noCommandes:commandesRows.length===0 && !S.ordLoading,
       fVendeur:F.vendeur, fStatut:F.statut, fFrom:F.from, fTo:F.to,
       filtersActive:F.vendeur!=='Tous les vendeurs'||F.statut!=='Tous les statuts'||!!F.from||!!F.to,
       setFVendeur:e=>this.setOrdFilter('vendeur',e.target.value),
@@ -1243,9 +1828,9 @@ export class Logic extends DCLogic {
       dpApplyOpacity:S.dpStart?1:0.45,
       dpSelLabel: S.dpStart ? (this.frDate(S.dpStart)+(S.dpEnd?'  →  '+this.frDate(S.dpEnd):'  →  …')) : 'Choisis une date de début',
       stopProp:e=>e.stopPropagation(),
-      resetFilters:()=>this.setState({ordFilters:{vendeur:'Tous les vendeurs',statut:'Tous les statuts',from:'',to:''}}),
+      resetFilters:()=>this.setState({ordPage:1,ordFilters:{vendeur:'Tous les vendeurs',statut:'Tous les statuts',from:'',to:''}}),
       showPeriod:S.page==='dashboard'||S.page==='analytics',
-      navGroups, assistantItem, periodOptions,
+      navGroups, assistantItem, deconnexionItem, periodOptions,
       periodLabel: S.customRange ? (this.frDate(S.customRange.from)+'  →  '+this.frDate(S.customRange.to)) : cur.label,
       periodOpen:S.periodOpen,
       togglePeriod:()=>this.setState(s=>({periodOpen:!s.periodOpen, dpStart:s.periodOpen?s.dpStart:(s.customRange?s.customRange.from:null), dpEnd:s.periodOpen?s.dpEnd:(s.customRange?s.customRange.to:null)})),
@@ -1255,6 +1840,9 @@ export class Logic extends DCLogic {
       chevronRightIcon:this.iconEl('chevronR',16,2), alertIcon:this.iconEl('alert',20,1.9), tiktokIcon:this.iconEl('tiktok',22,1.9),
       otherIcon:this.iconEl(((this.PAGES[S.page]&&{commandes:'bag',videos:'video',idees:'bulb',produits:'box',parametres:'settings'}[S.page])||'box'),30,1.7),
       dashKpis, lineChart:this.renderLineChart(cur), topProduits, topToggle, fileDeTravail, fileCount:this.FILE.length,
+      aPoster, aPosterCount:aPoster.length+(aPoster.length>1?' vidéos prêtes':' vidéo prête'), aPosterVide:aPoster.length===0,
+      ideesMarquees, ideesMarqueesVide:ideesMarquees.length===0,
+      etoileIcon:this.iconEl('star',15,2,'currentColor'), chantierIcon:this.iconEl('chantier',20,1.8), videoIcon:this.iconEl('video',15,1.9),
       analyticsTabs, isCompte:S.tab==='compte', isMarques:S.tab==='marques', isProduits:S.tab==='produits', isVideos:S.tab==='videos',
       compteKpis, isEligLow:cur.ineligibles>0, eligPct:this.fmtPct(elig,1), eligCount:cur.ineligibles, donut:this.renderDonut(cur),
       marquesRows, marquesSort, produitsRows, produitsSort, videosRows, videosSort,
@@ -1297,7 +1885,7 @@ export class Logic extends DCLogic {
       isRecording:S.isRecording, speechSupported, toggleDictation:()=>this.toggleDictation(), micError:S.micError,
       micBorder:S.isRecording?'var(--neg)':'var(--border-2)', micBg:S.isRecording?'var(--neg-soft)':'var(--card)', micFg:S.isRecording?'var(--neg)':'var(--text-2)',
       micLabel:S.isRecording?'Arrêter':'Dicter', micIcon:this.iconEl('mic',15,2),
-      addIdea:()=>this.addIdea(), clipIcon:this.iconEl('video',15,2), linkIcon:this.iconEl('link',16,1.9), pinIcon:this.iconEl('pin',13,2),
+      addIdea:()=>this.addIdea(), clipIcon:this.iconEl('video',15,2), linkIcon:this.iconEl('link',16,1.9), pinIcon:this.iconEl('star',13,2),
       bulbIcon:this.iconEl('bulb',26,1.7)
     };
   }
