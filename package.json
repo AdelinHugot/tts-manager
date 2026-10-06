@@ -1,9 +1,9 @@
 {
-  "name": "tts-manager",
+  "name": "rekolt",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "TTS Manager — Creator Revenue Studio. Tableau de bord d'affiliation TikTok Shop.",
+  "description": "Rekolt — Creator Revenue Studio. Tableau de bord d'affiliation TikTok Shop.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,13 +11,14 @@
     "gen:view": "node tools/dc-to-jsx.mjs",
     "lint": "eslint .",
     "netlify:dev": "netlify dev",
-    "test": "node --test tests/claude-function.test.mjs tests/lib.test.mjs tests/csp.test.mjs",
+    "test": "node --test tests/claude-function.test.mjs tests/lib.test.mjs tests/commandes.test.mjs tests/importCommandes.test.mjs tests/periodes.test.mjs tests/statsCommandes.test.mjs tests/csp.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore,storage --project tts-manager-test \"node --test tests/rules.test.mjs\""
   },
   "dependencies": {
     "firebase": "^12.18.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
