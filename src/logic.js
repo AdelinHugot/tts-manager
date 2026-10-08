@@ -40,6 +40,7 @@ export class Logic extends DCLogic {
       dashLoading:false, dashErr:null,
       ideasErr:null, ideasEnvoi:null,
       bibErr:null, bibEnvoi:null,
+      menuMobileOuvert:false,
       deconnexionEnCours:false,
       dpOpen:false, dpMonth:'2026-08', dpStart:null, dpEnd:null,
       customRange:null,
@@ -1412,11 +1413,18 @@ export class Logic extends DCLogic {
       date:o.dateLabel, produit:this.tronquer(o.produit,70), produitComplet:o.produit, vendeur:o.vendeur, statut:o.statut, statutBg:c.bg, statutFg:c.fg,
       gmv:this.fmtEur(o.gmv,2), com:this.fmtEur(o.com,2) }; });
     const cmdSort=this.sortUI('commandes',['dateKey','produit','vendeur','statut','gmv','com']);
-    const totGmv=filtered.reduce((a,o)=>a+o.gmv,0), totCom=filtered.reduce((a,o)=>a+o.com,0);
+    // Une commande inéligible ne sera jamais payée : elle reste dans le tableau
+    // et dans le compte, mais pas dans les montants. Le nombre exclu est
+    // affiché, sinon l'addition mentale de la colonne GMV ne tomberait pas sur
+    // le total — et c'est ce genre d'écart silencieux qui fait douter du reste.
+    const retenues=filtered.filter(o=>o.statut!=='Inéligible');
+    const nbInel=filtered.length-retenues.length;
+    const totGmv=retenues.reduce((a,o)=>a+o.gmv,0), totCom=retenues.reduce((a,o)=>a+o.com,0);
+    const noteInel=nbInel?this.fmtNum(nbInel)+' inéligible'+(nbInel>1?'s':'')+' exclue'+(nbInel>1?'s':''):null;
     const ordersKpis=[
       {label:'Commandes',value:this.fmtNum(filtered.length)},
-      {label:'GMV total',value:this.fmtEur(totGmv,2)},
-      {label:'Commissions',value:this.fmtEur(totCom,2)}
+      {label:'GMV total',value:this.fmtEur(totGmv,2),sub:noteInel},
+      {label:'Commissions',value:this.fmtEur(totCom,2),sub:noteInel}
     ];
     const pagination={
       visible: triees.length>parPage,
@@ -1499,6 +1507,38 @@ export class Logic extends DCLogic {
         bg: S.dashErr?'var(--neg-soft)':'var(--primary-softer)',
         fg: S.dashErr?'var(--neg)':'var(--text-2)'
       },
+      // Cinq onglets au maximum : au-dela, les libelles se chevauchent sur un
+      // ecran de 375px. Les quatre destinations les plus frequentes restent
+      // accessibles d'un geste, le reste passe dans une feuille.
+      onglets:[
+        {id:'dashboard',label:'Accueil',icon:'home'},
+        {id:'commandes',label:'Commandes',icon:'bag'},
+        {id:'analytics',label:'Analytics',icon:'chart'},
+        {id:'videos',label:'Vidéos',icon:'video'}
+      ].map(o=>({
+        label:o.label,
+        icon:this.iconEl(o.icon,21,S.page===o.id?2.1:1.8),
+        fg:S.page===o.id?'var(--primary-2)':'var(--text-3)',
+        onClick:()=>this.setState({page:o.id,menuMobileOuvert:false,periodOpen:false})
+      })).concat([{
+        label:'Plus',
+        icon:this.iconEl('list',21,1.9),
+        fg:S.menuMobileOuvert?'var(--primary-2)':'var(--text-3)',
+        onClick:()=>this.setState(x=>({menuMobileOuvert:!x.menuMobileOuvert}))
+      }]),
+      ongletsPlus:[
+        {id:'idees',label:'Idées',icon:'bulb'},
+        {id:'rushs',label:'Rushs',icon:'film'},
+        {id:'assistant',label:'Ton assistant perso',icon:'spark'},
+        {id:'parametres',label:'Paramètres',icon:'settings'}
+      ].map(o=>({
+        label:o.label, icon:this.iconEl(o.icon,20,1.9),
+        bg:S.page===o.id?'var(--primary-soft)':'transparent',
+        fg:S.page===o.id?'var(--primary-2)':'var(--text-2)',
+        onClick:()=>this.setState({page:o.id,menuMobileOuvert:false,periodOpen:false})
+      })),
+      menuMobileOuvert:S.menuMobileOuvert,
+      fermerMenuMobile:()=>this.setState({menuMobileOuvert:false}),
       compte:this.carteCompte(),
       profil:{
         visible: !!(S.profilErr || S.profilEnvoi),

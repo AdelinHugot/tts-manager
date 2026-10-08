@@ -23,13 +23,94 @@ input,button,select{font-family:inherit;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:none;}}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 .sk{background:var(--border-2);border-radius:9px;animation:pulse 1.15s ease-in-out infinite;}
+
+/* ------------------------------------------------------------------ mobile --
+   Tout est en style inline dans ce fichier, et un style inline l'emporte sur
+   n'importe quelle classe : d'ou les !important, qui sont ici une necessite et
+   non une negligence.
+   Sous 860px la barre laterale laisse place a une barre d'onglets en bas, et
+   la page defile dans la fenetre plutot que dans un conteneur. */
+.r-tabbar{display:none;}
+.r-marque-mobile{display:none;}
+
+@media (max-width:860px){
+  .r-shell{height:auto !important;min-height:100dvh;}
+  .r-aside{display:none !important;}
+  .r-main{height:auto !important;min-height:100dvh;overflow-y:visible !important;padding-bottom:86px !important;}
+  /* L'en-tete passe sur deux lignes : la marque et le titre, puis les outils
+     qui s'enroulent dessous au lieu de s'empiler en colonne a droite du titre. */
+  .r-header{padding:12px 16px !important;flex-wrap:wrap !important;gap:10px 8px !important;}
+  .r-h-bloc{flex:1 1 58% !important;min-width:0 !important;}
+  .r-header button{min-height:40px;}
+
+  /* Barre d'outils des Commandes : en flex aligne a droite, les contoles
+     s'enroulent au hasard de leurs largeurs et le resultat est en escalier.
+     Sur mobile on impose le rythme : deux listes cote a cote, la periode sur
+     toute la largeur, puis les actions. Les boutons s'etirent pour remplir leur
+     ligne, qu'ils soient un ou deux — « Reinitialiser » n'apparait que lorsqu'un
+     filtre est actif. */
+  .r-outils{width:100% !important;justify-content:flex-start !important;gap:8px !important;}
+  .r-outils > select{flex:1 1 calc(50% - 4px) !important;min-width:0 !important;min-height:40px;}
+  .r-outils > div{flex:1 1 100% !important;min-width:0 !important;}
+  .r-outils > div > button{width:100% !important;justify-content:center;}
+  .r-outils > button{flex:1 1 auto !important;min-width:130px;justify-content:center;}
+
+  /* Bibliotheques (Videos, Rushs) : meme principe. Le fil d'ariane et le
+     selecteur de vue partagent la premiere ligne, la recherche prend toute la
+     largeur, les deux actions se partagent la derniere. L'espaceur `flex:1`,
+     utile au bureau, ne sert qu'a produire des trous ici. */
+  .r-vidbar{gap:10px !important;}
+  .r-vidbar > div:first-child{order:1;flex:1 1 auto !important;min-width:0 !important;}
+  .r-vidbar > div:last-child{order:2;flex:0 0 auto !important;}
+  .r-vidbar > div:nth-child(2){display:none !important;}
+  .r-vidbar > input{order:3;flex:1 1 100% !important;width:auto !important;min-height:40px;}
+  .r-vidbar > button{order:4;flex:1 1 auto !important;min-width:140px;justify-content:center;min-height:40px;}
+
+  /* Les filtres tiennent sur une seule ligne qui defile, plutot que de
+     s'enrouler sur deux rangees inegales. Les suivants depassent juste assez
+     pour qu'on devine qu'il y en a d'autres. */
+  .r-chips{flex-wrap:nowrap !important;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+  .r-chips::-webkit-scrollbar{display:none;}
+  .r-chips > button{flex:0 0 auto !important;}
+
+  /* Trois indicateurs sur deux colonnes laissent un orphelin : le dernier
+     prend toute la largeur, ce qui se lit comme un choix et non comme un reste. */
+  .r-g3 > *:last-child{grid-column:1 / -1;}
+  .r-h-sous{display:none !important;}
+  .r-h-titre{font-size:17px !important;}
+  .r-page{padding-left:16px !important;padding-right:16px !important;padding-top:18px !important;}
+  .r-marque-mobile{display:flex !important;}
+
+  /* Deux colonnes maximum : a 375px, quatre indicateurs cote a cote donnent
+     des colonnes de 30px ou « 48 250 € » se brise en trois lignes. */
+  .r-g4,.r-g3{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  .r-g2,.r-g1{grid-template-columns:minmax(0,1fr) !important;}
+
+  .r-tabbar{
+    display:flex !important;position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:rgba(255,255,255,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--border);padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .r-onglet{
+    flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:7px 2px;border:none;background:transparent;font-family:inherit;cursor:pointer;
+    font-size:10.5px;font-weight:600;line-height:1.2;
+  }
+  .r-feuille{
+    position:fixed;left:0;right:0;bottom:0;z-index:70;background:var(--card);
+    border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(30,20,60,0.18);
+    padding:10px 14px calc(16px + env(safe-area-inset-bottom));
+    display:flex;flex-direction:column;gap:2px;max-height:72dvh;overflow-y:auto;
+  }
+  .r-voile{position:fixed;inset:0;z-index:65;background:rgba(20,16,40,0.38);border:none;}
+}
 </style>
 </helmet>
 <div ref="{{ rootRef }}" style="display:flex;height:100vh;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;">
 
-  <aside style="width:248px;flex:none;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:22px 16px;height:100vh;">
+  <aside class="r-aside" style="width:248px;flex:none;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:22px 16px;height:100vh;">
     <div style="display:flex;align-items:center;gap:11px;padding:4px 8px 22px;">
-      <div style="width:36px;height:36px;border-radius:11px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 12px rgba(124,111,247,0.32);"><svg width="35" height="35" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;"><path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round"></path><circle cx="47" cy="46" r="5.5" fill="currentColor"></circle></svg></div>
+      <div style="width:36px;height:36px;border-radius:11px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 12px rgba(124,111,247,0.32);"><svg width="35" height="35" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;"><path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" strokeWidth="6.5" strokeLinecap="round"></path><circle cx="47" cy="46" r="5.5" fill="currentColor"></circle></svg></div>
       <div>
         <div style="font-weight:700;font-size:15px;letter-spacing:-0.02em;">Rekolt</div>
         <div style="font-size:11px;color:var(--text-3);font-weight:500;margin-top:1px;">Creator Revenue Studio</div>
@@ -76,11 +157,14 @@ input,button,select{font-family:inherit;}
     </button>
   </aside>
 
-  <main style="flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow-y:auto;">
-    <header style="position:sticky;top:0;z-index:20;background:rgba(246,244,253,0.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
-      <div>
-        <div style="font-size:21px;font-weight:700;letter-spacing:-0.02em;">{{ pageTitle }}</div>
-        <div style="font-size:13px;color:var(--text-3);margin-top:2px;">{{ pageSubtitle }}</div>
+  <main class="r-main" style="flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow-y:auto;">
+    <header class="r-header" style="position:sticky;top:0;z-index:20;background:rgba(246,244,253,0.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <div class="r-marque-mobile" style="align-items:center;justify-content:center;width:34px;height:34px;flex:none;border-radius:10px;background:var(--primary);color:#fff;">
+        <svg width="33" height="33" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;"><path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" strokeWidth="6.5" strokeLinecap="round"></path><circle cx="47" cy="46" r="5.5" fill="currentColor"></circle></svg>
+      </div>
+      <div class="r-h-bloc" style="min-width:0;">
+        <div class="r-h-titre" style="font-size:21px;font-weight:700;letter-spacing:-0.02em;">{{ pageTitle }}</div>
+        <div class="r-h-sous" style="font-size:13px;color:var(--text-3);margin-top:2px;">{{ pageSubtitle }}</div>
       </div>
       <sc-if value="{{ showPeriod }}" hint-placeholder-val="{{ true }}">
       <div style="position:relative;">
@@ -133,7 +217,7 @@ input,button,select{font-family:inherit;}
       </sc-if>
 
       <sc-if value="{{ isCommandes }}" hint-placeholder-val="">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+        <div class="r-outils" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
           <select value="{{ fVendeur }}" onChange="{{ setFVendeur }}" style="appearance:none;padding:9px 14px;border:1px solid var(--border-2);background:var(--card);border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:inherit;color:var(--text);box-shadow:0 1px 2px rgba(30,20,60,0.04);max-width:180px;" style-hover="border-color:var(--primary)">
             <sc-for list="{{ vendeurOptions }}" as="o" hint-placeholder-count="4">
               <option value="{{ o }}">{{ o }}</option>
@@ -199,7 +283,7 @@ input,button,select{font-family:inherit;}
 
       <!-- DASHBOARD -->
       <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;flex-direction:column;gap:18px;padding:26px 32px 56px;">
+        <div class="r-page" style="display:flex;flex-direction:column;gap:18px;padding:26px 32px 56px;">
           <sc-if value="{{ tableauDeBord.visible }}" hint-placeholder-val="">
             <div style="padding:12px 16px;border-radius:13px;background:{{ tableauDeBord.bg }};color:{{ tableauDeBord.fg }};font-size:13px;font-weight:600;">{{ tableauDeBord.texte }}</div>
           </sc-if>
@@ -210,7 +294,7 @@ input,button,select{font-family:inherit;}
             </div>
           </sc-if>
 
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+          <div class="r-g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
             <sc-for list="{{ dashKpis }}" as="k" hint-placeholder-count="4">
               <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 1px 8px rgba(30,20,60,0.04);">
                 <div style="display:flex;align-items:flex-start;justify-content:space-between;">
@@ -231,7 +315,7 @@ input,button,select{font-family:inherit;}
             </sc-for>
           </div>
 
-          <div style="display:grid;grid-template-columns:1.75fr 1fr;gap:16px;">
+          <div class="r-g2" style="display:grid;grid-template-columns:1.75fr 1fr;gap:16px;">
             <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px 20px 14px;box-shadow:0 1px 8px rgba(30,20,60,0.04);display:flex;flex-direction:column;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                 <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em;">Évolution CA &amp; Commissions</div>
@@ -315,7 +399,7 @@ input,button,select{font-family:inherit;}
 
       <!-- ANALYTICS -->
       <sc-if value="{{ isAnalytics }}" hint-placeholder-val="">
-        <div style="display:flex;flex-direction:column;gap:20px;padding:26px 32px 56px;">
+        <div class="r-page" style="display:flex;flex-direction:column;gap:20px;padding:26px 32px 56px;">
           <div style="display:flex;gap:2px;border-bottom:1px solid var(--border);">
             <sc-for list="{{ analyticsTabs }}" as="tb" hint-placeholder-count="4">
               <button onClick="{{ tb.onClick }}" style="padding:11px 18px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:600;color:{{ tb.color }};border-bottom:2px solid {{ tb.border }};margin-bottom:-1px;">{{ tb.label }}</button>
@@ -324,7 +408,7 @@ input,button,select{font-family:inherit;}
 
           <sc-if value="{{ isCompte }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:18px;">
-              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+              <div class="r-g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
                 <sc-for list="{{ compteKpis }}" as="k" hint-placeholder-count="6">
                   <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 1px 8px rgba(30,20,60,0.04);">
                     <div style="display:flex;align-items:flex-start;justify-content:space-between;">
@@ -347,7 +431,7 @@ input,button,select{font-family:inherit;}
                 </div>
               </sc-if>
 
-              <div style="display:grid;grid-template-columns:1.75fr 1fr;gap:16px;align-items:start;">
+              <div class="r-g2" style="display:grid;grid-template-columns:1.75fr 1fr;gap:16px;align-items:start;">
                 <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px 20px 14px;box-shadow:0 1px 8px rgba(30,20,60,0.04);display:flex;flex-direction:column;">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:12px;">
                     <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em;">Évolution CA &amp; Commissions</div>
@@ -648,17 +732,18 @@ input,button,select{font-family:inherit;}
 
       <!-- COMMANDES -->
       <sc-if value="{{ isCommandes }}" hint-placeholder-val="">
-        <div style="display:flex;flex-direction:column;gap:18px;padding:26px 32px 56px;">
+        <div class="r-page" style="display:flex;flex-direction:column;gap:18px;padding:26px 32px 56px;">
 
           <sc-if value="{{ importCommandes.visible }}" hint-placeholder-val="">
             <div style="padding:12px 16px;border-radius:13px;background:{{ importCommandes.bg }};color:{{ importCommandes.fg }};font-size:13px;font-weight:600;">{{ importCommandes.texte }}</div>
           </sc-if>
 
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+          <div class="r-g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
             <sc-for list="{{ ordersKpis }}" as="k" hint-placeholder-count="3">
               <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 1px 8px rgba(30,20,60,0.04);">
                 <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);">{{ k.label }}</div>
                 <div style="font-size:23px;font-weight:800;letter-spacing:-0.02em;margin-top:7px;">{{ k.value }}</div>
+                <sc-if value="{{ k.sub }}" hint-placeholder-val=""><div style="font-size:11.5px;color:var(--text-3);margin-top:5px;">{{ k.sub }}</div></sc-if>
               </div>
             </sc-for>
           </div>
@@ -719,7 +804,7 @@ input,button,select{font-family:inherit;}
             <div style="padding:12px 16px;border-radius:13px;background:{{ bibliotheque.bg }};color:{{ bibliotheque.fg }};font-size:13px;font-weight:600;">{{ bibliotheque.texte }}</div>
           </sc-if>
 
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="r-vidbar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <div style="display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;">
               <button onClick="{{ rushGoRoot }}" style="border:none;background:transparent;padding:4px 6px;border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:700;color:{{ rushRootFg }};cursor:pointer;" style-hover="background:var(--primary-softer)">Tous les rushs</button>
               <sc-if value="{{ rushInFolder }}" hint-placeholder-val="">
@@ -819,9 +904,9 @@ input,button,select{font-family:inherit;}
 
       <!-- PARAMETRES -->
       <sc-if value="{{ isParametres }}" hint-placeholder-val="">
-        <div style="display:flex;flex-direction:column;gap:16px;padding:22px 32px 40px;max-width:1180px;">
+        <div class="r-page" style="display:flex;flex-direction:column;gap:16px;padding:22px 32px 40px;max-width:1180px;">
 
-          <div style="display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;">
+          <div class="r-g2" style="display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;">
 
             <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
           <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:0 1px 8px rgba(30,20,60,0.04);display:flex;flex-direction:column;gap:16px;min-width:0;">
@@ -849,7 +934,7 @@ input,button,select{font-family:inherit;}
               </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="r-g2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
                 <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);">Nom complet</label>
                 <input value="{{ profileName }}" onChange="{{ onProfileName }}" style="width:100%;min-width:0;padding:10px 12px;border:1px solid var(--border-2);border-radius:11px;background:var(--card);color:var(--text);font-size:13.5px;font-weight:500;font-family:inherit;" />
@@ -896,7 +981,7 @@ input,button,select{font-family:inherit;}
               <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em;">Mot de passe</div>
               <div style="font-size:13px;color:var(--text-3);margin-top:3px;">8 caractères minimum, avec une majuscule et un chiffre.</div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="r-g2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div style="display:flex;flex-direction:column;gap:6px;grid-column:span 2;min-width:0;">
                 <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);">Mot de passe actuel</label>
                 <input type="password" value="{{ pwdCurrent }}" onChange="{{ onPwdCurrent }}" placeholder="••••••••" style="width:100%;min-width:0;padding:10px 12px;border:1px solid var(--border-2);border-radius:11px;background:var(--card);color:var(--text);font-size:13.5px;font-family:inherit;" />
@@ -968,7 +1053,7 @@ input,button,select{font-family:inherit;}
       <sc-if value="{{ isVideosPage }}" hint-placeholder-val="">
         <div style="display:flex;flex-direction:column;gap:16px;padding:22px 32px 48px;">
 
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="r-vidbar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <div style="display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;">
               <button onClick="{{ vidGoRoot }}" style="border:none;background:transparent;padding:4px 6px;border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:700;color:{{ vidRootFg }};cursor:pointer;" style-hover="background:var(--primary-softer)">Toutes les vidéos</button>
               <sc-if value="{{ vidInFolder }}" hint-placeholder-val="">
@@ -987,7 +1072,7 @@ input,button,select{font-family:inherit;}
             </div>
           </div>
 
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="r-chips" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <sc-for list="{{ vidFilters }}" as="f" hint-placeholder-count="5">
               <button onClick="{{ f.onClick }}" style="display:flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid {{ f.border }};border-radius:999px;background:{{ f.bg }};color:{{ f.fg }};font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;">
                 <span>{{ f.label }}</span>
@@ -1103,7 +1188,7 @@ input,button,select{font-family:inherit;}
 
       <!-- ASSISTANT -->
       <sc-if value="{{ isAssistant }}" hint-placeholder-val="">
-        <div style="display:flex;flex-direction:column;gap:14px;padding:22px 32px 28px;max-width:1080px;">
+        <div class="r-page" style="display:flex;flex-direction:column;gap:14px;padding:22px 32px 28px;max-width:1080px;">
           <div style="display:flex;align-items:center;gap:11px;padding:14px 17px;border-radius:15px;background:#F1F0F5;border:1px solid var(--border-2);">
             <span style="color:var(--text-3);display:flex;flex:none;">{{ chantierIcon }}</span>
             <div>
@@ -1156,7 +1241,7 @@ input,button,select{font-family:inherit;}
 
               <sc-if value="{{ m.estAssistant }}" hint-placeholder-val="{{ true }}">
                 <div style="display:flex;gap:11px;align-items:flex-start;">
-                  <div style="width:28px;height:28px;flex:none;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;margin-top:2px;"><svg width="27" height="27" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;"><path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round"></path><circle cx="47" cy="46" r="5.5" fill="currentColor"></circle></svg></div>
+                  <div style="width:28px;height:28px;flex:none;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;margin-top:2px;"><svg width="27" height="27" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;"><path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" strokeWidth="6.5" strokeLinecap="round"></path><circle cx="47" cy="46" r="5.5" fill="currentColor"></circle></svg></div>
                   <div style="max-width:70ch;min-width:0;display:flex;flex-direction:column;gap:9px;background:var(--card);border:1px solid var(--border);border-radius:5px 18px 18px 18px;padding:15px 17px;box-shadow:0 1px 8px rgba(30,20,60,0.05);">
                     <sc-for list="{{ m.segments }}" as="sg" hint-placeholder-count="3">
 
@@ -1187,7 +1272,7 @@ input,button,select{font-family:inherit;}
 
             <sc-if value="{{ chatBusy }}" hint-placeholder-val="">
               <div style="display:flex;gap:11px;align-items:center;">
-                <div style="width:28px;height:28px;flex:none;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;"><svg width="27" height="27" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;"><path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round"></path><circle cx="47" cy="46" r="5.5" fill="currentColor"></circle></svg></div>
+                <div style="width:28px;height:28px;flex:none;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;"><svg width="27" height="27" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;"><path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" strokeWidth="6.5" strokeLinecap="round"></path><circle cx="47" cy="46" r="5.5" fill="currentColor"></circle></svg></div>
                 <div style="display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--border);border-radius:5px 18px 18px 18px;padding:14px 16px;">
                   <span style="width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 1.1s infinite;"></span>
                   <span style="width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 1.1s infinite .18s;"></span>
@@ -1221,7 +1306,48 @@ input,button,select{font-family:inherit;}
         </div>
       </sc-if>
 
-    </main></div>
+    </main>
+
+  <sc-if value="{{ menuMobileOuvert }}" hint-placeholder-val="">
+    <button class="r-voile" onClick="{{ fermerMenuMobile }}" aria-label="Fermer le menu"></button>
+    <div class="r-feuille">
+      <div style="width:38px;height:4px;border-radius:99px;background:var(--border-2);margin:4px auto 12px;"></div>
+      <sc-for list="{{ ongletsPlus }}" as="o" hint-placeholder-count="4">
+        <button onClick="{{ o.onClick }}" style="display:flex;align-items:center;gap:13px;width:100%;padding:13px 12px;border:none;border-radius:13px;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600;text-align:left;background:{{ o.bg }};color:{{ o.fg }};">
+          <span style="display:flex;width:21px;height:21px;align-items:center;justify-content:center;flex:none;">{{ o.icon }}</span>
+          <span style="flex:1;">{{ o.label }}</span>
+        </button>
+      </sc-for>
+      <div style="height:1px;background:var(--border);margin:8px 2px;"></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:4px 12px 10px;">
+        <sc-if value="{{ compte.photo }}" hint-placeholder-val="">
+          <img src="{{ compte.photo }}" alt="" style="width:34px;height:34px;flex:none;border-radius:50%;object-fit:cover;" />
+        </sc-if>
+        <sc-if value="{{ compte.sansPhoto }}" hint-placeholder-val="{{ true }}">
+          <div style="width:34px;height:34px;flex:none;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;">{{ compte.initiales }}</div>
+        </sc-if>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ compte.nom }}</div>
+          <div style="font-size:11.5px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ compte.sous }}</div>
+        </div>
+      </div>
+      <button onClick="{{ deconnexionItem.onClick }}" style="display:flex;align-items:center;gap:13px;width:100%;padding:13px 12px;border:1px solid var(--border);border-radius:13px;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600;text-align:left;background:transparent;color:var(--text-2);">
+        <span style="display:flex;width:21px;height:21px;align-items:center;justify-content:center;flex:none;">{{ deconnexionItem.icon }}</span>
+        <span style="flex:1;">{{ deconnexionItem.label }}</span>
+      </button>
+    </div>
+  </sc-if>
+
+  <nav class="r-tabbar" aria-label="Navigation principale">
+    <sc-for list="{{ onglets }}" as="o" hint-placeholder-count="5">
+      <button class="r-onglet" onClick="{{ o.onClick }}" style="color:{{ o.fg }};">
+        <span style="display:flex;width:22px;height:22px;align-items:center;justify-content:center;">{{ o.icon }}</span>
+        <span style="max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ o.label }}</span>
+      </button>
+    </sc-for>
+  </nav>
+
+</div>
   
 
 </x-dc>
@@ -1256,6 +1382,7 @@ class Component extends DCLogic {
       dashLoading:false, dashErr:null,
       ideasErr:null, ideasEnvoi:null,
       bibErr:null, bibEnvoi:null,
+      menuMobileOuvert:false,
       deconnexionEnCours:false,
       dpOpen:false, dpMonth:'2026-08', dpStart:null, dpEnd:null,
       customRange:null,
@@ -2628,11 +2755,18 @@ class Component extends DCLogic {
       date:o.dateLabel, produit:this.tronquer(o.produit,70), produitComplet:o.produit, vendeur:o.vendeur, statut:o.statut, statutBg:c.bg, statutFg:c.fg,
       gmv:this.fmtEur(o.gmv,2), com:this.fmtEur(o.com,2) }; });
     const cmdSort=this.sortUI('commandes',['dateKey','produit','vendeur','statut','gmv','com']);
-    const totGmv=filtered.reduce((a,o)=>a+o.gmv,0), totCom=filtered.reduce((a,o)=>a+o.com,0);
+    // Une commande inéligible ne sera jamais payée : elle reste dans le tableau
+    // et dans le compte, mais pas dans les montants. Le nombre exclu est
+    // affiché, sinon l'addition mentale de la colonne GMV ne tomberait pas sur
+    // le total — et c'est ce genre d'écart silencieux qui fait douter du reste.
+    const retenues=filtered.filter(o=>o.statut!=='Inéligible');
+    const nbInel=filtered.length-retenues.length;
+    const totGmv=retenues.reduce((a,o)=>a+o.gmv,0), totCom=retenues.reduce((a,o)=>a+o.com,0);
+    const noteInel=nbInel?this.fmtNum(nbInel)+' inéligible'+(nbInel>1?'s':'')+' exclue'+(nbInel>1?'s':''):null;
     const ordersKpis=[
       {label:'Commandes',value:this.fmtNum(filtered.length)},
-      {label:'GMV total',value:this.fmtEur(totGmv,2)},
-      {label:'Commissions',value:this.fmtEur(totCom,2)}
+      {label:'GMV total',value:this.fmtEur(totGmv,2),sub:noteInel},
+      {label:'Commissions',value:this.fmtEur(totCom,2),sub:noteInel}
     ];
     const pagination={
       visible: triees.length>parPage,
@@ -2715,6 +2849,38 @@ class Component extends DCLogic {
         bg: S.dashErr?'var(--neg-soft)':'var(--primary-softer)',
         fg: S.dashErr?'var(--neg)':'var(--text-2)'
       },
+      // Cinq onglets au maximum : au-dela, les libelles se chevauchent sur un
+      // ecran de 375px. Les quatre destinations les plus frequentes restent
+      // accessibles d'un geste, le reste passe dans une feuille.
+      onglets:[
+        {id:'dashboard',label:'Accueil',icon:'home'},
+        {id:'commandes',label:'Commandes',icon:'bag'},
+        {id:'analytics',label:'Analytics',icon:'chart'},
+        {id:'videos',label:'Vidéos',icon:'video'}
+      ].map(o=>({
+        label:o.label,
+        icon:this.iconEl(o.icon,21,S.page===o.id?2.1:1.8),
+        fg:S.page===o.id?'var(--primary-2)':'var(--text-3)',
+        onClick:()=>this.setState({page:o.id,menuMobileOuvert:false,periodOpen:false})
+      })).concat([{
+        label:'Plus',
+        icon:this.iconEl('list',21,1.9),
+        fg:S.menuMobileOuvert?'var(--primary-2)':'var(--text-3)',
+        onClick:()=>this.setState(x=>({menuMobileOuvert:!x.menuMobileOuvert}))
+      }]),
+      ongletsPlus:[
+        {id:'idees',label:'Idées',icon:'bulb'},
+        {id:'rushs',label:'Rushs',icon:'film'},
+        {id:'assistant',label:'Ton assistant perso',icon:'spark'},
+        {id:'parametres',label:'Paramètres',icon:'settings'}
+      ].map(o=>({
+        label:o.label, icon:this.iconEl(o.icon,20,1.9),
+        bg:S.page===o.id?'var(--primary-soft)':'transparent',
+        fg:S.page===o.id?'var(--primary-2)':'var(--text-2)',
+        onClick:()=>this.setState({page:o.id,menuMobileOuvert:false,periodOpen:false})
+      })),
+      menuMobileOuvert:S.menuMobileOuvert,
+      fermerMenuMobile:()=>this.setState({menuMobileOuvert:false}),
       compte:this.carteCompte(),
       profil:{
         visible: !!(S.profilErr || S.profilEnvoi),
