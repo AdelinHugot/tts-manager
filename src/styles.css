@@ -60,7 +60,6 @@ input,button,select{font-family:inherit;}
    Sous 860px la barre laterale laisse place a une barre d'onglets en bas, et
    la page defile dans la fenetre plutot que dans un conteneur. */
 .r-tabbar{display:none;}
-.r-marque-mobile{display:none;}
 
 @media (max-width:860px){
   .r-shell{height:auto !important;min-height:100dvh;}
@@ -68,9 +67,20 @@ input,button,select{font-family:inherit;}
   .r-main{height:auto !important;min-height:100dvh;overflow-y:visible !important;padding-bottom:86px !important;}
   /* L'en-tete passe sur deux lignes : la marque et le titre, puis les outils
      qui s'enroulent dessous au lieu de s'empiler en colonne a droite du titre. */
-  .r-header{padding:12px 16px !important;flex-wrap:wrap !important;gap:10px 8px !important;}
-  .r-h-bloc{flex:1 1 58% !important;min-width:0 !important;}
+  /* Un seul rang de chrome : le titre a gauche, le selecteur reduit a un carre
+     a droite. L'ancien en-tete empilait logo, titre et pastille de periode sur
+     deux rangees, soit 140px avant le premier chiffre. */
+  .r-header{padding:16px 18px 10px !important;flex-wrap:wrap !important;gap:10px 8px !important;border-bottom:none !important;}
+  .r-h-bloc{flex:1 1 55% !important;min-width:0 !important;}
   .r-header button{min-height:40px;}
+
+  /* Le selecteur de periode de l'en-tete : icone seule. Le libelle reste dans
+     le DOM, rendu invisible mais lisible par un lecteur d'ecran — sans lui le
+     bouton n'aurait plus de nom. */
+  .r-header > .r-ancre > button{width:42px;height:42px;padding:0 !important;justify-content:center;border-radius:14px !important;}
+  .r-header > .r-ancre > button > span:not(:first-child){
+    position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+  }
 
   /* Barre d'outils des Commandes : en flex aligne a droite, les contoles
      s'enroulent au hasard de leurs largeurs et le resultat est en escalier.
@@ -133,8 +143,7 @@ input,button,select{font-family:inherit;}
   .r-h-sous{display:none !important;}
   .r-h-titre{display:none !important;}
   .r-h-mob{display:flex !important;}
-  .r-page{padding-left:16px !important;padding-right:16px !important;padding-top:18px !important;}
-  .r-marque-mobile{display:flex !important;}
+  .r-page{padding-left:18px !important;padding-right:18px !important;padding-top:12px !important;}
 
   /* La charte ne s'applique qu'ici : le bureau garde Inter et ses couleurs. */
   .r-shell{font-family:'Manrope',system-ui,sans-serif !important;background:var(--m-fond) !important;color:var(--m-encre) !important;}
