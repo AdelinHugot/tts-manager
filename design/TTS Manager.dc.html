@@ -24,6 +24,44 @@ input,button,select{font-family:inherit;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 .sk{background:var(--border-2);border-radius:9px;animation:pulse 1.15s ease-in-out infinite;}
 
+/* ------------------------------------------------- charte mobile (--m-*) ---
+   Volontairement separee des variables du bureau : le theme sombre et la
+   nouvelle palette ne doivent rien changer a l'affichage sur grand ecran.
+   Toutes les teintes claires portent une encre foncee et l'inverse : chaque
+   paire a ete verifiee au-dela de 4,5:1. */
+.r-shell{
+  --m-fond:#F6F5FA; --m-surface:#FFFFFF;
+  --m-encre:#141121; --m-encre2:#4C4860; --m-encre3:#6E6A83;
+  --m-trait:#E8E5F0;
+  --m-accent:#5B3FE0; --m-accent-doux:#EDE9FD; --m-accent-fond:#ECE9F5; --m-accent-piste:#EFECF7;
+  --m-enc:#0B7A52; --m-enc-doux:#E1F2EA;
+  --m-att:#8F5B00; --m-att-vif:#D9A23D; --m-att-doux:#FAEFD9;
+  --m-per:#B3372B; --m-per-doux:#FAE8E6;
+  --m-vignette:#1A1726;
+  --m-idee-1:#EDE9FD; --m-idee-2:#FAEFD9; --m-idee-3:#E1F2EA; --m-idee-4:#E4EEFB; --m-idee-5:#FBE7EF;
+  --m-etoile-fond:rgba(255,255,255,0.72);
+}
+.r-shell[data-sombre="1"]{
+  --m-fond:#0C0A13; --m-surface:#161322;
+  --m-encre:#F7F5FC; --m-encre2:#B6B2C8; --m-encre3:#8B8799;
+  --m-trait:#272233;
+  --m-accent:#9B86FF; --m-accent-doux:rgba(155,134,255,0.17); --m-accent-fond:#1E1A2C; --m-accent-piste:#241F33;
+  --m-enc:#44C68E; --m-enc-doux:rgba(68,198,142,0.16);
+  --m-att:#E3A94A; --m-att-vif:#E3A94A; --m-att-doux:rgba(227,169,74,0.16);
+  --m-per:#F0786A; --m-per-doux:rgba(240,120,106,0.16);
+  --m-vignette:#000000;
+  /* Les pastels deviennent des voiles : un pastel sur fond noir fait une tache. */
+  --m-idee-1:rgba(155,134,255,0.16); --m-idee-2:rgba(227,169,74,0.15); --m-idee-3:rgba(68,198,142,0.14);
+  --m-idee-4:rgba(104,160,235,0.16); --m-idee-5:rgba(236,130,175,0.15);
+  --m-etoile-fond:rgba(255,255,255,0.08);
+}
+
+/* Chiffres a chasse fixe : des montants qui ne s'alignent pas en colonne se
+   comparent mal. */
+.m-chiffre{font-family:'Space Grotesk','Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
+.m-desk{display:block;}
+.m-mob{display:none;}
+
 /* ------------------------------------------------------------------ mobile --
    Tout est en style inline dans ce fichier, et un style inline l'emporte sur
    n'importe quelle classe : d'ou les !important, qui sont ici une necessite et
@@ -106,6 +144,32 @@ input,button,select{font-family:inherit;}
   .r-page{padding-left:16px !important;padding-right:16px !important;padding-top:18px !important;}
   .r-marque-mobile{display:flex !important;}
 
+  /* La charte ne s'applique qu'ici : le bureau garde Inter et ses couleurs. */
+  .r-shell{font-family:'Manrope',system-ui,sans-serif !important;background:var(--m-fond) !important;color:var(--m-encre) !important;}
+  .r-main{background:var(--m-fond) !important;}
+  .r-header{background:var(--m-fond) !important;border-bottom-color:var(--m-trait) !important;}
+  .r-tabbar{background:var(--m-surface) !important;border-top-color:var(--m-trait) !important;}
+  .r-feuille{background:var(--m-surface) !important;}
+  .m-desk{display:none !important;}
+  .m-mob{display:block !important;}
+
+  /* Les commandes partagees avec le bureau (periode, filtres, calendrier,
+     feuille) portent encore ses variables : en sombre, elles resteraient des
+     pastilles blanches sur fond noir. On les rattache a la charte, sans
+     toucher au bouton primaire ni a la pastille de marque. */
+  .r-ancre > button,
+  .r-outils > select,
+  .r-outils > div > button,
+  .r-vidbar > input,
+  .r-vidbar > div:last-child{
+    background:var(--m-surface) !important;
+    border-color:var(--m-trait) !important;
+    color:var(--m-encre) !important;
+  }
+  .r-calendrier{background:var(--m-surface) !important;border-color:var(--m-trait) !important;color:var(--m-encre) !important;}
+  .r-calendrier > div:first-child{background:var(--m-accent-fond) !important;border-bottom-color:var(--m-trait) !important;}
+  .r-chips > button{background:var(--m-surface) !important;border-color:var(--m-trait) !important;}
+
   /* Deux colonnes maximum : a 375px, quatre indicateurs cote a cote donnent
      des colonnes de 30px ou « 48 250 € » se brise en trois lignes. */
   .r-g4,.r-g3{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
@@ -131,7 +195,7 @@ input,button,select{font-family:inherit;}
 }
 </style>
 </helmet>
-<div ref="{{ rootRef }}" style="display:flex;height:100vh;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;">
+<div class="r-shell" ref="{{ rootRef }}" style="display:flex;height:100vh;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;">
 
   <aside class="r-aside" style="width:248px;flex:none;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:22px 16px;height:100vh;">
     <div style="display:flex;align-items:center;gap:11px;padding:4px 8px 22px;">
@@ -319,6 +383,81 @@ input,button,select{font-family:inherit;}
             </div>
           </sc-if>
 
+          <!-- ACCUEIL MOBILE : un chiffre heros, puis le reste subordonne. -->
+          <div class="m-mob" style="display:none;flex-direction:column;gap:16px;">
+
+            <div style="background:var(--m-surface);border:1px solid var(--m-trait);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="font-size:12.5px;font-weight:700;letter-spacing:0.06em;color:var(--m-encre3);text-transform:uppercase;">{{ mobAccueil.periode }}</div>
+                <div style="display:flex;align-items:center;gap:4px;border-radius:99px;padding:4px 9px;background:{{ mobAccueil.tendance.fond }};color:{{ mobAccueil.tendance.encre }};">
+                  <sc-if value="{{ mobAccueil.tendance.fleche }}" hint-placeholder-val="">{{ mobAccueil.tendance.fleche }}</sc-if>
+                  <span style="font-size:11.5px;font-weight:800;">{{ mobAccueil.tendance.texte }}</span>
+                </div>
+              </div>
+              <div class="m-chiffre" style="font-size:50px;font-weight:700;letter-spacing:-0.04em;line-height:0.95;">{{ mobAccueil.commissions }}</div>
+              <div style="display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;">
+                <span style="font-size:13.5px;font-weight:500;color:var(--m-encre2);">sur</span>
+                <span class="m-chiffre" style="font-size:16px;font-weight:700;">{{ mobAccueil.ca }}</span>
+                <span style="font-size:13.5px;font-weight:500;color:var(--m-encre2);">de ventes · taux {{ mobAccueil.taux }}</span>
+              </div>
+              <div style="height:1px;background:var(--m-trait);"></div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
+                  <div style="font-size:13.5px;font-weight:600;color:var(--m-encre2);">{{ mobAccueil.commandes }} commandes</div>
+                  <sc-if value="{{ mobAccueil.attenteTexte }}" hint-placeholder-val=""><div style="font-size:13px;font-weight:700;color:var(--m-att);">{{ mobAccueil.attenteTexte }}</div></sc-if>
+                </div>
+                <div style="display:flex;height:10px;border-radius:99px;overflow:hidden;gap:2px;background:var(--m-accent-piste);">
+                  <sc-for list="{{ mobAccueil.parts }}" as="pa" hint-placeholder-count="3">
+                    <div style="width:{{ pa.largeur }};background:{{ pa.couleur }};"></div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                  <sc-for list="{{ mobAccueil.statuts }}" as="st" hint-placeholder-count="3">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <span style="width:9px;height:9px;border-radius:3px;flex:none;background:{{ st.couleur }};"></span>
+                      <span style="font-size:12.5px;font-weight:600;color:var(--m-encre2);">{{ st.label }}</span>
+                      <span class="m-chiffre" style="font-size:12.5px;font-weight:700;">{{ st.n }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 2px;">
+              <div style="font-size:11.5px;font-weight:800;letter-spacing:0.1em;color:var(--m-encre3);">CE QUI RAPPORTE</div>
+              <button onClick="{{ mobAccueil.versAnalytics }}" style="border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:700;color:var(--m-accent);cursor:pointer;padding:0;">Tout voir</button>
+            </div>
+
+            <div style="background:var(--m-surface);border:1px solid var(--m-trait);border-radius:20px;overflow:hidden;">
+              <sc-for list="{{ mobAccueil.produits }}" as="pr" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid {{ pr.bord }};">
+                  <div class="m-chiffre" style="width:26px;height:26px;flex:none;border-radius:9px;background:var(--m-accent-doux);color:var(--m-accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">{{ pr.rang }}</div>
+                  <div style="flex-grow:1;min-width:0;">
+                    <div style="font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pr.nom }}</div>
+                    <div style="font-size:12.5px;font-weight:500;color:var(--m-encre3);margin-top:2px;">{{ pr.ventes }}</div>
+                  </div>
+                  <div class="m-chiffre" style="font-size:15px;font-weight:700;flex:none;">{{ pr.montant }}</div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ mobAccueil.sansProduit }}" hint-placeholder-val="">
+                <div style="padding:22px 16px;font-size:13px;color:var(--m-encre3);line-height:1.5;">Aucune vente sur cette période.</div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex;gap:12px;">
+              <button onClick="{{ mobAccueil.versVideos }}" style="flex:1;min-width:0;background:var(--m-surface);border:1px solid var(--m-trait);border-radius:18px;padding:14px 16px;font-family:inherit;text-align:left;cursor:pointer;color:var(--m-encre);display:flex;flex-direction:column;gap:3px;">
+                <span class="m-chiffre" style="font-size:22px;font-weight:700;">{{ mobAccueil.nbAPoster }}</span>
+                <span style="font-size:12.5px;font-weight:600;color:var(--m-encre2);">{{ mobAccueil.motAPoster }}</span>
+              </button>
+              <button onClick="{{ mobAccueil.versIdees }}" style="flex:1;min-width:0;background:var(--m-surface);border:1px solid var(--m-trait);border-radius:18px;padding:14px 16px;font-family:inherit;text-align:left;cursor:pointer;color:var(--m-encre);display:flex;flex-direction:column;gap:3px;">
+                <span class="m-chiffre" style="font-size:22px;font-weight:700;">{{ mobAccueil.nbIdees }}</span>
+                <span style="font-size:12.5px;font-weight:600;color:var(--m-encre2);">{{ mobAccueil.motIdees }}</span>
+              </button>
+            </div>
+
+          </div>
+
+          <div class="m-desk">
           <div class="r-g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
             <sc-for list="{{ dashKpis }}" as="k" hint-placeholder-count="4">
               <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 1px 8px rgba(30,20,60,0.04);">
@@ -418,6 +557,7 @@ input,button,select{font-family:inherit;}
               </sc-if>
             </div>
 
+          </div>
           </div>
         </div>
       </sc-if>
@@ -1035,6 +1175,19 @@ input,button,select{font-family:inherit;}
               </sc-if>
             </div>
           </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;">
+            <div>
+              <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em;">Apparence</div>
+              <div style="font-size:12.5px;color:var(--text-3);margin-top:3px;">S’applique à l’affichage mobile. Mémorisé sur cet appareil.</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+              <label for="sombre" style="font-size:14px;font-weight:600;cursor:pointer;">Thème sombre</label>
+              <button id="sombre" onClick="{{ apparence.basculer }}" aria-pressed="{{ apparence.actif }}" style="width:48px;height:28px;flex:none;border:none;border-radius:99px;cursor:pointer;padding:3px;display:flex;justify-content:{{ apparence.position }};background:{{ apparence.piste }};transition:background .18s;">
+                <span style="width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(20,16,40,0.3);"></span>
+              </button>
+            </div>
+          </div>
+
           <div style="background:#FAFAFC;border:1px solid var(--border);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:2px;">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;">
               <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em;color:var(--text-3);">Notifications</div>
@@ -1408,6 +1561,7 @@ class Component extends DCLogic {
       ideasErr:null, ideasEnvoi:null,
       bibErr:null, bibEnvoi:null,
       menuMobileOuvert:false,
+      themeSombre:this.sombreMemorise(),
       deconnexionEnCours:false,
       dpOpen:false, dpMonth:'2026-08', dpStart:null, dpEnd:null,
       customRange:null,
@@ -1584,9 +1738,31 @@ class Component extends DCLogic {
     const F=this.state.ordFilters;
     if(this._periode !== F.from+'→'+F.to) this.chargerCommandes();
   }
+  /**
+   * Preference de theme, relue sur l'appareil.
+   *
+   * Enveloppee : en navigation privee, lire localStorage leve. Un theme perdu
+   * est un desagrement, une exception non rattrapee ici empecherait l'ecran de
+   * se construire.
+   */
+  sombreMemorise(){
+    try { return localStorage.getItem('rekolt.sombre') === '1'; } catch(e){ return false; }
+  }
+  basculerSombre(){
+    this.setState(s=>{
+      const v = !s.themeSombre;
+      try { localStorage.setItem('rekolt.sombre', v ? '1' : '0'); } catch(e){}
+      return { themeSombre:v };
+    });
+  }
+
   applyTheme(){
     const t = this.THEMES[this.props.palette] || this.THEMES.Lavande;
-    if(this.rootRef.current){ for(const k in t) this.rootRef.current.style.setProperty(k,t[k]); }
+    if(this.rootRef.current){
+      for(const k in t) this.rootRef.current.style.setProperty(k,t[k]);
+      // L'attribut porte la bascule : les variables --m-* en dependent.
+      this.rootRef.current.setAttribute('data-sombre', this.state.themeSombre ? '1' : '0');
+    }
   }
 
   /* ---------- helpers ---------- */
@@ -2926,6 +3102,59 @@ class Component extends DCLogic {
         texte: S.profilErr || 'Envoi de la photo…',
         bg: S.profilErr?'var(--neg-soft)':'var(--primary-softer)',
         fg: S.profilErr?'var(--neg)':'var(--text-2)'
+      },
+      // --- Accueil mobile ---------------------------------------------------
+      // Les mêmes chiffres que le bureau, remis dans un ordre de lecture :
+      // d'abord ce qu'elle gagne, puis sur quoi, puis où ça coince.
+      mobAccueil:(()=>{
+        const t=cur, total=Math.max(1,(t.reglees||0)+(t.attente||0)+(t.ineligibles||0));
+        const part=n=>((n||0)/total*100)+'%';
+        const fleche=(monte)=>this.iconEl(monte?'arrow-up':'arrow-down',11,2.6);
+        const tend=v=>{
+          if(v===null||v===undefined||!isFinite(v))
+            return {texte:'—',fond:'var(--m-accent-fond)',encre:'var(--m-encre3)',fleche:null};
+          const monte=v>=0;
+          return {texte:this.fmtTrend(v),
+                  fond:monte?'var(--m-enc-doux)':'var(--m-per-doux)',
+                  encre:monte?'var(--m-enc)':'var(--m-per)',
+                  fleche:fleche(monte)};
+        };
+        const prod=topProduits.slice(0,3).map((x,i)=>({
+          rang:String(i+1), nom:x.name, ventes:x.ventes+' ventes', montant:x.amount,
+          bord:i?'var(--m-trait)':'transparent'
+        }));
+        return {
+          periode:S.customRange?(this.frDate(S.customRange.from)+' → '+this.frDate(S.customRange.to)):cur.label,
+          commissions:this.fmtEur(t.com), ca:this.fmtEur(t.ca),
+          taux:t.ca?this.fmtPct(t.com/t.ca*100,1):'—',
+          commandes:this.fmtNum(t.orders||0),
+          attenteTexte:t.attente?(this.fmtNum(t.attente)+' encore en attente'):'',
+          tendance:tend(t.comT),
+          parts:[
+            {largeur:part(t.reglees),couleur:'var(--m-enc)'},
+            {largeur:part(t.attente),couleur:'var(--m-att-vif)'},
+            {largeur:part(t.ineligibles),couleur:'var(--m-per)'}
+          ],
+          statuts:[
+            {label:'Encaissé',n:this.fmtNum(t.reglees||0),couleur:'var(--m-enc)'},
+            {label:'En attente',n:this.fmtNum(t.attente||0),couleur:'var(--m-att-vif)'},
+            {label:'Perdu',n:this.fmtNum(t.ineligibles||0),couleur:'var(--m-per)'}
+          ],
+          produits:prod, sansProduit:prod.length===0,
+          nbAPoster:this.fmtNum(aPoster.length),
+          motAPoster:aPoster.length>1?'vidéos prêtes à poster':'vidéo prête à poster',
+          nbIdees:this.fmtNum(ideesMarquees.length),
+          motIdees:ideesMarquees.length>1?'idées marquées':'idée marquée',
+          versAnalytics:()=>this.setState({page:'analytics'}),
+          versVideos:()=>this.setState({page:'videos'}),
+          versIdees:()=>this.setState({page:'idees'})
+        };
+      })(),
+      apparence:{
+        actif:S.themeSombre,
+        basculer:()=>this.basculerSombre(),
+        piste:S.themeSombre?'var(--primary)':'#D8D4E6',
+        position:S.themeSombre?'flex-end':'flex-start'
       },
       vrai:true,
       dashPret:this.dashPret(), dashOccupe:!this.dashPret(),

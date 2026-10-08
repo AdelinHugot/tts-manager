@@ -41,6 +41,7 @@ export class Logic extends DCLogic {
       ideasErr:null, ideasEnvoi:null,
       bibErr:null, bibEnvoi:null,
       menuMobileOuvert:false,
+      themeSombre:this.sombreMemorise(),
       deconnexionEnCours:false,
       dpOpen:false, dpMonth:'2026-08', dpStart:null, dpEnd:null,
       customRange:null,
@@ -217,9 +218,31 @@ export class Logic extends DCLogic {
     const F=this.state.ordFilters;
     if(this._periode !== F.from+'→'+F.to) this.chargerCommandes();
   }
+  /**
+   * Preference de theme, relue sur l'appareil.
+   *
+   * Enveloppee : en navigation privee, lire localStorage leve. Un theme perdu
+   * est un desagrement, une exception non rattrapee ici empecherait l'ecran de
+   * se construire.
+   */
+  sombreMemorise(){
+    try { return localStorage.getItem('rekolt.sombre') === '1'; } catch(e){ return false; }
+  }
+  basculerSombre(){
+    this.setState(s=>{
+      const v = !s.themeSombre;
+      try { localStorage.setItem('rekolt.sombre', v ? '1' : '0'); } catch(e){}
+      return { themeSombre:v };
+    });
+  }
+
   applyTheme(){
     const t = this.THEMES[this.props.palette] || this.THEMES.Lavande;
-    if(this.rootRef.current){ for(const k in t) this.rootRef.current.style.setProperty(k,t[k]); }
+    if(this.rootRef.current){
+      for(const k in t) this.rootRef.current.style.setProperty(k,t[k]);
+      // L'attribut porte la bascule : les variables --m-* en dependent.
+      this.rootRef.current.setAttribute('data-sombre', this.state.themeSombre ? '1' : '0');
+    }
   }
 
   /* ---------- helpers ---------- */
@@ -1559,6 +1582,59 @@ export class Logic extends DCLogic {
         texte: S.profilErr || 'Envoi de la photo…',
         bg: S.profilErr?'var(--neg-soft)':'var(--primary-softer)',
         fg: S.profilErr?'var(--neg)':'var(--text-2)'
+      },
+      // --- Accueil mobile ---------------------------------------------------
+      // Les mêmes chiffres que le bureau, remis dans un ordre de lecture :
+      // d'abord ce qu'elle gagne, puis sur quoi, puis où ça coince.
+      mobAccueil:(()=>{
+        const t=cur, total=Math.max(1,(t.reglees||0)+(t.attente||0)+(t.ineligibles||0));
+        const part=n=>((n||0)/total*100)+'%';
+        const fleche=(monte)=>this.iconEl(monte?'arrow-up':'arrow-down',11,2.6);
+        const tend=v=>{
+          if(v===null||v===undefined||!isFinite(v))
+            return {texte:'—',fond:'var(--m-accent-fond)',encre:'var(--m-encre3)',fleche:null};
+          const monte=v>=0;
+          return {texte:this.fmtTrend(v),
+                  fond:monte?'var(--m-enc-doux)':'var(--m-per-doux)',
+                  encre:monte?'var(--m-enc)':'var(--m-per)',
+                  fleche:fleche(monte)};
+        };
+        const prod=topProduits.slice(0,3).map((x,i)=>({
+          rang:String(i+1), nom:x.name, ventes:x.ventes+' ventes', montant:x.amount,
+          bord:i?'var(--m-trait)':'transparent'
+        }));
+        return {
+          periode:S.customRange?(this.frDate(S.customRange.from)+' → '+this.frDate(S.customRange.to)):cur.label,
+          commissions:this.fmtEur(t.com), ca:this.fmtEur(t.ca),
+          taux:t.ca?this.fmtPct(t.com/t.ca*100,1):'—',
+          commandes:this.fmtNum(t.orders||0),
+          attenteTexte:t.attente?(this.fmtNum(t.attente)+' encore en attente'):'',
+          tendance:tend(t.comT),
+          parts:[
+            {largeur:part(t.reglees),couleur:'var(--m-enc)'},
+            {largeur:part(t.attente),couleur:'var(--m-att-vif)'},
+            {largeur:part(t.ineligibles),couleur:'var(--m-per)'}
+          ],
+          statuts:[
+            {label:'Encaissé',n:this.fmtNum(t.reglees||0),couleur:'var(--m-enc)'},
+            {label:'En attente',n:this.fmtNum(t.attente||0),couleur:'var(--m-att-vif)'},
+            {label:'Perdu',n:this.fmtNum(t.ineligibles||0),couleur:'var(--m-per)'}
+          ],
+          produits:prod, sansProduit:prod.length===0,
+          nbAPoster:this.fmtNum(aPoster.length),
+          motAPoster:aPoster.length>1?'vidéos prêtes à poster':'vidéo prête à poster',
+          nbIdees:this.fmtNum(ideesMarquees.length),
+          motIdees:ideesMarquees.length>1?'idées marquées':'idée marquée',
+          versAnalytics:()=>this.setState({page:'analytics'}),
+          versVideos:()=>this.setState({page:'videos'}),
+          versIdees:()=>this.setState({page:'idees'})
+        };
+      })(),
+      apparence:{
+        actif:S.themeSombre,
+        basculer:()=>this.basculerSombre(),
+        piste:S.themeSombre?'var(--primary)':'#D8D4E6',
+        position:S.themeSombre?'flex-end':'flex-start'
       },
       vrai:true,
       dashPret:this.dashPret(), dashOccupe:!this.dashPret(),

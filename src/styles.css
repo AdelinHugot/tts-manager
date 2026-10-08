@@ -12,6 +12,44 @@ input,button,select{font-family:inherit;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 .sk{background:var(--border-2);border-radius:9px;animation:pulse 1.15s ease-in-out infinite;}
 
+/* ------------------------------------------------- charte mobile (--m-*) ---
+   Volontairement separee des variables du bureau : le theme sombre et la
+   nouvelle palette ne doivent rien changer a l'affichage sur grand ecran.
+   Toutes les teintes claires portent une encre foncee et l'inverse : chaque
+   paire a ete verifiee au-dela de 4,5:1. */
+.r-shell{
+  --m-fond:#F6F5FA; --m-surface:#FFFFFF;
+  --m-encre:#141121; --m-encre2:#4C4860; --m-encre3:#6E6A83;
+  --m-trait:#E8E5F0;
+  --m-accent:#5B3FE0; --m-accent-doux:#EDE9FD; --m-accent-fond:#ECE9F5; --m-accent-piste:#EFECF7;
+  --m-enc:#0B7A52; --m-enc-doux:#E1F2EA;
+  --m-att:#8F5B00; --m-att-vif:#D9A23D; --m-att-doux:#FAEFD9;
+  --m-per:#B3372B; --m-per-doux:#FAE8E6;
+  --m-vignette:#1A1726;
+  --m-idee-1:#EDE9FD; --m-idee-2:#FAEFD9; --m-idee-3:#E1F2EA; --m-idee-4:#E4EEFB; --m-idee-5:#FBE7EF;
+  --m-etoile-fond:rgba(255,255,255,0.72);
+}
+.r-shell[data-sombre="1"]{
+  --m-fond:#0C0A13; --m-surface:#161322;
+  --m-encre:#F7F5FC; --m-encre2:#B6B2C8; --m-encre3:#8B8799;
+  --m-trait:#272233;
+  --m-accent:#9B86FF; --m-accent-doux:rgba(155,134,255,0.17); --m-accent-fond:#1E1A2C; --m-accent-piste:#241F33;
+  --m-enc:#44C68E; --m-enc-doux:rgba(68,198,142,0.16);
+  --m-att:#E3A94A; --m-att-vif:#E3A94A; --m-att-doux:rgba(227,169,74,0.16);
+  --m-per:#F0786A; --m-per-doux:rgba(240,120,106,0.16);
+  --m-vignette:#000000;
+  /* Les pastels deviennent des voiles : un pastel sur fond noir fait une tache. */
+  --m-idee-1:rgba(155,134,255,0.16); --m-idee-2:rgba(227,169,74,0.15); --m-idee-3:rgba(68,198,142,0.14);
+  --m-idee-4:rgba(104,160,235,0.16); --m-idee-5:rgba(236,130,175,0.15);
+  --m-etoile-fond:rgba(255,255,255,0.08);
+}
+
+/* Chiffres a chasse fixe : des montants qui ne s'alignent pas en colonne se
+   comparent mal. */
+.m-chiffre{font-family:'Space Grotesk','Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
+.m-desk{display:block;}
+.m-mob{display:none;}
+
 /* ------------------------------------------------------------------ mobile --
    Tout est en style inline dans ce fichier, et un style inline l'emporte sur
    n'importe quelle classe : d'ou les !important, qui sont ici une necessite et
@@ -93,6 +131,32 @@ input,button,select{font-family:inherit;}
   .r-h-titre{font-size:17px !important;}
   .r-page{padding-left:16px !important;padding-right:16px !important;padding-top:18px !important;}
   .r-marque-mobile{display:flex !important;}
+
+  /* La charte ne s'applique qu'ici : le bureau garde Inter et ses couleurs. */
+  .r-shell{font-family:'Manrope',system-ui,sans-serif !important;background:var(--m-fond) !important;color:var(--m-encre) !important;}
+  .r-main{background:var(--m-fond) !important;}
+  .r-header{background:var(--m-fond) !important;border-bottom-color:var(--m-trait) !important;}
+  .r-tabbar{background:var(--m-surface) !important;border-top-color:var(--m-trait) !important;}
+  .r-feuille{background:var(--m-surface) !important;}
+  .m-desk{display:none !important;}
+  .m-mob{display:block !important;}
+
+  /* Les commandes partagees avec le bureau (periode, filtres, calendrier,
+     feuille) portent encore ses variables : en sombre, elles resteraient des
+     pastilles blanches sur fond noir. On les rattache a la charte, sans
+     toucher au bouton primaire ni a la pastille de marque. */
+  .r-ancre > button,
+  .r-outils > select,
+  .r-outils > div > button,
+  .r-vidbar > input,
+  .r-vidbar > div:last-child{
+    background:var(--m-surface) !important;
+    border-color:var(--m-trait) !important;
+    color:var(--m-encre) !important;
+  }
+  .r-calendrier{background:var(--m-surface) !important;border-color:var(--m-trait) !important;color:var(--m-encre) !important;}
+  .r-calendrier > div:first-child{background:var(--m-accent-fond) !important;border-bottom-color:var(--m-trait) !important;}
+  .r-chips > button{background:var(--m-surface) !important;border-color:var(--m-trait) !important;}
 
   /* Deux colonnes maximum : a 375px, quatre indicateurs cote a cote donnent
      des colonnes de 30px ou « 48 250 € » se brise en trois lignes. */
