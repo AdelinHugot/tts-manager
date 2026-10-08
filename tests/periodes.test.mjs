@@ -9,7 +9,9 @@
 import test, { describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { bornesPeriode, intervalles, jour, PERIODES_CONNUES } from '../src/lib/periodes.js';
+import {
+  bornesPeriode, bornesPersonnalisees, intervalles, jour, PERIODES_CONNUES,
+} from '../src/lib/periodes.js';
 
 /** 6 octobre 2026, en heure locale. */
 const LE_6_OCTOBRE = new Date(2026, 9, 6);
@@ -131,5 +133,60 @@ describe('intervalles', () => {
         assert.equal(jour(veille), pts[i - 1].to, `${id} : rupture entre ${pts[i - 1].to} et ${pts[i].from}`);
       }
     }
+  });
+});
+
+describe('bornesPersonnalisees', () => {
+  test('conserve l’intervalle choisi', () => {
+    const p = bornesPersonnalisees('2026-07-01', '2026-07-31');
+    assert.equal(p.from, '2026-07-01');
+    assert.equal(p.to, '2026-07-31');
+  });
+
+  test('la comparaison est la même durée, juste avant', () => {
+    // 31 jours du 1er au 31 juillet : les 31 jours precedents s'arretent la veille.
+    const p = bornesPersonnalisees('2026-07-01', '2026-07-31');
+    assert.deepEqual(p.precedent, { from: '2026-05-31', to: '2026-06-30' });
+  });
+
+  test('une seule journée se compare à la veille', () => {
+    const p = bornesPersonnalisees('2026-07-15', '2026-07-15');
+    assert.deepEqual(p.precedent, { from: '2026-07-14', to: '2026-07-14' });
+  });
+
+  test('un intervalle saisi à l’envers est redressé', () => {
+    const a = bornesPersonnalisees('2026-07-31', '2026-07-01');
+    const b = bornesPersonnalisees('2026-07-01', '2026-07-31');
+    assert.deepEqual(a, b);
+  });
+
+  test('la granularité suit l’étendue', () => {
+    assert.equal(bornesPersonnalisees('2026-07-06', '2026-07-12').gran, 'day');
+    assert.equal(bornesPersonnalisees('2026-01-01', '2026-12-31').gran, 'week');
+    assert.equal(bornesPersonnalisees('2024-01-01', '2026-12-31').gran, 'month');
+  });
+
+  test('le graphique reste lisible quelle que soit l’étendue', () => {
+    for (const [a, b] of [
+      ['2026-07-01', '2026-07-31'],
+      ['2026-01-01', '2026-12-31'],
+      ['2023-01-01', '2026-12-31'],
+    ]) {
+      const points = intervalles(bornesPersonnalisees(a, b)).length;
+      assert.ok(points <= 60, `${a} → ${b} produit ${points} points`);
+    }
+  });
+
+  test('les intervalles se suivent sans trou', () => {
+    const pts = intervalles(bornesPersonnalisees('2026-07-01', '2026-07-31'));
+    for (let i = 1; i < pts.length; i++) {
+      const veille = new Date(`${pts[i].from}T00:00:00`);
+      veille.setDate(veille.getDate() - 1);
+      assert.equal(jour(veille), pts[i - 1].to);
+    }
+  });
+
+  test('une date illisible lève plutôt que de produire un intervalle absurde', () => {
+    assert.throws(() => bornesPersonnalisees('pas-une-date', '2026-07-31'), /Intervalle invalide/);
   });
 });

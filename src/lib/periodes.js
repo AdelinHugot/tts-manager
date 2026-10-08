@@ -120,3 +120,40 @@ export function intervalles({ from, to, gran }) {
   }
   return out;
 }
+
+/**
+ * Bornes d'un intervalle choisi à la main dans le calendrier.
+ *
+ * La granularité suit l'étendue : des jours jusqu'à deux mois, des semaines
+ * jusqu'à un an, des mois au-delà. Trente points se lisent sur un graphique,
+ * trois cent soixante non.
+ *
+ * La période de comparaison est la même durée, immédiatement avant. Comparer
+ * une semaine choisie à la main au mois civil précédent ne voudrait rien dire.
+ */
+export function bornesPersonnalisees(from, to) {
+  const a0 = new Date(`${from}T00:00:00`);
+  const b0 = new Date(`${to}T00:00:00`);
+  if (Number.isNaN(a0.getTime()) || Number.isNaN(b0.getTime())) {
+    throw new Error(`Intervalle invalide : ${from} → ${to}`);
+  }
+  // Un intervalle saisi à l'envers est redressé plutôt que refusé : l'ordre des
+  // deux clics ne regarde pas l'utilisatrice.
+  const [debut, fin] = a0 <= b0 ? [a0, b0] : [b0, a0];
+
+  // Arrondi : un changement d'heure dans l'intervalle fait perdre ou gagner une heure.
+  const jours = Math.round((fin - debut) / 86400000) + 1;
+  const gran = jours <= 62 ? 'day' : jours <= 400 ? 'week' : 'month';
+
+  const finPrec = new Date(debut);
+  finPrec.setDate(finPrec.getDate() - 1);
+  const debutPrec = new Date(finPrec);
+  debutPrec.setDate(debutPrec.getDate() - (jours - 1));
+
+  return {
+    gran,
+    from: jour(debut),
+    to: jour(fin),
+    precedent: { from: jour(debutPrec), to: jour(finPrec) },
+  };
+}

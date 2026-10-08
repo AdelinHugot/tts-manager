@@ -177,7 +177,7 @@ export async function chargerPeriodeEtPrecedente(bornes) {
 
 // Réexports : la vue n'a ainsi qu'un seul module de données à connaître.
 export { analyserFichier } from './importCommandes.js';
-export { bornesPeriode, intervalles, jour } from './periodes.js';
+export { bornesPeriode, bornesPersonnalisees, intervalles, jour } from './periodes.js';
 export { ecouterIdees, ajouterIdee, ajouterIdeeVideo, marquerIdee, supprimerIdee } from './idees.js';
 export { ecouterProfil, enregistrerProfil, envoyerAvatar, retirerAvatar } from './profil.js';
 export {
