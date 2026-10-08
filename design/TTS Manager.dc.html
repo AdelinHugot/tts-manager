@@ -164,7 +164,10 @@ input,button,select{font-family:inherit;}
   .r-tabbar{background:var(--m-surface) !important;border-top-color:var(--m-trait) !important;}
   .r-feuille{background:var(--m-surface) !important;}
   .m-desk{display:none !important;}
-  .m-mob{display:block !important;}
+  /* `flex` et non `block` : les blocs mobiles sont des colonnes flex et
+     tiennent leur espacement d'un `gap`. En `block`, ce gap est ignore et les
+     cartes se collent — la meme erreur que celle commise sur le bureau. */
+  .m-mob{display:flex !important;}
 
   /* Les commandes partagees avec le bureau (periode, filtres, calendrier,
      feuille) portent encore ses variables : en sombre, elles resteraient des
@@ -182,6 +185,12 @@ input,button,select{font-family:inherit;}
   .r-calendrier{background:var(--m-surface) !important;border-color:var(--m-trait) !important;color:var(--m-encre) !important;}
   .r-calendrier > div:first-child{background:var(--m-accent-fond) !important;border-bottom-color:var(--m-trait) !important;}
   .r-chips > button{background:var(--m-surface) !important;border-color:var(--m-trait) !important;}
+
+  /* Le statut est passe dans le controle segmente de la page : la liste
+     deroulante de l'en-tete disait la meme chose deux fois. Le vendeur et les
+     dates restent — la maquette ne leur avait pas prevu de place, et les
+     supprimer aurait fait disparaitre deux filtres en silence. */
+  .r-sel-statut{display:none !important;}
 
   /* Deux colonnes maximum : a 375px, quatre indicateurs cote a cote donnent
      des colonnes de 30px ou « 48 250 € » se brise en trois lignes. */
@@ -326,7 +335,7 @@ input,button,select{font-family:inherit;}
               <option value="{{ o }}">{{ o }}</option>
             </sc-for>
           </select>
-          <select value="{{ fStatut }}" onChange="{{ setFStatut }}" style="appearance:none;padding:9px 14px;border:1px solid var(--border-2);background:var(--card);border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:inherit;color:var(--text);box-shadow:0 1px 2px rgba(30,20,60,0.04);" style-hover="border-color:var(--primary)">
+          <select class="r-sel-statut" value="{{ fStatut }}" onChange="{{ setFStatut }}" style="appearance:none;padding:9px 14px;border:1px solid var(--border-2);background:var(--card);border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:inherit;color:var(--text);box-shadow:0 1px 2px rgba(30,20,60,0.04);" style-hover="border-color:var(--primary)">
             <sc-for list="{{ statutOptions }}" as="o" hint-placeholder-count="5">
               <option value="{{ o }}">{{ o }}</option>
             </sc-for>
@@ -917,6 +926,73 @@ input,button,select{font-family:inherit;}
             <div style="padding:12px 16px;border-radius:13px;background:{{ importCommandes.bg }};color:{{ importCommandes.fg }};font-size:13px;font-weight:600;">{{ importCommandes.texte }}</div>
           </sc-if>
 
+          <!-- COMMANDES MOBILE : des lignes, pas un tableau. Reduire six
+               colonnes a 375px les rendrait illisibles ; en lignes, le produit,
+               le vendeur, la date et le montant tiennent tous. -->
+          <div class="m-mob" style="display:none;flex-direction:column;gap:14px;">
+
+            <div style="display:flex;gap:4px;background:var(--m-accent-fond);border-radius:13px;padding:4px;">
+              <sc-for list="{{ mobCmd.segments }}" as="sg" hint-placeholder-count="4">
+                <button onClick="{{ sg.onClick }}" style="flex:1;min-width:0;padding:9px 2px;border:none;border-radius:10px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:{{ sg.fond }};color:{{ sg.texte }};">{{ sg.label }}</button>
+              </sc-for>
+            </div>
+
+            <div style="background:var(--m-surface);border:1px solid var(--m-trait);border-radius:18px;padding:15px 17px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;">
+              <div style="min-width:0;">
+                <div style="font-size:11.5px;font-weight:700;letter-spacing:0.06em;color:var(--m-encre3);text-transform:uppercase;">{{ mobCmd.entete }}</div>
+                <div style="display:flex;align-items:baseline;gap:9px;margin-top:6px;flex-wrap:wrap;">
+                  <span class="m-chiffre" style="font-size:24px;font-weight:700;letter-spacing:-0.03em;">{{ mobCmd.gmv }}</span>
+                  <span style="font-size:13.5px;font-weight:600;color:var(--m-encre2);">de ventes</span>
+                </div>
+                <sc-if value="{{ mobCmd.note }}" hint-placeholder-val=""><div style="font-size:12.5px;font-weight:600;color:var(--m-encre3);margin-top:4px;">{{ mobCmd.note }}</div></sc-if>
+              </div>
+              <div style="text-align:right;flex:none;">
+                <div class="m-chiffre" style="font-size:17px;font-weight:700;color:var(--m-enc);">{{ mobCmd.com }}</div>
+                <div style="font-size:12px;font-weight:600;color:var(--m-encre3);margin-top:2px;">commissions</div>
+              </div>
+            </div>
+
+            <div style="background:var(--m-surface);border:1px solid var(--m-trait);border-radius:20px;overflow:hidden;">
+              <sc-for list="{{ mobCmd.lignes }}" as="lg" hint-placeholder-count="8">
+                <div style="display:flex;align-items:center;gap:12px;padding:13px 15px;border-top:1px solid {{ lg.bord }};">
+                  <span style="width:8px;height:8px;border-radius:99px;flex:none;background:{{ lg.couleur }};"></span>
+                  <div style="flex-grow:1;min-width:0;">
+                    <div style="font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{ lg.produitComplet }}">{{ lg.produit }}</div>
+                    <div style="font-size:12.5px;font-weight:500;color:var(--m-encre3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ lg.meta }}</div>
+                  </div>
+                  <div style="text-align:right;flex:none;">
+                    <div class="m-chiffre" style="font-size:14.5px;font-weight:700;">{{ lg.gmv }}</div>
+                    <div class="m-chiffre" style="font-size:12px;font-weight:700;color:{{ lg.couleur }};margin-top:2px;">{{ lg.com }}</div>
+                  </div>
+                </div>
+              </sc-for>
+
+              <sc-if value="{{ chargementCommandes }}" hint-placeholder-val="">
+                <div style="padding:10px 15px 16px;display:flex;flex-direction:column;gap:9px;">
+                  <sc-for list="{{ squelettes }}" as="sq2" hint-placeholder-count="6">
+                    <div class="sk" style="height:17px;width:{{ sq2.largeur }};"></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ noCommandes }}" hint-placeholder-val="">
+                <div style="padding:30px 18px;text-align:center;font-size:13.5px;color:var(--m-encre3);line-height:1.5;">{{ messageVide }}</div>
+              </sc-if>
+
+              <sc-if value="{{ pagination.visible }}" hint-placeholder-val="">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;border-top:1px solid var(--m-trait);">
+                  <div style="font-size:12.5px;font-weight:600;color:var(--m-encre3);">{{ pagination.resume }}</div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <button onClick="{{ pagination.prec }}" aria-label="Page précédente" style="width:38px;height:38px;border:1px solid var(--m-trait);border-radius:11px;background:var(--m-surface);color:var(--m-encre2);font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:{{ pagination.precOp }};pointer-events:{{ pagination.precPe }};">{{ mobCmd.flecheG }}</button>
+                    <button onClick="{{ pagination.suiv }}" aria-label="Page suivante" style="width:38px;height:38px;border:1px solid var(--m-trait);border-radius:11px;background:var(--m-surface);color:var(--m-encre2);font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:{{ pagination.suivOp }};pointer-events:{{ pagination.suivPe }};">{{ mobCmd.flecheD }}</button>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+
+          </div>
+
+          <div class="m-desk">
           <div class="r-g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
             <sc-for list="{{ ordersKpis }}" as="k" hint-placeholder-count="3">
               <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 1px 8px rgba(30,20,60,0.04);">
@@ -974,6 +1050,7 @@ input,button,select{font-family:inherit;}
             </sc-if>
           </div>
 
+          </div>
         </div>
       </sc-if>
 
@@ -3477,6 +3554,34 @@ class Component extends DCLogic {
         knobLeft:S.notifs[r[0]]?'22px':'3px', trackBg:S.notifs[r[0]]?'var(--primary)':'var(--border-2)',
         onClick:()=>this.toggleNotif(r[0]) })),
       commandesRows, cmdSort, ordersKpis, vendeurOptions, statutOptions, pagination,
+      // --- Commandes mobile -------------------------------------------------
+      // Le contrôle segmenté remplace les deux listes déroulantes : le statut
+      // est le vrai filtre, et une liste déroulante le cache derrière un geste.
+      mobCmd:(()=>{
+        const F=S.ordFilters;
+        const seg=[['Tous les statuts','Toutes'],['Réglée','Réglées'],['En attente','En attente'],['Inéligible','Perdues']];
+        const couleur=st=>st==='Réglée'?'var(--m-enc)':(st==='Inéligible'?'var(--m-per)':'var(--m-att-vif)');
+        return {
+          segments:seg.map(([v,label])=>{
+            const actif=F.statut===v;
+            return {label:label, fond:actif?'var(--m-surface)':'transparent',
+                    texte:actif?'var(--m-encre)':'var(--m-encre2)',
+                    onClick:()=>this.setOrdFilter('statut',v)};
+          }),
+          entete:(filtered.length?this.fmtNum(filtered.length):'0')+' commande'+(filtered.length>1?'s':''),
+          gmv:this.fmtEur(totGmv,2), com:this.fmtEur(totCom,2), note:noteInel,
+          lignes:visibles.map((o,i)=>{
+            const c=couleur(o.statut);
+            return {produit:this.tronquer(o.produit,46), produitComplet:o.produit,
+                    meta:o.vendeur+' · '+o.dateLabel,
+                    gmv:this.fmtEur(o.gmv,2),
+                    com:o.com?('+'+this.fmtEur(o.com,2)):'—',
+                    couleur:c, bord:i?'var(--m-trait)':'transparent'};
+          }),
+          flecheG:this.iconEl('chevronL',17,2.1),
+          flecheD:this.iconEl('chevronR',17,2.1)
+        };
+      })(),
       importCommandes:{
         onClick:()=>this.ouvrirImport(),
         label:S.importEnCours?'Import en cours…':'Importer',

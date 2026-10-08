@@ -1943,6 +1943,34 @@ export class Logic extends DCLogic {
         knobLeft:S.notifs[r[0]]?'22px':'3px', trackBg:S.notifs[r[0]]?'var(--primary)':'var(--border-2)',
         onClick:()=>this.toggleNotif(r[0]) })),
       commandesRows, cmdSort, ordersKpis, vendeurOptions, statutOptions, pagination,
+      // --- Commandes mobile -------------------------------------------------
+      // Le contrôle segmenté remplace les deux listes déroulantes : le statut
+      // est le vrai filtre, et une liste déroulante le cache derrière un geste.
+      mobCmd:(()=>{
+        const F=S.ordFilters;
+        const seg=[['Tous les statuts','Toutes'],['Réglée','Réglées'],['En attente','En attente'],['Inéligible','Perdues']];
+        const couleur=st=>st==='Réglée'?'var(--m-enc)':(st==='Inéligible'?'var(--m-per)':'var(--m-att-vif)');
+        return {
+          segments:seg.map(([v,label])=>{
+            const actif=F.statut===v;
+            return {label:label, fond:actif?'var(--m-surface)':'transparent',
+                    texte:actif?'var(--m-encre)':'var(--m-encre2)',
+                    onClick:()=>this.setOrdFilter('statut',v)};
+          }),
+          entete:(filtered.length?this.fmtNum(filtered.length):'0')+' commande'+(filtered.length>1?'s':''),
+          gmv:this.fmtEur(totGmv,2), com:this.fmtEur(totCom,2), note:noteInel,
+          lignes:visibles.map((o,i)=>{
+            const c=couleur(o.statut);
+            return {produit:this.tronquer(o.produit,46), produitComplet:o.produit,
+                    meta:o.vendeur+' · '+o.dateLabel,
+                    gmv:this.fmtEur(o.gmv,2),
+                    com:o.com?('+'+this.fmtEur(o.com,2)):'—',
+                    couleur:c, bord:i?'var(--m-trait)':'transparent'};
+          }),
+          flecheG:this.iconEl('chevronL',17,2.1),
+          flecheD:this.iconEl('chevronR',17,2.1)
+        };
+      })(),
       importCommandes:{
         onClick:()=>this.ouvrirImport(),
         label:S.importEnCours?'Import en cours…':'Importer',

@@ -152,7 +152,10 @@ input,button,select{font-family:inherit;}
   .r-tabbar{background:var(--m-surface) !important;border-top-color:var(--m-trait) !important;}
   .r-feuille{background:var(--m-surface) !important;}
   .m-desk{display:none !important;}
-  .m-mob{display:block !important;}
+  /* `flex` et non `block` : les blocs mobiles sont des colonnes flex et
+     tiennent leur espacement d'un `gap`. En `block`, ce gap est ignore et les
+     cartes se collent — la meme erreur que celle commise sur le bureau. */
+  .m-mob{display:flex !important;}
 
   /* Les commandes partagees avec le bureau (periode, filtres, calendrier,
      feuille) portent encore ses variables : en sombre, elles resteraient des
@@ -170,6 +173,12 @@ input,button,select{font-family:inherit;}
   .r-calendrier{background:var(--m-surface) !important;border-color:var(--m-trait) !important;color:var(--m-encre) !important;}
   .r-calendrier > div:first-child{background:var(--m-accent-fond) !important;border-bottom-color:var(--m-trait) !important;}
   .r-chips > button{background:var(--m-surface) !important;border-color:var(--m-trait) !important;}
+
+  /* Le statut est passe dans le controle segmente de la page : la liste
+     deroulante de l'en-tete disait la meme chose deux fois. Le vendeur et les
+     dates restent — la maquette ne leur avait pas prevu de place, et les
+     supprimer aurait fait disparaitre deux filtres en silence. */
+  .r-sel-statut{display:none !important;}
 
   /* Deux colonnes maximum : a 375px, quatre indicateurs cote a cote donnent
      des colonnes de 30px ou « 48 250 € » se brise en trois lignes. */
