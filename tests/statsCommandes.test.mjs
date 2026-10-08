@@ -21,14 +21,15 @@ const cmd = (dateKey, gmv, com, statut = 'Réglée', produit = 'Sérum') => ({
 const JEU = [
   cmd('2026-08-01', 100, 10),
   cmd('2026-08-01', 50, 5, 'En attente', 'Crème'),
-  cmd('2026-08-02', 30, 0, 'Inéligible', 'Crème'),
+  cmd('2026-08-02', 30, 3, 'Inéligible', 'Crème'),
   cmd('2026-08-15', 20, 2, 'Réglée', 'Crème'),
 ];
 
 describe('totaux', () => {
-  test('somme les montants et compte chaque statut', () => {
+  test('somme les montants des commandes retenues et compte chaque statut', () => {
     const t = totaux(JEU);
-    assert.equal(t.ca, 200);
+    // 100 + 50 + 20 : la commande inéligible (30 €, 3 €) est écartée des montants.
+    assert.equal(t.ca, 170);
     assert.equal(t.com, 17);
     assert.equal(t.orders, 4);
     assert.equal(t.reglees, 2);
@@ -36,8 +37,8 @@ describe('totaux', () => {
     assert.equal(t.ineligibles, 1);
   });
 
-  test('le panier moyen porte sur toutes les commandes', () => {
-    assert.equal(totaux(JEU).panier, 50);
+  test('le panier moyen rapporte le CA aux seules commandes retenues', () => {
+    assert.equal(totaux(JEU).panier, 170 / 3);
   });
 
   test('une période vide donne des zéros, jamais NaN', () => {
@@ -81,7 +82,7 @@ describe('evolutions', () => {
   test('produit les quatre variations attendues par la vue', () => {
     const e = evolutions(totaux(JEU), totaux([cmd('2026-07-01', 100, 10)]));
     assert.deepEqual(Object.keys(e).sort(), ['caT', 'comT', 'ordT', 'panierT']);
-    assert.equal(e.caT, 100);
+    assert.equal(e.caT, 70);
   });
 
   test('face à une période de comparaison vide, tout est null', () => {
@@ -100,7 +101,7 @@ describe('serie', () => {
   test('range chaque commande dans son intervalle', () => {
     const s = serie(JEU, decoupage);
     assert.deepEqual(s.map((p) => p.label), ['S1', 'S2', 'S3']);
-    assert.equal(s[0].ca, 180);
+    assert.equal(s[0].ca, 150);
     assert.equal(s[1].ca, 0);
     assert.equal(s[2].ca, 20);
   });
@@ -126,11 +127,13 @@ describe('serie', () => {
 describe('topProduits', () => {
   test('classe par chiffre d’affaires et agrège les commandes', () => {
     const top = topProduits(JEU, 'ca');
-    assert.equal(top[0].name, 'Crème');
+    assert.equal(top[0].name, 'Sérum');
     assert.equal(top[0].ca, 100);
-    assert.equal(top[0].orders, 3);
-    assert.equal(top[1].name, 'Sérum');
-    assert.equal(top[1].ca, 100);
+    // Crème : 50 + 20, la commande inéligible de 30 € n'entre pas, et la
+    // commande correspondante n'est pas comptée non plus.
+    assert.equal(top[1].name, 'Crème');
+    assert.equal(top[1].ca, 70);
+    assert.equal(top[1].orders, 2);
   });
 
   test('classe aussi par commissions', () => {
@@ -246,4 +249,76 @@ describe('regroupements Analytics', () => {
       assert.deepEqual(fn([]), []);
     }
   });
+});
+
+/* ------------------------------------------------------------------------- *
+ * Commandes inéligibles.
+ *
+ * Elles ne seront jamais payées : les compter dans les montants gonfle des
+ * chiffres sur lesquels on décide quoi filmer. Sur un mois réel, elles
+ * représentaient 24 % du GMV affiché. Elles restent comptées en volume et
+ * conservées dans l'historique.
+ * ------------------------------------------------------------------------- */
+
+const MIXTE = [
+  cmd('2026-08-01', 100, 10, 'Réglée', 'Sérum'),
+  cmd('2026-08-01', 60, 6, 'En attente', 'Sérum'),
+  cmd('2026-08-01', 40, 4, 'Inéligible', 'Sérum'),
+];
+
+describe('les inéligibles sortent des montants, pas de l’historique', () => {
+  test('ni dans le CA, ni dans les commissions', () => {
+    const t = totaux(MIXTE);
+    assert.equal(t.ca, 160);
+    assert.equal(t.com, 16);
+  });
+
+  test('mais comptées en volume et par statut', () => {
+    const t = totaux(MIXTE);
+    assert.equal(t.orders, 3);
+    assert.equal(t.ineligibles, 1);
+    assert.equal(t.reglees + t.attente + t.ineligibles, t.orders);
+  });
+
+  test('le panier moyen ne divise pas un CA amputé par un volume complet', () => {
+    // 160 € sur les 2 commandes retenues, et non sur les 3.
+    assert.equal(totaux(MIXTE).panier, 80);
+  });
+
+  test('une période entièrement inéligible ne produit aucun montant', () => {
+    const t = totaux([cmd('2026-08-01', 99, 9, 'Inéligible')]);
+    assert.equal(t.ca, 0);
+    assert.equal(t.com, 0);
+    assert.equal(t.panier, 0);
+    assert.equal(t.orders, 1);
+  });
+
+  test('la série du graphique les écarte aussi', () => {
+    const s = serie(MIXTE, [{ from: '2026-08-01', to: '2026-08-01', label: 'J' }]);
+    assert.equal(s[0].ca, 160);
+    assert.equal(s[0].com, 16);
+  });
+
+  test('le top produits les écarte aussi', () => {
+    const [p] = topProduits(MIXTE, 'ca');
+    assert.equal(p.ca, 160);
+    assert.equal(p.orders, 2);
+  });
+
+  for (const [nom, fn] of [
+    ['parVendeur', parVendeur],
+    ['parProduit', parProduit],
+    ['parPartenaire', parPartenaire],
+    ['parVideo', parVideo],
+  ]) {
+    test(`${nom} reste réconcilié avec le total, inéligibles écartées`, () => {
+      const avecInel = VENTES.concat([
+        { ...vente('medicube France', 'Sérum', 500, 90), statut: 'Inéligible' },
+      ]);
+      const t = totaux(avecInel);
+      const g = fn(avecInel);
+      assert.equal(g.reduce((a, x) => a + x.ca, 0), t.ca);
+      assert.equal(g.reduce((a, x) => a + x.com, 0), t.com);
+    });
+  }
 });

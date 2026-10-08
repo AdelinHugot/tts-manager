@@ -6,6 +6,20 @@
  * reçues ici ont déjà la forme de la vue (`gmv`, `com`, `statut`…).
  */
 
+/**
+ * Une commande inéligible compte-t-elle dans les montants ?
+ *
+ * Non. Une commande inéligible ne sera jamais payée : la faire entrer dans le
+ * chiffre d'affaires ou les commissions gonfle des chiffres sur lesquels on
+ * prend des décisions. L'export porte pourtant une commission « estimée » pour
+ * ces commandes — c'est ce que TikTok aurait versé si elles avaient été
+ * retenues, pas ce qu'elles rapportent.
+ *
+ * Elles restent comptées en volume et conservées dans l'historique : on veut
+ * savoir combien on en perd, et sur quels produits.
+ */
+export const compteDansLesMontants = (c) => c.statut !== 'Inéligible';
+
 /** Totaux d'un ensemble de commandes. */
 export function totaux(commandes) {
   let ca = 0;
@@ -15,12 +29,18 @@ export function totaux(commandes) {
   let ineligibles = 0;
 
   for (const c of commandes) {
-    ca += c.gmv || 0;
-    com += c.com || 0;
+    if (compteDansLesMontants(c)) {
+      ca += c.gmv || 0;
+      com += c.com || 0;
+    }
     if (c.statut === 'Réglée') reglees++;
     else if (c.statut === 'Inéligible') ineligibles++;
     else attente++;
   }
+
+  // Panier moyen rapporté aux seules commandes qui portent un montant, sinon
+  // on diviserait un CA amputé par un volume complet.
+  const retenues = commandes.length - ineligibles;
 
   return {
     ca,
@@ -29,9 +49,7 @@ export function totaux(commandes) {
     reglees,
     attente,
     ineligibles,
-    // Panier moyen sur l'ensemble des commandes, réglées ou non : c'est la
-    // valeur moyenne d'une commande passée, pas celle d'une commande encaissée.
-    panier: commandes.length ? ca / commandes.length : 0,
+    panier: retenues ? ca / retenues : 0,
   };
 }
 
@@ -67,6 +85,7 @@ export function evolutions(courant, precedent) {
 export function serie(commandes, decoupage) {
   const parJour = new Map();
   for (const c of commandes) {
+    if (!compteDansLesMontants(c)) continue;
     const b = parJour.get(c.dateKey) || { ca: 0, com: 0 };
     b.ca += c.gmv || 0;
     b.com += c.com || 0;
@@ -99,7 +118,7 @@ export function topProduits(commandes, metrique = 'ca', combien = 5) {
 
   for (const c of commandes) {
     const nom = c.produit || '';
-    if (!nom) continue;
+    if (!nom || !compteDansLesMontants(c)) continue;
     const b = parProduit.get(nom) || { name: nom, ca: 0, com: 0, orders: 0 };
     b.ca += c.gmv || 0;
     b.com += c.com || 0;
@@ -124,7 +143,7 @@ function regrouper(commandes, cle, enrichir) {
 
   for (const c of commandes) {
     const nom = c[cle];
-    if (!nom) continue;
+    if (!nom || !compteDansLesMontants(c)) continue;
     let g = groupes.get(nom);
     if (!g) {
       g = { name: nom, ca: 0, com: 0, orders: 0 };
@@ -176,7 +195,7 @@ export function parVideo(commandes) {
 export function parPartenaire(commandes) {
   const produitsParVendeur = new Map();
   for (const c of commandes) {
-    if (!c.vendeur) continue;
+    if (!c.vendeur || !compteDansLesMontants(c)) continue;
     const s = produitsParVendeur.get(c.vendeur) || new Set();
     if (c.produit) s.add(c.produit);
     produitsParVendeur.set(c.vendeur, s);
