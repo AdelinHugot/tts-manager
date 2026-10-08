@@ -455,7 +455,7 @@ export default function View(V) {
           </div>
           {V.showPeriod ? (
             <React.Fragment>
-              <div style={st26}>
+              <div className="r-ancre" style={st26}>
                 <button onClick={V.togglePeriod} style={st27} className={sp("hover", "border-color:var(--primary)")}>
                   <span style={st28}>
                     {V.calendarIcon}
@@ -472,7 +472,7 @@ export default function View(V) {
                 {V.periodOpen ? (
                   <React.Fragment>
                     <div onClick={V.closePeriod} style={st30}></div>
-                    <div onClick={V.stopProp} style={st31}>
+                    <div className="r-calendrier" onClick={V.stopProp} style={st31}>
                       <div style={st32}>
                         <div style={st33}>
                           {"Périodes"}
@@ -576,7 +576,7 @@ export default function View(V) {
                     </React.Fragment>
                   ))}
                 </select>
-                <div style={st26}>
+                <div className="r-ancre" style={st26}>
                   <button onClick={V.toggleDp} style={st46} className={sp("hover", "border-color:var(--primary)")}>
                     <span style={st28}>
                       {V.calendarIcon}
@@ -593,7 +593,7 @@ export default function View(V) {
                   {V.dpOpen ? (
                     <React.Fragment>
                       <div onClick={V.closeDp} style={st30}></div>
-                      <div onClick={V.stopProp} style={st31}>
+                      <div className="r-calendrier" onClick={V.stopProp} style={st31}>
                         <div style={st32}>
                           <div style={st33}>
                             {"Raccourcis"}

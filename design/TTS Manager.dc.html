@@ -73,6 +73,31 @@ input,button,select{font-family:inherit;}
   .r-chips::-webkit-scrollbar{display:none;}
   .r-chips > button{flex:0 0 auto !important;}
 
+  /* Le calendrier mesure 520px — raccourcis a gauche, mois a droite — et
+     debordait de l'ecran, ancre a droite d'un bouton deja a droite. Il devient
+     une feuille ancree au bas de la fenetre, les raccourcis passant au-dessus
+     du mois. */
+  /* `position:fixed` ne marche pas ici : le backdrop-filter de l'en-tete cree un
+     bloc conteneur, et le calendrier se calerait sur l'en-tete au lieu de la
+     fenetre. On neutralise donc l'ancrage local pour qu'il se positionne sur
+     l'en-tete lui-meme, qui occupe toute la largeur. */
+  .r-ancre{position:static !important;}
+  .r-calendrier{
+    left:12px !important;right:12px !important;top:58px !important;
+    flex-direction:column !important;max-height:76dvh;overflow-y:auto;
+  }
+  /* La colonne de raccourcis devient une rangee qui defile : empilee, elle
+     repoussait le bouton « Appliquer » hors de l'ecran. */
+  .r-calendrier > div:first-child{
+    flex-direction:row !important;overflow-x:auto;scrollbar-width:none;
+    gap:6px !important;padding:10px 12px !important;
+  }
+  .r-calendrier > div:first-child::-webkit-scrollbar{display:none;}
+  .r-calendrier > div:first-child > div:first-child{display:none !important;}
+  .r-calendrier > div:first-child button{flex:0 0 auto !important;white-space:nowrap;}
+  .r-calendrier > div{width:auto !important;border-right:none !important;}
+  .r-calendrier > div:first-child{border-bottom:1px solid var(--border);}
+
   /* Trois indicateurs sur deux colonnes laissent un orphelin : le dernier
      prend toute la largeur, ce qui se lit comme un choix et non comme un reste. */
   .r-g3 > *:last-child{grid-column:1 / -1;}
@@ -167,7 +192,7 @@ input,button,select{font-family:inherit;}
         <div class="r-h-sous" style="font-size:13px;color:var(--text-3);margin-top:2px;">{{ pageSubtitle }}</div>
       </div>
       <sc-if value="{{ showPeriod }}" hint-placeholder-val="{{ true }}">
-      <div style="position:relative;">
+      <div class="r-ancre" style="position:relative;">
         <button onClick="{{ togglePeriod }}" style="display:flex;align-items:center;gap:9px;padding:9px 14px;border:1px solid var(--border-2);background:var(--card);border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--text);box-shadow:0 1px 2px rgba(30,20,60,0.04);" style-hover="border-color:var(--primary)">
           <span style="color:var(--primary);display:flex;">{{ calendarIcon }}</span>
           <span>{{ periodLabel }}</span>
@@ -175,7 +200,7 @@ input,button,select{font-family:inherit;}
         </button>
         <sc-if value="{{ periodOpen }}" hint-placeholder-val="">
           <div onClick="{{ closePeriod }}" style="position:fixed;inset:0;z-index:30;"></div>
-          <div onClick="{{ stopProp }}" style="position:absolute;right:0;top:50px;z-index:31;display:flex;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 50px rgba(40,28,90,0.18);overflow:hidden;animation:fadeIn .14s ease;">
+          <div class="r-calendrier" onClick="{{ stopProp }}" style="position:absolute;right:0;top:50px;z-index:31;display:flex;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 50px rgba(40,28,90,0.18);overflow:hidden;animation:fadeIn .14s ease;">
             <div style="width:190px;flex:none;background:var(--primary-softer);border-right:1px solid var(--border);padding:16px 12px;display:flex;flex-direction:column;gap:2px;">
               <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--text-3);padding:2px 8px 10px;">Périodes</div>
               <sc-for list="{{ periodOptions }}" as="p" hint-placeholder-count="6">
@@ -228,7 +253,7 @@ input,button,select{font-family:inherit;}
               <option value="{{ o }}">{{ o }}</option>
             </sc-for>
           </select>
-          <div style="position:relative;">
+          <div class="r-ancre" style="position:relative;">
             <button onClick="{{ toggleDp }}" style="display:flex;align-items:center;gap:9px;padding:9px 14px;border:1px solid var(--border-2);background:var(--card);border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--text);box-shadow:0 1px 2px rgba(30,20,60,0.04);font-family:inherit;" style-hover="border-color:var(--primary)">
               <span style="color:var(--primary);display:flex;">{{ calendarIcon }}</span>
               <span>{{ dpLabel }}</span>
@@ -236,7 +261,7 @@ input,button,select{font-family:inherit;}
             </button>
             <sc-if value="{{ dpOpen }}" hint-placeholder-val="">
               <div onClick="{{ closeDp }}" style="position:fixed;inset:0;z-index:30;"></div>
-              <div onClick="{{ stopProp }}" style="position:absolute;right:0;top:50px;z-index:31;display:flex;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 50px rgba(40,28,90,0.18);overflow:hidden;animation:fadeIn .14s ease;">
+              <div class="r-calendrier" onClick="{{ stopProp }}" style="position:absolute;right:0;top:50px;z-index:31;display:flex;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 50px rgba(40,28,90,0.18);overflow:hidden;animation:fadeIn .14s ease;">
                 <div style="width:190px;flex:none;background:var(--primary-softer);border-right:1px solid var(--border);padding:16px 12px;display:flex;flex-direction:column;gap:2px;">
                   <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--text-3);padding:2px 8px 10px;">Raccourcis</div>
                   <sc-for list="{{ dpShortcuts }}" as="s" hint-placeholder-count="7">
@@ -1554,7 +1579,7 @@ class Component extends DCLogic {
     // changer vendeur/statut/tri ne recharge pas — ces filtres s'appliquent en
     // memoire sur la periode deja en main.
     if(!window.donnees) return;
-    if(this._dashCle !== this.state.period) this.chargerTableauDeBord();
+    if(this._dashCle !== this.clePeriode()) this.chargerTableauDeBord();
     if(this._chargementEnCours) return;
     const F=this.state.ordFilters;
     if(this._periode !== F.from+'→'+F.to) this.chargerCommandes();
@@ -1635,7 +1660,7 @@ class Component extends DCLogic {
 
   /* ---------- charts ---------- */
   genSeries(p){
-    if(this._dash && this._dash.cle===this.state.period && this._dash.serie) return this._dash.serie;
+    if(this._dash && this._dash.cle===this.clePeriode() && this._dash.serie) return this._dash.serie;
     if(this.enLigne()){
       const vides = p.gran==='day'?30 : p.gran==='week'?13 : 12;
       return Array.from({length:vides},()=>({ca:0,com:0,label:''}));
@@ -1856,13 +1881,17 @@ class Component extends DCLogic {
     const api = window.donnees;
     if(!api || this._dashEnCours) return;
 
-    const id = this.state.period;
+    const id = this.clePeriode();
+    const perso = this.state.customRange;
     this._dashEnCours = true;
     this._dashCle = id;   // retenu avant l'appel : un echec ne doit pas boucler
     this.setState({dashLoading:true, dashErr:null});
 
     let bornes;
-    try { bornes = api.bornesPeriode(id); }
+    try {
+      bornes = perso ? api.bornesPersonnalisees(perso.from, perso.to)
+                     : api.bornesPeriode(this.state.period);
+    }
     catch(err){
       console.error('Periode inconnue', err);
       this._dashEnCours = false;
@@ -1894,11 +1923,21 @@ class Component extends DCLogic {
    */
   enLigne(){ return !!window.donnees; }
 
+  /**
+   * Cle de ce qui est affiche : la periode nommee, ou l'intervalle choisi a la
+   * main. Sans elle, choisir des dates dans le calendrier changeait le libelle
+   * du bouton sans jamais recharger les donnees.
+   */
+  clePeriode(){
+    const c = this.state.customRange;
+    return c ? ('perso|' + c.from + '→' + c.to) : this.state.period;
+  }
+
   /** Periode affichee : reelle des que chargee, jeu de demonstration sinon. */
   periodeCourante(){
     const base = this.PERIODS.find(p=>p.id===this.state.period) || this.PERIODS[0];
     const d = this._dash;
-    if(d && d.cle === this.state.period) return Object.assign({}, base, d.totaux, d.evolutions);
+    if(d && d.cle === this.clePeriode()) return Object.assign({}, base, d.totaux, d.evolutions);
     if(this.enLigne()) return Object.assign({}, base, {ca:0,com:0,orders:0,reglees:0,attente:0,ineligibles:0,panier:0,caT:null,comT:null,ordT:null,panierT:null});
     return base;
   }
@@ -1906,7 +1945,7 @@ class Component extends DCLogic {
   /** Les indicateurs sont-ils prets a etre lus ? Faux pendant le chargement. */
   dashPret(){
     if(!this.enLigne()) return true;   // apercu du design : le jeu de demonstration fait foi
-    return !this.state.dashLoading && !!(this._dash && this._dash.cle === this.state.period);
+    return !this.state.dashLoading && !!(this._dash && this._dash.cle === this.clePeriode());
   }
 
   /* ---------- bibliotheques (videos et rushs) ---------- */
@@ -2646,7 +2685,7 @@ class Component extends DCLogic {
 
     // top produits
     const topSorted=this.enLigne()
-      ? ((this._dash && this._dash.cle===S.period) ? window.donnees.topProduits(this._dash.commandes, S.topMetric, 5) : [])
+      ? ((this._dash && this._dash.cle===this.clePeriode()) ? window.donnees.topProduits(this._dash.commandes, S.topMetric, 5) : [])
       : this.PRODUCTS.slice().sort((a,b)=>b[S.topMetric]-a[S.topMetric]).slice(0,5);
     const topProduits=topSorted.map((p,i)=>({ rank:i+1, name:this.tronquer(p.name,45), nameComplet:p.name, ventes:this.fmtNum(p.orders), amount:this.fmtEur(p[S.topMetric]), rankBg:i===0?'var(--primary)':'var(--primary-soft)', rankFg:i===0?'#fff':'var(--primary-2)' }));
     const topToggle={ ca:{onClick:()=>this.setState({topMetric:'ca'}),bg:S.topMetric==='ca'?'var(--card)':'transparent',fg:S.topMetric==='ca'?'var(--primary-2)':'var(--text-3)'}, com:{onClick:()=>this.setState({topMetric:'com'}),bg:S.topMetric==='com'?'var(--card)':'transparent',fg:S.topMetric==='com'?'var(--primary-2)':'var(--text-3)'} };
@@ -2673,7 +2712,7 @@ class Component extends DCLogic {
     // Les tableaux Analytics se calculent depuis les commandes de la periode
     // deja chargee pour le tableau de bord : aucune requete supplementaire, et
     // les chiffres ne peuvent pas diverger de ceux affiches au-dessus.
-    const cmdPeriode=(this._dash && this._dash.cle===S.period) ? this._dash.commandes : null;
+    const cmdPeriode=(this._dash && this._dash.cle===this.clePeriode()) ? this._dash.commandes : null;
     const reel=this.enLigne();
     // Les vues viennent de l'API TikTok, pas des commandes : tant qu'elle n'est
     // pas branchee, on affiche un tiret plutot qu'un zero qui passerait pour une
@@ -2840,7 +2879,7 @@ class Component extends DCLogic {
       settingsItem,
       pageTitle:meta.title, pageSubtitle:meta.sub,
       tableauDeBord:{
-        visible: !!(S.dashErr || S.dashLoading || (this._dash && this._dash.cle===S.period && this._dash.totaux.orders===0)),
+        visible: !!(S.dashErr || S.dashLoading || (this._dash && this._dash.cle===this.clePeriode() && this._dash.totaux.orders===0)),
         texte: S.dashErr
           ? S.dashErr
           : S.dashLoading

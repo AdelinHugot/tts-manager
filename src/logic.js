@@ -212,7 +212,7 @@ export class Logic extends DCLogic {
     // changer vendeur/statut/tri ne recharge pas — ces filtres s'appliquent en
     // memoire sur la periode deja en main.
     if(!window_donnees) return;
-    if(this._dashCle !== this.state.period) this.chargerTableauDeBord();
+    if(this._dashCle !== this.clePeriode()) this.chargerTableauDeBord();
     if(this._chargementEnCours) return;
     const F=this.state.ordFilters;
     if(this._periode !== F.from+'→'+F.to) this.chargerCommandes();
@@ -293,7 +293,7 @@ export class Logic extends DCLogic {
 
   /* ---------- charts ---------- */
   genSeries(p){
-    if(this._dash && this._dash.cle===this.state.period && this._dash.serie) return this._dash.serie;
+    if(this._dash && this._dash.cle===this.clePeriode() && this._dash.serie) return this._dash.serie;
     if(this.enLigne()){
       const vides = p.gran==='day'?30 : p.gran==='week'?13 : 12;
       return Array.from({length:vides},()=>({ca:0,com:0,label:''}));
@@ -514,13 +514,17 @@ export class Logic extends DCLogic {
     const api = window_donnees;
     if(!api || this._dashEnCours) return;
 
-    const id = this.state.period;
+    const id = this.clePeriode();
+    const perso = this.state.customRange;
     this._dashEnCours = true;
     this._dashCle = id;   // retenu avant l'appel : un echec ne doit pas boucler
     this.setState({dashLoading:true, dashErr:null});
 
     let bornes;
-    try { bornes = api.bornesPeriode(id); }
+    try {
+      bornes = perso ? api.bornesPersonnalisees(perso.from, perso.to)
+                     : api.bornesPeriode(this.state.period);
+    }
     catch(err){
       console.error('Periode inconnue', err);
       this._dashEnCours = false;
@@ -552,11 +556,21 @@ export class Logic extends DCLogic {
    */
   enLigne(){ return !!window_donnees; }
 
+  /**
+   * Cle de ce qui est affiche : la periode nommee, ou l'intervalle choisi a la
+   * main. Sans elle, choisir des dates dans le calendrier changeait le libelle
+   * du bouton sans jamais recharger les donnees.
+   */
+  clePeriode(){
+    const c = this.state.customRange;
+    return c ? ('perso|' + c.from + '→' + c.to) : this.state.period;
+  }
+
   /** Periode affichee : reelle des que chargee, jeu de demonstration sinon. */
   periodeCourante(){
     const base = this.PERIODS.find(p=>p.id===this.state.period) || this.PERIODS[0];
     const d = this._dash;
-    if(d && d.cle === this.state.period) return Object.assign({}, base, d.totaux, d.evolutions);
+    if(d && d.cle === this.clePeriode()) return Object.assign({}, base, d.totaux, d.evolutions);
     if(this.enLigne()) return Object.assign({}, base, {ca:0,com:0,orders:0,reglees:0,attente:0,ineligibles:0,panier:0,caT:null,comT:null,ordT:null,panierT:null});
     return base;
   }
@@ -564,7 +578,7 @@ export class Logic extends DCLogic {
   /** Les indicateurs sont-ils prets a etre lus ? Faux pendant le chargement. */
   dashPret(){
     if(!this.enLigne()) return true;   // apercu du design : le jeu de demonstration fait foi
-    return !this.state.dashLoading && !!(this._dash && this._dash.cle === this.state.period);
+    return !this.state.dashLoading && !!(this._dash && this._dash.cle === this.clePeriode());
   }
 
   /* ---------- bibliotheques (videos et rushs) ---------- */
@@ -1304,7 +1318,7 @@ export class Logic extends DCLogic {
 
     // top produits
     const topSorted=this.enLigne()
-      ? ((this._dash && this._dash.cle===S.period) ? window_donnees.topProduits(this._dash.commandes, S.topMetric, 5) : [])
+      ? ((this._dash && this._dash.cle===this.clePeriode()) ? window_donnees.topProduits(this._dash.commandes, S.topMetric, 5) : [])
       : this.PRODUCTS.slice().sort((a,b)=>b[S.topMetric]-a[S.topMetric]).slice(0,5);
     const topProduits=topSorted.map((p,i)=>({ rank:i+1, name:this.tronquer(p.name,45), nameComplet:p.name, ventes:this.fmtNum(p.orders), amount:this.fmtEur(p[S.topMetric]), rankBg:i===0?'var(--primary)':'var(--primary-soft)', rankFg:i===0?'#fff':'var(--primary-2)' }));
     const topToggle={ ca:{onClick:()=>this.setState({topMetric:'ca'}),bg:S.topMetric==='ca'?'var(--card)':'transparent',fg:S.topMetric==='ca'?'var(--primary-2)':'var(--text-3)'}, com:{onClick:()=>this.setState({topMetric:'com'}),bg:S.topMetric==='com'?'var(--card)':'transparent',fg:S.topMetric==='com'?'var(--primary-2)':'var(--text-3)'} };
@@ -1331,7 +1345,7 @@ export class Logic extends DCLogic {
     // Les tableaux Analytics se calculent depuis les commandes de la periode
     // deja chargee pour le tableau de bord : aucune requete supplementaire, et
     // les chiffres ne peuvent pas diverger de ceux affiches au-dessus.
-    const cmdPeriode=(this._dash && this._dash.cle===S.period) ? this._dash.commandes : null;
+    const cmdPeriode=(this._dash && this._dash.cle===this.clePeriode()) ? this._dash.commandes : null;
     const reel=this.enLigne();
     // Les vues viennent de l'API TikTok, pas des commandes : tant qu'elle n'est
     // pas branchee, on affiche un tiret plutot qu'un zero qui passerait pour une
@@ -1498,7 +1512,7 @@ export class Logic extends DCLogic {
       settingsItem,
       pageTitle:meta.title, pageSubtitle:meta.sub,
       tableauDeBord:{
-        visible: !!(S.dashErr || S.dashLoading || (this._dash && this._dash.cle===S.period && this._dash.totaux.orders===0)),
+        visible: !!(S.dashErr || S.dashLoading || (this._dash && this._dash.cle===this.clePeriode() && this._dash.totaux.orders===0)),
         texte: S.dashErr
           ? S.dashErr
           : S.dashLoading

@@ -61,6 +61,31 @@ input,button,select{font-family:inherit;}
   .r-chips::-webkit-scrollbar{display:none;}
   .r-chips > button{flex:0 0 auto !important;}
 
+  /* Le calendrier mesure 520px — raccourcis a gauche, mois a droite — et
+     debordait de l'ecran, ancre a droite d'un bouton deja a droite. Il devient
+     une feuille ancree au bas de la fenetre, les raccourcis passant au-dessus
+     du mois. */
+  /* `position:fixed` ne marche pas ici : le backdrop-filter de l'en-tete cree un
+     bloc conteneur, et le calendrier se calerait sur l'en-tete au lieu de la
+     fenetre. On neutralise donc l'ancrage local pour qu'il se positionne sur
+     l'en-tete lui-meme, qui occupe toute la largeur. */
+  .r-ancre{position:static !important;}
+  .r-calendrier{
+    left:12px !important;right:12px !important;top:58px !important;
+    flex-direction:column !important;max-height:76dvh;overflow-y:auto;
+  }
+  /* La colonne de raccourcis devient une rangee qui defile : empilee, elle
+     repoussait le bouton « Appliquer » hors de l'ecran. */
+  .r-calendrier > div:first-child{
+    flex-direction:row !important;overflow-x:auto;scrollbar-width:none;
+    gap:6px !important;padding:10px 12px !important;
+  }
+  .r-calendrier > div:first-child::-webkit-scrollbar{display:none;}
+  .r-calendrier > div:first-child > div:first-child{display:none !important;}
+  .r-calendrier > div:first-child button{flex:0 0 auto !important;white-space:nowrap;}
+  .r-calendrier > div{width:auto !important;border-right:none !important;}
+  .r-calendrier > div:first-child{border-bottom:1px solid var(--border);}
+
   /* Trois indicateurs sur deux colonnes laissent un orphelin : le dernier
      prend toute la largeur, ce qui se lit comme un choix et non comme un reste. */
   .r-g3 > *:last-child{grid-column:1 / -1;}
