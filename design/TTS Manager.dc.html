@@ -59,7 +59,10 @@ input,button,select{font-family:inherit;}
 /* Chiffres a chasse fixe : des montants qui ne s'alignent pas en colonne se
    comparent mal. */
 .m-chiffre{font-family:'Space Grotesk','Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
-.m-desk{display:block;}
+/* `contents` et non `block` : le conteneur disparait de la mise en page, donc
+   ses enfants restent des elements flex du parent et gardent son `gap`. En
+   `block`, ils se collaient les uns aux autres sur grand ecran. */
+.m-desk{display:contents;}
 .m-mob{display:none;}
 
 /* ------------------------------------------------------------------ mobile --
@@ -140,7 +143,8 @@ input,button,select{font-family:inherit;}
      prend toute la largeur, ce qui se lit comme un choix et non comme un reste. */
   .r-g3 > *:last-child{grid-column:1 / -1;}
   .r-h-sous{display:none !important;}
-  .r-h-titre{font-size:17px !important;}
+  .r-h-titre{display:none !important;}
+  .r-h-mob{display:flex !important;}
   .r-page{padding-left:16px !important;padding-right:16px !important;padding-top:18px !important;}
   .r-marque-mobile{display:flex !important;}
 
@@ -253,6 +257,10 @@ input,button,select{font-family:inherit;}
       </div>
       <div class="r-h-bloc" style="min-width:0;">
         <div class="r-h-titre" style="font-size:21px;font-weight:700;letter-spacing:-0.02em;">{{ pageTitle }}</div>
+        <div class="r-h-mob" style="display:none;align-items:baseline;gap:9px;flex-wrap:wrap;">
+          <span style="font-size:24px;font-weight:800;letter-spacing:-0.035em;">{{ mobTitre.titre }}</span>
+          <sc-if value="{{ mobTitre.glose }}" hint-placeholder-val=""><span style="font-size:13px;font-weight:600;color:var(--m-encre3);">{{ mobTitre.glose }}</span></sc-if>
+        </div>
         <div class="r-h-sous" style="font-size:13px;color:var(--text-3);margin-top:2px;">{{ pageSubtitle }}</div>
       </div>
       <sc-if value="{{ showPeriod }}" hint-placeholder-val="{{ true }}">
@@ -394,7 +402,7 @@ input,button,select{font-family:inherit;}
                   <span style="font-size:11.5px;font-weight:800;">{{ mobAccueil.tendance.texte }}</span>
                 </div>
               </div>
-              <div class="m-chiffre" style="font-size:50px;font-weight:700;letter-spacing:-0.04em;line-height:0.95;">{{ mobAccueil.commissions }}</div>
+              <div class="m-chiffre" style="font-size:44px;font-weight:700;letter-spacing:-0.03em;line-height:1;">{{ mobAccueil.commissions }}</div>
               <div style="display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;">
                 <span style="font-size:13.5px;font-weight:500;color:var(--m-encre2);">sur</span>
                 <span class="m-chiffre" style="font-size:16px;font-weight:700;">{{ mobAccueil.ca }}</span>
@@ -3096,6 +3104,13 @@ class Component extends DCLogic {
       })),
       menuMobileOuvert:S.menuMobileOuvert,
       fermerMenuMobile:()=>this.setState({menuMobileOuvert:false}),
+      // Le titre du mobile n'est pas celui du bureau : « Ta récolte » porte la
+      // marque, et la glose dit le mot que tout le monde emploie.
+      mobTitre:(()=>{
+        const m=this.PAGES[S.page]||this.PAGES.dashboard;
+        if(S.page==='dashboard') return {titre:'Ta récolte', glose:'tes commissions'};
+        return {titre:m.title, glose:null};
+      })(),
       compte:this.carteCompte(),
       profil:{
         visible: !!(S.profilErr || S.profilEnvoi),
@@ -3124,7 +3139,17 @@ class Component extends DCLogic {
           bord:i?'var(--m-trait)':'transparent'
         }));
         return {
-          periode:S.customRange?(this.frDate(S.customRange.from)+' → '+this.frDate(S.customRange.to)):cur.label,
+          // Le vrai mois plutot que « Ce mois-ci » : une carte qui s'affiche
+          // seule doit se suffire, sans dependre du selecteur au-dessus.
+          periode:(()=>{
+            const b=(this._dash&&this._dash.cle===this.clePeriode())?this._dash.bornes:null;
+            if(!b) return S.customRange?(this.frDate(S.customRange.from)+' → '+this.frDate(S.customRange.to)):cur.label;
+            const premier=b.from.slice(8)==='01';
+            const dernier=b.to===this.iso(new Date(+b.to.slice(0,4), +b.to.slice(5,7), 0));
+            const memeMois=b.from.slice(0,7)===b.to.slice(0,7);
+            if(premier&&dernier&&memeMois) return this.monthLabel(b.from.slice(0,7));
+            return this.frDate(b.from)+' → '+this.frDate(b.to);
+          })(),
           commissions:this.fmtEur(t.com), ca:this.fmtEur(t.ca),
           taux:t.ca?this.fmtPct(t.com/t.ca*100,1):'—',
           commandes:this.fmtNum(t.orders||0),

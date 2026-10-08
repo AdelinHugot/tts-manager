@@ -1576,6 +1576,13 @@ export class Logic extends DCLogic {
       })),
       menuMobileOuvert:S.menuMobileOuvert,
       fermerMenuMobile:()=>this.setState({menuMobileOuvert:false}),
+      // Le titre du mobile n'est pas celui du bureau : « Ta récolte » porte la
+      // marque, et la glose dit le mot que tout le monde emploie.
+      mobTitre:(()=>{
+        const m=this.PAGES[S.page]||this.PAGES.dashboard;
+        if(S.page==='dashboard') return {titre:'Ta récolte', glose:'tes commissions'};
+        return {titre:m.title, glose:null};
+      })(),
       compte:this.carteCompte(),
       profil:{
         visible: !!(S.profilErr || S.profilEnvoi),
@@ -1604,7 +1611,17 @@ export class Logic extends DCLogic {
           bord:i?'var(--m-trait)':'transparent'
         }));
         return {
-          periode:S.customRange?(this.frDate(S.customRange.from)+' → '+this.frDate(S.customRange.to)):cur.label,
+          // Le vrai mois plutot que « Ce mois-ci » : une carte qui s'affiche
+          // seule doit se suffire, sans dependre du selecteur au-dessus.
+          periode:(()=>{
+            const b=(this._dash&&this._dash.cle===this.clePeriode())?this._dash.bornes:null;
+            if(!b) return S.customRange?(this.frDate(S.customRange.from)+' → '+this.frDate(S.customRange.to)):cur.label;
+            const premier=b.from.slice(8)==='01';
+            const dernier=b.to===this.iso(new Date(+b.to.slice(0,4), +b.to.slice(5,7), 0));
+            const memeMois=b.from.slice(0,7)===b.to.slice(0,7);
+            if(premier&&dernier&&memeMois) return this.monthLabel(b.from.slice(0,7));
+            return this.frDate(b.from)+' → '+this.frDate(b.to);
+          })(),
           commissions:this.fmtEur(t.com), ca:this.fmtEur(t.ca),
           taux:t.ca?this.fmtPct(t.com/t.ca*100,1):'—',
           commandes:this.fmtNum(t.orders||0),

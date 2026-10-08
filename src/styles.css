@@ -47,7 +47,10 @@ input,button,select{font-family:inherit;}
 /* Chiffres a chasse fixe : des montants qui ne s'alignent pas en colonne se
    comparent mal. */
 .m-chiffre{font-family:'Space Grotesk','Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;}
-.m-desk{display:block;}
+/* `contents` et non `block` : le conteneur disparait de la mise en page, donc
+   ses enfants restent des elements flex du parent et gardent son `gap`. En
+   `block`, ils se collaient les uns aux autres sur grand ecran. */
+.m-desk{display:contents;}
 .m-mob{display:none;}
 
 /* ------------------------------------------------------------------ mobile --
@@ -128,7 +131,8 @@ input,button,select{font-family:inherit;}
      prend toute la largeur, ce qui se lit comme un choix et non comme un reste. */
   .r-g3 > *:last-child{grid-column:1 / -1;}
   .r-h-sous{display:none !important;}
-  .r-h-titre{font-size:17px !important;}
+  .r-h-titre{display:none !important;}
+  .r-h-mob{display:flex !important;}
   .r-page{padding-left:16px !important;padding-right:16px !important;padding-top:18px !important;}
   .r-marque-mobile{display:flex !important;}
 
