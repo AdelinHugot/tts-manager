@@ -215,173 +215,176 @@ const st207 = {"width":"56px","height":"56px","borderRadius":"16px","background"
 const st208 = {"fontSize":"14px","color":"var(--text-3)","marginTop":"14px","maxWidth":"340px","lineHeight":"1.5"};
 const st209 = {"display":"none","flexDirection":"column","gap":"14px"};
 const st210 = {"display":"flex","gap":"4px","background":"var(--m-accent-fond)","borderRadius":"13px","padding":"4px"};
-const st211 = {"background":"var(--m-surface)","border":"1px solid var(--m-trait)","borderRadius":"18px","padding":"15px 17px","display":"flex","alignItems":"flex-end","justifyContent":"space-between","gap":"14px"};
-const st212 = {"fontSize":"11.5px","fontWeight":"700","letterSpacing":"0.06em","color":"var(--m-encre3)","textTransform":"uppercase"};
-const st213 = {"display":"flex","alignItems":"baseline","gap":"9px","marginTop":"6px","flexWrap":"wrap"};
-const st214 = {"fontSize":"24px","fontWeight":"700","letterSpacing":"-0.03em"};
-const st215 = {"fontSize":"12.5px","fontWeight":"600","color":"var(--m-encre3)","marginTop":"4px"};
-const st216 = {"textAlign":"right","flex":"none"};
-const st217 = {"fontSize":"17px","fontWeight":"700","color":"var(--m-enc)"};
-const st218 = {"fontSize":"12px","fontWeight":"600","color":"var(--m-encre3)","marginTop":"2px"};
-const st219 = {"fontSize":"12.5px","fontWeight":"500","color":"var(--m-encre3)","marginTop":"2px","whiteSpace":"nowrap","overflow":"hidden","textOverflow":"ellipsis"};
-const st220 = {"fontSize":"14.5px","fontWeight":"700"};
-const st221 = {"padding":"10px 15px 16px","display":"flex","flexDirection":"column","gap":"9px"};
-const st222 = {"padding":"30px 18px","textAlign":"center","fontSize":"13.5px","color":"var(--m-encre3)","lineHeight":"1.5"};
-const st223 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"10px","padding":"12px 15px","borderTop":"1px solid var(--m-trait)"};
-const st224 = {"fontSize":"12.5px","fontWeight":"600","color":"var(--m-encre3)"};
-const st225 = {"display":"flex","alignItems":"center","gap":"8px"};
-const st226 = {"fontSize":"11.5px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.05em","color":"var(--text-3)"};
-const st227 = {"fontSize":"23px","fontWeight":"800","letterSpacing":"-0.02em","marginTop":"7px"};
-const st228 = {"fontSize":"11.5px","color":"var(--text-3)","marginTop":"5px"};
-const st229 = {"padding":"13px 18px","color":"var(--text-2)","whiteSpace":"nowrap"};
-const st230 = {"padding":"13px 18px"};
-const st231 = {"padding":"8px 18px 18px","display":"flex","flexDirection":"column","gap":"9px"};
-const st232 = {"padding":"44px 20px","textAlign":"center","fontSize":"14px","color":"var(--text-3)"};
-const st233 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"12px","padding":"13px 18px","borderTop":"1px solid var(--border)"};
-const st234 = {"fontSize":"12.5px","color":"var(--text-2)","fontWeight":"600","whiteSpace":"nowrap"};
-const st235 = {"display":"flex","flexDirection":"column","gap":"16px","padding":"22px 32px 48px"};
-const st236 = {"display":"flex","alignItems":"center","gap":"10px","flexWrap":"wrap"};
-const st237 = {"display":"flex","alignItems":"center","gap":"6px","fontSize":"13.5px","fontWeight":"700"};
-const st238 = {"padding":"4px 6px","color":"var(--text)"};
-const st239 = {"width":"210px","padding":"9px 13px","border":"1px solid var(--border-2)","borderRadius":"12px","background":"var(--card)","fontFamily":"inherit","fontSize":"13px","color":"var(--text)","outline":"none"};
-const st240 = {"display":"flex","alignItems":"center","gap":"7px","padding":"9px 14px","border":"1px solid var(--border-2)","borderRadius":"12px","background":"var(--card)","color":"var(--text-2)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st241 = {"display":"flex","alignItems":"center","gap":"7px","padding":"9px 15px","border":"none","borderRadius":"12px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st242 = {"display":"flex","gap":"2px","background":"#F4F3F7","borderRadius":"11px","padding":"3px"};
-const st243 = {"display":"grid","gridTemplateColumns":"repeat(auto-fill,minmax(200px,1fr))","gap":"14px"};
-const st244 = {"fontSize":"13.5px","fontWeight":"600","lineHeight":"1.35","wordBreak":"break-word"};
-const st245 = {"fontSize":"11.5px","color":"var(--text-3)","marginTop":"3px","fontWeight":"500"};
-const st246 = {"display":"flex","gap":"4px"};
-const st247 = {"flex":"1","padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-2)","cursor":"pointer","display":"flex","alignItems":"center","justifyContent":"center"};
-const st248 = {"flex":"1","padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-3)","cursor":"pointer","display":"flex","alignItems":"center","justifyContent":"center"};
-const st249 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"16px","overflow":"hidden"};
-const st250 = {"fontSize":"12px","color":"var(--text-3)","fontWeight":"500","width":"170px","textAlign":"right"};
-const st251 = {"padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-2)","cursor":"pointer","display":"flex"};
-const st252 = {"padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-3)","cursor":"pointer","display":"flex"};
-const st253 = {"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","padding":"80px 20px","textAlign":"center"};
-const st254 = {"width":"58px","height":"58px","borderRadius":"17px","background":"var(--primary-soft)","color":"var(--primary-2)","display":"flex","alignItems":"center","justifyContent":"center"};
-const st255 = {"fontSize":"15.5px","fontWeight":"700","marginTop":"16px"};
-const st256 = {"fontSize":"13.5px","color":"var(--text-3)","marginTop":"6px","maxWidth":"340px","lineHeight":"1.55"};
-const st257 = {"fontSize":"12px","color":"var(--text-3)","fontWeight":"500"};
-const st258 = {"width":"400px","maxWidth":"92vw","background":"var(--card)","borderRadius":"20px","boxShadow":"0 24px 60px rgba(30,20,60,0.24)","padding":"22px","display":"flex","flexDirection":"column","gap":"14px"};
-const st259 = {"padding":"11px 13px","border":"1px solid var(--border-2)","borderRadius":"12px","fontFamily":"inherit","fontSize":"14px","color":"var(--text)","outline":"none"};
-const st260 = {"display":"flex","justifyContent":"flex-end","gap":"8px"};
-const st261 = {"padding":"9px 15px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text-2)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st262 = {"padding":"9px 15px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st263 = {"position":"fixed","inset":"0","zIndex":"40","background":"rgba(20,12,40,0.66)","display":"flex","alignItems":"center","justifyContent":"center","padding":"30px"};
-const st264 = {"width":"520px","maxWidth":"94vw","background":"var(--card)","borderRadius":"22px","boxShadow":"0 28px 70px rgba(20,12,40,0.4)","overflow":"hidden","display":"flex","flexDirection":"column"};
-const st265 = {"background":"#0E0A1A","display":"flex","alignItems":"center","justifyContent":"center","minHeight":"280px"};
-const st266 = {"padding":"16px 20px","display":"flex","alignItems":"center","gap":"14px"};
-const st267 = {"fontSize":"14.5px","fontWeight":"700","wordBreak":"break-word"};
-const st268 = {"fontSize":"12px","color":"var(--text-3)","marginTop":"3px","fontWeight":"500"};
-const st269 = {"padding":"9px 14px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text-2)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st270 = {"padding":"9px 14px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st271 = {"display":"flex","flexDirection":"column","gap":"16px","padding":"22px 32px 40px","maxWidth":"1180px"};
-const st272 = {"display":"grid","gridTemplateColumns":"minmax(0,1.25fr) minmax(0,1fr)","gap":"16px","alignItems":"start"};
-const st273 = {"display":"flex","flexDirection":"column","gap":"16px","minWidth":"0"};
-const st274 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","display":"flex","flexDirection":"column","gap":"16px","minWidth":"0"};
-const st275 = {"display":"flex","alignItems":"center","gap":"18px"};
-const st276 = {"width":"74px","height":"74px","flex":"none","borderRadius":"22px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","fontSize":"23px","fontWeight":"700","letterSpacing":"-0.02em","display":"flex","alignItems":"center","justifyContent":"center"};
-const st277 = {"display":"flex","flexDirection":"column","gap":"9px"};
-const st278 = {"fontSize":"13px","color":"var(--text-2)","fontWeight":"500","lineHeight":"1.5"};
-const st279 = {"display":"grid","gridTemplateColumns":"1fr 1fr","gap":"12px"};
-const st280 = {"display":"flex","flexDirection":"column","gap":"6px","minWidth":"0"};
-const st281 = {"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.05em","color":"var(--text-3)"};
-const st282 = {"width":"100%","minWidth":"0","padding":"10px 12px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text)","fontSize":"13.5px","fontWeight":"500","fontFamily":"inherit"};
-const st283 = {"width":"100%","minWidth":"0","padding":"10px 12px","border":"1px solid var(--border)","borderRadius":"11px","background":"#F6F5FA","color":"var(--text-3)","fontSize":"13.5px","overflow":"hidden","textOverflow":"ellipsis","whiteSpace":"nowrap"};
-const st284 = {"fontSize":"11.5px","color":"var(--text-3)"};
-const st285 = {"display":"flex","alignItems":"center","gap":"12px"};
-const st286 = {"padding":"10px 18px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st287 = {"fontSize":"13px","fontWeight":"600","color":"var(--secondary)"};
-const st288 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px"};
-const st289 = {"fontSize":"13px","color":"var(--text-3)","marginTop":"3px"};
-const st290 = {"display":"flex","alignItems":"center","gap":"8px","flex":"none","padding":"8px 14px","borderRadius":"999px","background":"var(--secondary-soft)","color":"var(--secondary)","fontSize":"13px","fontWeight":"700"};
-const st291 = {"flex":"none","padding":"10px 18px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st292 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","display":"flex","flexDirection":"column","gap":"14px","minWidth":"0"};
-const st293 = {"display":"flex","flexDirection":"column","gap":"6px","gridColumn":"span 2","minWidth":"0"};
-const st294 = {"width":"100%","minWidth":"0","padding":"10px 12px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text)","fontSize":"13.5px","fontFamily":"inherit"};
-const st295 = {"display":"flex","alignItems":"center","gap":"11px"};
-const st296 = {"flex":"1","height":"6px","borderRadius":"999px","background":"var(--border)","overflow":"hidden"};
-const st297 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","display":"flex","flexDirection":"column","gap":"14px"};
-const st298 = {"fontSize":"12.5px","color":"var(--text-3)","marginTop":"3px"};
-const st299 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px"};
-const st300 = {"fontSize":"14px","fontWeight":"600","cursor":"pointer"};
-const st301 = {"width":"22px","height":"22px","borderRadius":"50%","background":"#fff","boxShadow":"0 1px 3px rgba(20,16,40,0.3)"};
-const st302 = {"background":"#FAFAFC","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","display":"flex","flexDirection":"column","gap":"2px"};
-const st303 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"12px","marginBottom":"6px"};
-const st304 = {"fontSize":"15px","fontWeight":"700","letterSpacing":"-0.01em","color":"var(--text-3)"};
-const st305 = {"padding":"4px 10px","borderRadius":"999px","background":"#F1F0F5","color":"var(--text-3)","fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.05em"};
-const st306 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px","padding":"11px 0","borderTop":"1px solid var(--border)","opacity":"0.55"};
-const st307 = {"fontSize":"13.5px","fontWeight":"600","color":"var(--text-2)"};
-const st308 = {"fontSize":"12.5px","color":"var(--text-3)","marginTop":"2px"};
-const st309 = {"position":"relative","width":"42px","height":"24px","flex":"none","borderRadius":"999px","background":"var(--border-2)"};
-const st310 = {"position":"absolute","top":"3px","left":"3px","width":"18px","height":"18px","borderRadius":"50%","background":"#fff","boxShadow":"0 1px 3px rgba(30,20,60,0.15)"};
-const st311 = {"display":"flex","alignItems":"center","gap":"12px","marginTop":"6px"};
-const st312 = {"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.08em","color":"var(--text-3)"};
-const st313 = {"flex":"1","height":"1px","background":"var(--border)"};
-const st314 = {"background":"#FAFAFC","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px"};
-const st315 = {"fontSize":"13px","color":"var(--text-3)","marginTop":"4px"};
-const st316 = {"flex":"none","padding":"10px 18px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"#F1F0F5","color":"var(--text-3)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"not-allowed"};
-const st317 = {"width":"200px","padding":"9px 13px","border":"1px solid var(--border-2)","borderRadius":"12px","background":"var(--card)","fontFamily":"inherit","fontSize":"13px","color":"var(--text)","outline":"none"};
-const st318 = {"display":"flex","alignItems":"center","gap":"8px","flexWrap":"wrap"};
-const st319 = {"fontSize":"11px","fontWeight":"700","opacity":"0.65"};
-const st320 = {"display":"grid","gridTemplateColumns":"repeat(auto-fill,minmax(210px,1fr))","gap":"14px"};
-const st321 = {"display":"flex","opacity":"0.7"};
-const st322 = {"position":"absolute","left":"0","right":"0","top":"34px","zIndex":"31","background":"var(--card)","border":"1px solid var(--border)","borderRadius":"14px","boxShadow":"0 16px 40px rgba(30,20,60,0.18)","padding":"6px","display":"flex","flexDirection":"column","gap":"2px"};
-const st323 = {"fontSize":"12px","color":"var(--text-3)","fontWeight":"500","width":"160px","textAlign":"right"};
-const st324 = {"padding":"16px 20px","display":"flex","alignItems":"center","gap":"12px","flexWrap":"wrap"};
-const st325 = {"flex":"1","minWidth":"180px"};
-const st326 = {"display":"flex","flexDirection":"column","gap":"14px","padding":"22px 32px 28px","maxWidth":"1080px"};
-const st327 = {"display":"flex","alignItems":"center","gap":"11px","padding":"14px 17px","borderRadius":"15px","background":"#F1F0F5","border":"1px solid var(--border-2)"};
-const st328 = {"color":"var(--text-3)","display":"flex","flex":"none"};
-const st329 = {"fontSize":"14px","fontWeight":"700","color":"var(--text-2)"};
-const st330 = {"opacity":"0.45","filter":"grayscale(1)","pointerEvents":"none","userSelect":"none","display":"flex","flexDirection":"column","gap":"14px"};
-const st331 = {"display":"flex","alignItems":"center","gap":"7px","fontSize":"12px","fontWeight":"600","color":"var(--text-3)"};
-const st332 = {"width":"7px","height":"7px","borderRadius":"50%","background":"var(--green)","display":"inline-block"};
-const st333 = {"fontSize":"12px","fontWeight":"600","color":"var(--text-2)","background":"var(--primary-softer)","border":"1px solid var(--border-2)","borderRadius":"999px","padding":"4px 11px"};
-const st334 = {"padding":"7px 13px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text-2)","fontSize":"12.5px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
-const st335 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","padding":"22px","display":"flex","flexDirection":"column","gap":"16px","minHeight":"400px","maxHeight":"56vh","overflowY":"auto"};
-const st336 = {"display":"flex","flexDirection":"column","gap":"18px","padding":"14px 4px"};
-const st337 = {"width":"46px","height":"46px","flex":"none","borderRadius":"14px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","display":"flex","alignItems":"center","justifyContent":"center"};
-const st338 = {"fontSize":"17px","fontWeight":"700","letterSpacing":"-0.02em"};
-const st339 = {"fontSize":"13.5px","color":"var(--text-3)","marginTop":"3px"};
-const st340 = {"display":"grid","gridTemplateColumns":"repeat(auto-fit,minmax(230px,1fr))","gap":"10px"};
-const st341 = {"textAlign":"left","padding":"13px 15px","border":"1px solid var(--border-2)","borderRadius":"14px","background":"var(--bg)","color":"var(--text)","fontSize":"13.5px","fontWeight":"600","lineHeight":"1.45","fontFamily":"inherit","cursor":"pointer"};
-const st342 = {"display":"flex","justifyContent":"flex-end","gap":"10px","alignItems":"flex-end"};
-const st343 = {"maxWidth":"72%","background":"var(--primary)","color":"#fff","borderRadius":"18px 18px 5px 18px","padding":"12px 16px","fontSize":"14px","lineHeight":"1.55","whiteSpace":"pre-wrap","textWrap":"pretty","boxShadow":"0 2px 10px rgba(124,92,246,0.22)"};
-const st344 = {"width":"28px","height":"28px","flex":"none","borderRadius":"50%","background":"var(--primary-soft)","color":"var(--primary-2)","display":"flex","alignItems":"center","justifyContent":"center","fontSize":"12px","fontWeight":"700"};
-const st345 = {"display":"flex","gap":"11px","alignItems":"flex-start"};
-const st346 = {"width":"28px","height":"28px","flex":"none","borderRadius":"9px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","display":"flex","alignItems":"center","justifyContent":"center","marginTop":"2px"};
-const st347 = {"maxWidth":"70ch","minWidth":"0","display":"flex","flexDirection":"column","gap":"9px","background":"var(--card)","border":"1px solid var(--border)","borderRadius":"5px 18px 18px 18px","padding":"15px 17px","boxShadow":"0 1px 8px rgba(30,20,60,0.05)"};
-const st348 = {"fontSize":"14px","lineHeight":"1.6","textWrap":"pretty"};
-const st349 = {"display":"flex","gap":"10px","alignItems":"flex-start"};
-const st350 = {"width":"5px","height":"5px","flex":"none","borderRadius":"50%","background":"var(--primary)","marginTop":"8px"};
-const st351 = {"fontSize":"13.5px","lineHeight":"1.55","color":"var(--text-2)","textWrap":"pretty"};
-const st352 = {"display":"flex","gap":"10px","alignItems":"flex-start","background":"var(--secondary-soft)","borderRadius":"12px","padding":"11px 13px"};
-const st353 = {"fontSize":"11px","fontWeight":"800","letterSpacing":"0.06em","color":"var(--secondary)","flex":"none","marginTop":"1px"};
-const st354 = {"fontSize":"13.5px","lineHeight":"1.5","fontWeight":"600","color":"var(--text)","textWrap":"pretty"};
-const st355 = {"display":"flex","gap":"11px","alignItems":"center"};
-const st356 = {"width":"28px","height":"28px","flex":"none","borderRadius":"9px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","display":"flex","alignItems":"center","justifyContent":"center"};
-const st357 = {"display":"flex","alignItems":"center","gap":"5px","background":"var(--card)","border":"1px solid var(--border)","borderRadius":"5px 18px 18px 18px","padding":"14px 16px"};
-const st358 = {"width":"6px","height":"6px","borderRadius":"50%","background":"var(--primary)","animation":"pulse 1.1s infinite"};
-const st359 = {"width":"6px","height":"6px","borderRadius":"50%","background":"var(--primary)","animation":"pulse 1.1s infinite .18s"};
-const st360 = {"width":"6px","height":"6px","borderRadius":"50%","background":"var(--primary)","animation":"pulse 1.1s infinite .36s"};
-const st361 = {"fontSize":"13px","color":"var(--neg)","fontWeight":"600"};
-const st362 = {"background":"var(--card)","border":"1px solid var(--border-2)","borderRadius":"18px","padding":"14px 16px","display":"flex","flexDirection":"column","gap":"10px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)"};
-const st363 = {"width":"100%","minHeight":"52px","border":"none","outline":"none","resize":"vertical","fontFamily":"inherit","fontSize":"14px","lineHeight":"1.55","color":"var(--text)","background":"transparent"};
-const st364 = {"fontSize":"11.5px","color":"var(--text-3)","fontWeight":"500"};
-const st365 = {"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","padding":"90px 20px","textAlign":"center"};
-const st366 = {"width":"64px","height":"64px","borderRadius":"18px","background":"var(--primary-soft)","color":"var(--primary-2)","display":"flex","alignItems":"center","justifyContent":"center"};
-const st367 = {"fontSize":"17px","fontWeight":"700","color":"var(--text)","marginTop":"18px"};
-const st368 = {"fontSize":"14px","color":"var(--text-3)","marginTop":"6px","maxWidth":"380px","lineHeight":"1.5"};
-const st369 = {"color":"var(--text-2)"};
-const st370 = {"width":"38px","height":"4px","borderRadius":"99px","background":"var(--border-2)","margin":"4px auto 12px"};
-const st371 = {"display":"flex","width":"21px","height":"21px","alignItems":"center","justifyContent":"center","flex":"none"};
-const st372 = {"height":"1px","background":"var(--border)","margin":"8px 2px"};
-const st373 = {"display":"flex","alignItems":"center","gap":"11px","padding":"4px 12px 10px"};
-const st374 = {"fontSize":"11.5px","color":"var(--text-3)","whiteSpace":"nowrap","overflow":"hidden","textOverflow":"ellipsis"};
-const st375 = {"display":"flex","alignItems":"center","gap":"13px","width":"100%","padding":"13px 12px","border":"1px solid var(--border)","borderRadius":"13px","cursor":"pointer","fontFamily":"inherit","fontSize":"14.5px","fontWeight":"600","textAlign":"left","background":"transparent","color":"var(--text-2)"};
-const st376 = {"display":"flex","width":"22px","height":"22px","alignItems":"center","justifyContent":"center"};
-const st377 = {"maxWidth":"100%","overflow":"hidden","textOverflow":"ellipsis","whiteSpace":"nowrap"};
+const st211 = {"display":"flex","alignItems":"center","gap":"8px"};
+const st212 = {"flex":"1","minWidth":"0","appearance":"none","padding":"11px 13px","border":"1px solid var(--m-trait)","borderRadius":"13px","background":"var(--m-surface)","color":"var(--m-encre)","fontFamily":"inherit","fontSize":"13.5px","fontWeight":"600","cursor":"pointer"};
+const st213 = {"minWidth":"0","fontSize":"12.5px","fontWeight":"600","color":"var(--m-encre3)","whiteSpace":"nowrap","overflow":"hidden","textOverflow":"ellipsis"};
+const st214 = {"flex":"none","padding":"7px 12px","border":"1px solid var(--m-trait)","borderRadius":"10px","background":"var(--m-surface)","color":"var(--m-encre2)","fontFamily":"inherit","fontSize":"12.5px","fontWeight":"700","cursor":"pointer"};
+const st215 = {"background":"var(--m-surface)","border":"1px solid var(--m-trait)","borderRadius":"18px","padding":"15px 17px","display":"flex","alignItems":"flex-end","justifyContent":"space-between","gap":"14px"};
+const st216 = {"fontSize":"11.5px","fontWeight":"700","letterSpacing":"0.06em","color":"var(--m-encre3)","textTransform":"uppercase"};
+const st217 = {"display":"flex","alignItems":"baseline","gap":"9px","marginTop":"6px","flexWrap":"wrap"};
+const st218 = {"fontSize":"24px","fontWeight":"700","letterSpacing":"-0.03em"};
+const st219 = {"fontSize":"12.5px","fontWeight":"600","color":"var(--m-encre3)","marginTop":"4px"};
+const st220 = {"textAlign":"right","flex":"none"};
+const st221 = {"fontSize":"17px","fontWeight":"700","color":"var(--m-enc)"};
+const st222 = {"fontSize":"12px","fontWeight":"600","color":"var(--m-encre3)","marginTop":"2px"};
+const st223 = {"fontSize":"12.5px","fontWeight":"500","color":"var(--m-encre3)","marginTop":"2px","whiteSpace":"nowrap","overflow":"hidden","textOverflow":"ellipsis"};
+const st224 = {"fontSize":"14.5px","fontWeight":"700"};
+const st225 = {"padding":"10px 15px 16px","display":"flex","flexDirection":"column","gap":"9px"};
+const st226 = {"padding":"30px 18px","textAlign":"center","fontSize":"13.5px","color":"var(--m-encre3)","lineHeight":"1.5"};
+const st227 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"10px","padding":"12px 15px","borderTop":"1px solid var(--m-trait)"};
+const st228 = {"fontSize":"12.5px","fontWeight":"600","color":"var(--m-encre3)"};
+const st229 = {"fontSize":"11.5px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.05em","color":"var(--text-3)"};
+const st230 = {"fontSize":"23px","fontWeight":"800","letterSpacing":"-0.02em","marginTop":"7px"};
+const st231 = {"fontSize":"11.5px","color":"var(--text-3)","marginTop":"5px"};
+const st232 = {"padding":"13px 18px","color":"var(--text-2)","whiteSpace":"nowrap"};
+const st233 = {"padding":"13px 18px"};
+const st234 = {"padding":"8px 18px 18px","display":"flex","flexDirection":"column","gap":"9px"};
+const st235 = {"padding":"44px 20px","textAlign":"center","fontSize":"14px","color":"var(--text-3)"};
+const st236 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"12px","padding":"13px 18px","borderTop":"1px solid var(--border)"};
+const st237 = {"fontSize":"12.5px","color":"var(--text-2)","fontWeight":"600","whiteSpace":"nowrap"};
+const st238 = {"display":"flex","flexDirection":"column","gap":"16px","padding":"22px 32px 48px"};
+const st239 = {"display":"flex","alignItems":"center","gap":"10px","flexWrap":"wrap"};
+const st240 = {"display":"flex","alignItems":"center","gap":"6px","fontSize":"13.5px","fontWeight":"700"};
+const st241 = {"padding":"4px 6px","color":"var(--text)"};
+const st242 = {"width":"210px","padding":"9px 13px","border":"1px solid var(--border-2)","borderRadius":"12px","background":"var(--card)","fontFamily":"inherit","fontSize":"13px","color":"var(--text)","outline":"none"};
+const st243 = {"display":"flex","alignItems":"center","gap":"7px","padding":"9px 14px","border":"1px solid var(--border-2)","borderRadius":"12px","background":"var(--card)","color":"var(--text-2)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st244 = {"display":"flex","alignItems":"center","gap":"7px","padding":"9px 15px","border":"none","borderRadius":"12px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st245 = {"display":"flex","gap":"2px","background":"#F4F3F7","borderRadius":"11px","padding":"3px"};
+const st246 = {"display":"grid","gridTemplateColumns":"repeat(auto-fill,minmax(200px,1fr))","gap":"14px"};
+const st247 = {"fontSize":"13.5px","fontWeight":"600","lineHeight":"1.35","wordBreak":"break-word"};
+const st248 = {"fontSize":"11.5px","color":"var(--text-3)","marginTop":"3px","fontWeight":"500"};
+const st249 = {"display":"flex","gap":"4px"};
+const st250 = {"flex":"1","padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-2)","cursor":"pointer","display":"flex","alignItems":"center","justifyContent":"center"};
+const st251 = {"flex":"1","padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-3)","cursor":"pointer","display":"flex","alignItems":"center","justifyContent":"center"};
+const st252 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"16px","overflow":"hidden"};
+const st253 = {"fontSize":"12px","color":"var(--text-3)","fontWeight":"500","width":"170px","textAlign":"right"};
+const st254 = {"padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-2)","cursor":"pointer","display":"flex"};
+const st255 = {"padding":"6px","border":"1px solid var(--border)","borderRadius":"9px","background":"var(--card)","color":"var(--text-3)","cursor":"pointer","display":"flex"};
+const st256 = {"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","padding":"80px 20px","textAlign":"center"};
+const st257 = {"width":"58px","height":"58px","borderRadius":"17px","background":"var(--primary-soft)","color":"var(--primary-2)","display":"flex","alignItems":"center","justifyContent":"center"};
+const st258 = {"fontSize":"15.5px","fontWeight":"700","marginTop":"16px"};
+const st259 = {"fontSize":"13.5px","color":"var(--text-3)","marginTop":"6px","maxWidth":"340px","lineHeight":"1.55"};
+const st260 = {"fontSize":"12px","color":"var(--text-3)","fontWeight":"500"};
+const st261 = {"width":"400px","maxWidth":"92vw","background":"var(--card)","borderRadius":"20px","boxShadow":"0 24px 60px rgba(30,20,60,0.24)","padding":"22px","display":"flex","flexDirection":"column","gap":"14px"};
+const st262 = {"padding":"11px 13px","border":"1px solid var(--border-2)","borderRadius":"12px","fontFamily":"inherit","fontSize":"14px","color":"var(--text)","outline":"none"};
+const st263 = {"display":"flex","justifyContent":"flex-end","gap":"8px"};
+const st264 = {"padding":"9px 15px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text-2)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st265 = {"padding":"9px 15px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st266 = {"position":"fixed","inset":"0","zIndex":"40","background":"rgba(20,12,40,0.66)","display":"flex","alignItems":"center","justifyContent":"center","padding":"30px"};
+const st267 = {"width":"520px","maxWidth":"94vw","background":"var(--card)","borderRadius":"22px","boxShadow":"0 28px 70px rgba(20,12,40,0.4)","overflow":"hidden","display":"flex","flexDirection":"column"};
+const st268 = {"background":"#0E0A1A","display":"flex","alignItems":"center","justifyContent":"center","minHeight":"280px"};
+const st269 = {"padding":"16px 20px","display":"flex","alignItems":"center","gap":"14px"};
+const st270 = {"fontSize":"14.5px","fontWeight":"700","wordBreak":"break-word"};
+const st271 = {"fontSize":"12px","color":"var(--text-3)","marginTop":"3px","fontWeight":"500"};
+const st272 = {"padding":"9px 14px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text-2)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st273 = {"padding":"9px 14px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st274 = {"display":"flex","flexDirection":"column","gap":"16px","padding":"22px 32px 40px","maxWidth":"1180px"};
+const st275 = {"display":"grid","gridTemplateColumns":"minmax(0,1.25fr) minmax(0,1fr)","gap":"16px","alignItems":"start"};
+const st276 = {"display":"flex","flexDirection":"column","gap":"16px","minWidth":"0"};
+const st277 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","display":"flex","flexDirection":"column","gap":"16px","minWidth":"0"};
+const st278 = {"display":"flex","alignItems":"center","gap":"18px"};
+const st279 = {"width":"74px","height":"74px","flex":"none","borderRadius":"22px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","fontSize":"23px","fontWeight":"700","letterSpacing":"-0.02em","display":"flex","alignItems":"center","justifyContent":"center"};
+const st280 = {"display":"flex","flexDirection":"column","gap":"9px"};
+const st281 = {"fontSize":"13px","color":"var(--text-2)","fontWeight":"500","lineHeight":"1.5"};
+const st282 = {"display":"grid","gridTemplateColumns":"1fr 1fr","gap":"12px"};
+const st283 = {"display":"flex","flexDirection":"column","gap":"6px","minWidth":"0"};
+const st284 = {"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.05em","color":"var(--text-3)"};
+const st285 = {"width":"100%","minWidth":"0","padding":"10px 12px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text)","fontSize":"13.5px","fontWeight":"500","fontFamily":"inherit"};
+const st286 = {"width":"100%","minWidth":"0","padding":"10px 12px","border":"1px solid var(--border)","borderRadius":"11px","background":"#F6F5FA","color":"var(--text-3)","fontSize":"13.5px","overflow":"hidden","textOverflow":"ellipsis","whiteSpace":"nowrap"};
+const st287 = {"fontSize":"11.5px","color":"var(--text-3)"};
+const st288 = {"display":"flex","alignItems":"center","gap":"12px"};
+const st289 = {"padding":"10px 18px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st290 = {"fontSize":"13px","fontWeight":"600","color":"var(--secondary)"};
+const st291 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px"};
+const st292 = {"fontSize":"13px","color":"var(--text-3)","marginTop":"3px"};
+const st293 = {"display":"flex","alignItems":"center","gap":"8px","flex":"none","padding":"8px 14px","borderRadius":"999px","background":"var(--secondary-soft)","color":"var(--secondary)","fontSize":"13px","fontWeight":"700"};
+const st294 = {"flex":"none","padding":"10px 18px","border":"none","borderRadius":"11px","background":"var(--primary)","color":"#fff","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st295 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","display":"flex","flexDirection":"column","gap":"14px","minWidth":"0"};
+const st296 = {"display":"flex","flexDirection":"column","gap":"6px","gridColumn":"span 2","minWidth":"0"};
+const st297 = {"width":"100%","minWidth":"0","padding":"10px 12px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text)","fontSize":"13.5px","fontFamily":"inherit"};
+const st298 = {"display":"flex","alignItems":"center","gap":"11px"};
+const st299 = {"flex":"1","height":"6px","borderRadius":"999px","background":"var(--border)","overflow":"hidden"};
+const st300 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","display":"flex","flexDirection":"column","gap":"14px"};
+const st301 = {"fontSize":"12.5px","color":"var(--text-3)","marginTop":"3px"};
+const st302 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px"};
+const st303 = {"fontSize":"14px","fontWeight":"600","cursor":"pointer"};
+const st304 = {"width":"22px","height":"22px","borderRadius":"50%","background":"#fff","boxShadow":"0 1px 3px rgba(20,16,40,0.3)"};
+const st305 = {"background":"#FAFAFC","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","display":"flex","flexDirection":"column","gap":"2px"};
+const st306 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"12px","marginBottom":"6px"};
+const st307 = {"fontSize":"15px","fontWeight":"700","letterSpacing":"-0.01em","color":"var(--text-3)"};
+const st308 = {"padding":"4px 10px","borderRadius":"999px","background":"#F1F0F5","color":"var(--text-3)","fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.05em"};
+const st309 = {"display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px","padding":"11px 0","borderTop":"1px solid var(--border)","opacity":"0.55"};
+const st310 = {"fontSize":"13.5px","fontWeight":"600","color":"var(--text-2)"};
+const st311 = {"fontSize":"12.5px","color":"var(--text-3)","marginTop":"2px"};
+const st312 = {"position":"relative","width":"42px","height":"24px","flex":"none","borderRadius":"999px","background":"var(--border-2)"};
+const st313 = {"position":"absolute","top":"3px","left":"3px","width":"18px","height":"18px","borderRadius":"50%","background":"#fff","boxShadow":"0 1px 3px rgba(30,20,60,0.15)"};
+const st314 = {"display":"flex","alignItems":"center","gap":"12px","marginTop":"6px"};
+const st315 = {"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"0.08em","color":"var(--text-3)"};
+const st316 = {"flex":"1","height":"1px","background":"var(--border)"};
+const st317 = {"background":"#FAFAFC","border":"1px solid var(--border)","borderRadius":"18px","padding":"20px","display":"flex","alignItems":"center","justifyContent":"space-between","gap":"16px"};
+const st318 = {"fontSize":"13px","color":"var(--text-3)","marginTop":"4px"};
+const st319 = {"flex":"none","padding":"10px 18px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"#F1F0F5","color":"var(--text-3)","fontSize":"13px","fontWeight":"600","fontFamily":"inherit","cursor":"not-allowed"};
+const st320 = {"width":"200px","padding":"9px 13px","border":"1px solid var(--border-2)","borderRadius":"12px","background":"var(--card)","fontFamily":"inherit","fontSize":"13px","color":"var(--text)","outline":"none"};
+const st321 = {"display":"flex","alignItems":"center","gap":"8px","flexWrap":"wrap"};
+const st322 = {"fontSize":"11px","fontWeight":"700","opacity":"0.65"};
+const st323 = {"display":"grid","gridTemplateColumns":"repeat(auto-fill,minmax(210px,1fr))","gap":"14px"};
+const st324 = {"display":"flex","opacity":"0.7"};
+const st325 = {"position":"absolute","left":"0","right":"0","top":"34px","zIndex":"31","background":"var(--card)","border":"1px solid var(--border)","borderRadius":"14px","boxShadow":"0 16px 40px rgba(30,20,60,0.18)","padding":"6px","display":"flex","flexDirection":"column","gap":"2px"};
+const st326 = {"fontSize":"12px","color":"var(--text-3)","fontWeight":"500","width":"160px","textAlign":"right"};
+const st327 = {"padding":"16px 20px","display":"flex","alignItems":"center","gap":"12px","flexWrap":"wrap"};
+const st328 = {"flex":"1","minWidth":"180px"};
+const st329 = {"display":"flex","flexDirection":"column","gap":"14px","padding":"22px 32px 28px","maxWidth":"1080px"};
+const st330 = {"display":"flex","alignItems":"center","gap":"11px","padding":"14px 17px","borderRadius":"15px","background":"#F1F0F5","border":"1px solid var(--border-2)"};
+const st331 = {"color":"var(--text-3)","display":"flex","flex":"none"};
+const st332 = {"fontSize":"14px","fontWeight":"700","color":"var(--text-2)"};
+const st333 = {"opacity":"0.45","filter":"grayscale(1)","pointerEvents":"none","userSelect":"none","display":"flex","flexDirection":"column","gap":"14px"};
+const st334 = {"display":"flex","alignItems":"center","gap":"7px","fontSize":"12px","fontWeight":"600","color":"var(--text-3)"};
+const st335 = {"width":"7px","height":"7px","borderRadius":"50%","background":"var(--green)","display":"inline-block"};
+const st336 = {"fontSize":"12px","fontWeight":"600","color":"var(--text-2)","background":"var(--primary-softer)","border":"1px solid var(--border-2)","borderRadius":"999px","padding":"4px 11px"};
+const st337 = {"padding":"7px 13px","border":"1px solid var(--border-2)","borderRadius":"11px","background":"var(--card)","color":"var(--text-2)","fontSize":"12.5px","fontWeight":"600","fontFamily":"inherit","cursor":"pointer"};
+const st338 = {"background":"var(--card)","border":"1px solid var(--border)","borderRadius":"20px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)","padding":"22px","display":"flex","flexDirection":"column","gap":"16px","minHeight":"400px","maxHeight":"56vh","overflowY":"auto"};
+const st339 = {"display":"flex","flexDirection":"column","gap":"18px","padding":"14px 4px"};
+const st340 = {"width":"46px","height":"46px","flex":"none","borderRadius":"14px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","display":"flex","alignItems":"center","justifyContent":"center"};
+const st341 = {"fontSize":"17px","fontWeight":"700","letterSpacing":"-0.02em"};
+const st342 = {"fontSize":"13.5px","color":"var(--text-3)","marginTop":"3px"};
+const st343 = {"display":"grid","gridTemplateColumns":"repeat(auto-fit,minmax(230px,1fr))","gap":"10px"};
+const st344 = {"textAlign":"left","padding":"13px 15px","border":"1px solid var(--border-2)","borderRadius":"14px","background":"var(--bg)","color":"var(--text)","fontSize":"13.5px","fontWeight":"600","lineHeight":"1.45","fontFamily":"inherit","cursor":"pointer"};
+const st345 = {"display":"flex","justifyContent":"flex-end","gap":"10px","alignItems":"flex-end"};
+const st346 = {"maxWidth":"72%","background":"var(--primary)","color":"#fff","borderRadius":"18px 18px 5px 18px","padding":"12px 16px","fontSize":"14px","lineHeight":"1.55","whiteSpace":"pre-wrap","textWrap":"pretty","boxShadow":"0 2px 10px rgba(124,92,246,0.22)"};
+const st347 = {"width":"28px","height":"28px","flex":"none","borderRadius":"50%","background":"var(--primary-soft)","color":"var(--primary-2)","display":"flex","alignItems":"center","justifyContent":"center","fontSize":"12px","fontWeight":"700"};
+const st348 = {"display":"flex","gap":"11px","alignItems":"flex-start"};
+const st349 = {"width":"28px","height":"28px","flex":"none","borderRadius":"9px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","display":"flex","alignItems":"center","justifyContent":"center","marginTop":"2px"};
+const st350 = {"maxWidth":"70ch","minWidth":"0","display":"flex","flexDirection":"column","gap":"9px","background":"var(--card)","border":"1px solid var(--border)","borderRadius":"5px 18px 18px 18px","padding":"15px 17px","boxShadow":"0 1px 8px rgba(30,20,60,0.05)"};
+const st351 = {"fontSize":"14px","lineHeight":"1.6","textWrap":"pretty"};
+const st352 = {"display":"flex","gap":"10px","alignItems":"flex-start"};
+const st353 = {"width":"5px","height":"5px","flex":"none","borderRadius":"50%","background":"var(--primary)","marginTop":"8px"};
+const st354 = {"fontSize":"13.5px","lineHeight":"1.55","color":"var(--text-2)","textWrap":"pretty"};
+const st355 = {"display":"flex","gap":"10px","alignItems":"flex-start","background":"var(--secondary-soft)","borderRadius":"12px","padding":"11px 13px"};
+const st356 = {"fontSize":"11px","fontWeight":"800","letterSpacing":"0.06em","color":"var(--secondary)","flex":"none","marginTop":"1px"};
+const st357 = {"fontSize":"13.5px","lineHeight":"1.5","fontWeight":"600","color":"var(--text)","textWrap":"pretty"};
+const st358 = {"display":"flex","gap":"11px","alignItems":"center"};
+const st359 = {"width":"28px","height":"28px","flex":"none","borderRadius":"9px","background":"linear-gradient(135deg,var(--primary),var(--secondary))","color":"#fff","display":"flex","alignItems":"center","justifyContent":"center"};
+const st360 = {"display":"flex","alignItems":"center","gap":"5px","background":"var(--card)","border":"1px solid var(--border)","borderRadius":"5px 18px 18px 18px","padding":"14px 16px"};
+const st361 = {"width":"6px","height":"6px","borderRadius":"50%","background":"var(--primary)","animation":"pulse 1.1s infinite"};
+const st362 = {"width":"6px","height":"6px","borderRadius":"50%","background":"var(--primary)","animation":"pulse 1.1s infinite .18s"};
+const st363 = {"width":"6px","height":"6px","borderRadius":"50%","background":"var(--primary)","animation":"pulse 1.1s infinite .36s"};
+const st364 = {"fontSize":"13px","color":"var(--neg)","fontWeight":"600"};
+const st365 = {"background":"var(--card)","border":"1px solid var(--border-2)","borderRadius":"18px","padding":"14px 16px","display":"flex","flexDirection":"column","gap":"10px","boxShadow":"0 1px 8px rgba(30,20,60,0.04)"};
+const st366 = {"width":"100%","minHeight":"52px","border":"none","outline":"none","resize":"vertical","fontFamily":"inherit","fontSize":"14px","lineHeight":"1.55","color":"var(--text)","background":"transparent"};
+const st367 = {"fontSize":"11.5px","color":"var(--text-3)","fontWeight":"500"};
+const st368 = {"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","padding":"90px 20px","textAlign":"center"};
+const st369 = {"width":"64px","height":"64px","borderRadius":"18px","background":"var(--primary-soft)","color":"var(--primary-2)","display":"flex","alignItems":"center","justifyContent":"center"};
+const st370 = {"fontSize":"17px","fontWeight":"700","color":"var(--text)","marginTop":"18px"};
+const st371 = {"fontSize":"14px","color":"var(--text-3)","marginTop":"6px","maxWidth":"380px","lineHeight":"1.5"};
+const st372 = {"color":"var(--text-2)"};
+const st373 = {"width":"38px","height":"4px","borderRadius":"99px","background":"var(--border-2)","margin":"4px auto 12px"};
+const st374 = {"display":"flex","width":"21px","height":"21px","alignItems":"center","justifyContent":"center","flex":"none"};
+const st375 = {"height":"1px","background":"var(--border)","margin":"8px 2px"};
+const st376 = {"display":"flex","alignItems":"center","gap":"11px","padding":"4px 12px 10px"};
+const st377 = {"fontSize":"11.5px","color":"var(--text-3)","whiteSpace":"nowrap","overflow":"hidden","textOverflow":"ellipsis"};
+const st378 = {"display":"flex","alignItems":"center","gap":"13px","width":"100%","padding":"13px 12px","border":"1px solid var(--border)","borderRadius":"13px","cursor":"pointer","fontFamily":"inherit","fontSize":"14.5px","fontWeight":"600","textAlign":"left","background":"transparent","color":"var(--text-2)"};
+const st379 = {"display":"flex","width":"22px","height":"22px","alignItems":"center","justifyContent":"center"};
+const st380 = {"maxWidth":"100%","overflow":"hidden","textOverflow":"ellipsis","whiteSpace":"nowrap"};
 
 /**
  * Rend le template du design à partir de `V`, l'objet plat produit par
@@ -389,8 +392,8 @@ const st377 = {"maxWidth":"100%","overflow":"hidden","textOverflow":"ellipsis","
  */
 export default function View(V) {
   return (
-    <div className="r-shell" ref={V.rootRef} style={st0}>
-      <aside className="r-aside" style={st1}>
+    <div ref={V.rootRef} style={st0} className={"r-shell"}>
+      <aside style={st1} className={"r-aside"}>
         <div style={st2}>
           <div style={st3}>
             <svg width="35" height="35" viewBox="0 0 64 64" aria-hidden="true" style={st4}>
@@ -491,13 +494,13 @@ export default function View(V) {
           </span>
         </button>
       </aside>
-      <main className="r-main" style={st20}>
-        <header className="r-header" style={st21}>
-          <div className="r-h-bloc" style={st22}>
-            <div className="r-h-titre" style={st23}>
+      <main style={st20} className={"r-main"}>
+        <header style={st21} className={"r-header"}>
+          <div style={st22} className={"r-h-bloc"}>
+            <div style={st23} className={"r-h-titre"}>
               {V.pageTitle}
             </div>
-            <div className="r-h-mob" style={st24}>
+            <div style={st24} className={"r-h-mob"}>
               <span style={st25}>
                 {V.mobTitre.titre}
               </span>
@@ -510,13 +513,13 @@ export default function View(V) {
                 </React.Fragment>
               ) : null}
             </div>
-            <div className="r-h-sous" style={st27}>
+            <div style={st27} className={"r-h-sous"}>
               {V.pageSubtitle}
             </div>
           </div>
           {V.showPeriod ? (
             <React.Fragment>
-              <div className="r-ancre" style={st28}>
+              <div style={st28} className={"r-ancre"}>
                 <button onClick={V.togglePeriod} style={st29} className={sp("hover", "border-color:var(--primary)")}>
                   <span style={st30}>
                     {V.calendarIcon}
@@ -533,7 +536,7 @@ export default function View(V) {
                 {V.periodOpen ? (
                   <React.Fragment>
                     <div onClick={V.closePeriod} style={st32}></div>
-                    <div className="r-calendrier" onClick={V.stopProp} style={st33}>
+                    <div onClick={V.stopProp} style={st33} className={"r-calendrier"}>
                       <div style={st34}>
                         <div style={st35}>
                           {"Périodes"}
@@ -618,7 +621,7 @@ export default function View(V) {
           {" "}
           {V.isCommandes ? (
             <React.Fragment>
-              <div className="r-outils" style={st45}>
+              <div style={st45} className={"r-outils"}>
                 <select value={V.fVendeur ?? ""} onChange={V.setFVendeur} style={st46} className={sp("hover", "border-color:var(--primary)")}>
                   {(V.vendeurOptions || []).map((o, _i9) => (
                     <React.Fragment key={_i9}>
@@ -628,7 +631,7 @@ export default function View(V) {
                     </React.Fragment>
                   ))}
                 </select>
-                <select className="r-sel-statut" value={V.fStatut ?? ""} onChange={V.setFStatut} style={st47} className={sp("hover", "border-color:var(--primary)")}>
+                <select value={V.fStatut ?? ""} onChange={V.setFStatut} style={st47} className={sp("hover", "border-color:var(--primary)")}>
                   {(V.statutOptions || []).map((o, _i9) => (
                     <React.Fragment key={_i9}>
                       <option value={o ?? ""}>
@@ -637,7 +640,7 @@ export default function View(V) {
                     </React.Fragment>
                   ))}
                 </select>
-                <div className="r-ancre" style={st28}>
+                <div style={st28} className={"r-ancre"}>
                   <button onClick={V.toggleDp} style={st48} className={sp("hover", "border-color:var(--primary)")}>
                     <span style={st30}>
                       {V.calendarIcon}
@@ -654,7 +657,7 @@ export default function View(V) {
                   {V.dpOpen ? (
                     <React.Fragment>
                       <div onClick={V.closeDp} style={st32}></div>
-                      <div className="r-calendrier" onClick={V.stopProp} style={st33}>
+                      <div onClick={V.stopProp} style={st33} className={"r-calendrier"}>
                         <div style={st34}>
                           <div style={st35}>
                             {"Raccourcis"}
@@ -726,13 +729,16 @@ export default function View(V) {
                 </div>
                 {V.filtersActive ? (
                   <React.Fragment>
-                    <button onClick={V.resetFilters} style={st50} className={sp("hover", "background:var(--primary-softer);color:var(--primary-2)")}>
+                    <button onClick={V.resetFilters} style={st50} className={["r-reinit", sp("hover", "background:var(--primary-softer);color:var(--primary-2)")].join(" ")}>
                       {"Réinitialiser"}
                     </button>
                   </React.Fragment>
                 ) : null}
                 <input type="file" accept=".csv,.xlsx,.xls" ref={V.importCommandes.ref} onChange={V.importCommandes.onFichier} style={st51} />
-                <button onClick={V.importCommandes.onClick} style={css(`display:flex;align-items:center;gap:8px;padding:9px 15px;border:none;border-radius:12px;background:var(--primary);color:#fff;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 2px 10px rgba(124,92,246,0.22);opacity:${V.importCommandes.op ?? ""};pointer-events:${V.importCommandes.pe ?? ""};`)} className={sp("hover", "background:var(--primary-2)")}>
+                <button onClick={V.importCommandes.onClick} style={css(`display:flex;align-items:center;gap:8px;padding:9px 15px;border:none;border-radius:12px;background:var(--primary);color:#fff;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 2px 10px rgba(124,92,246,0.22);opacity:${V.importCommandes.op ?? ""};pointer-events:${V.importCommandes.pe ?? ""};`)} className={["r-import", sp("hover", "background:var(--primary-2)")].join(" ")}>
+                  <span style={st51} className={"m-ic"}>
+                    {V.importCommandes.icone}
+                  </span>
                   {V.importCommandes.label}
                 </button>
               </div>
@@ -741,7 +747,7 @@ export default function View(V) {
         </header>
         {V.isDashboard ? (
           <React.Fragment>
-            <div className="r-page" style={st52}>
+            <div style={st52} className={"r-page"}>
               {V.tableauDeBord.visible ? (
                 <React.Fragment>
                   <div style={css(`padding:12px 16px;border-radius:13px;background:${V.tableauDeBord.bg ?? ""};color:${V.tableauDeBord.fg ?? ""};font-size:13px;font-weight:600;`)}>
@@ -762,7 +768,7 @@ export default function View(V) {
                   </div>
                 </React.Fragment>
               ) : null}
-              <div className="m-mob" style={st56}>
+              <div style={st56} className={"m-mob"}>
                 <div style={st57}>
                   <div style={st58}>
                     <div style={st59}>
@@ -780,7 +786,7 @@ export default function View(V) {
                       </span>
                     </div>
                   </div>
-                  <div className="m-chiffre" style={st61}>
+                  <div style={st61} className={"m-chiffre"}>
                     {V.mobAccueil.commissions}
                   </div>
                   <div style={st62}>
@@ -788,7 +794,7 @@ export default function View(V) {
                       {"sur"}
                     </span>
                     {" "}
-                    <span className="m-chiffre" style={st64}>
+                    <span style={st64} className={"m-chiffre"}>
                       {V.mobAccueil.ca}
                     </span>
                     {" "}
@@ -827,7 +833,7 @@ export default function View(V) {
                               {st.label}
                             </span>
                             {" "}
-                            <span className="m-chiffre" style={st74}>
+                            <span style={st74} className={"m-chiffre"}>
                               {st.n}
                             </span>
                           </div>
@@ -848,7 +854,7 @@ export default function View(V) {
                   {(V.mobAccueil.produits || []).map((pr, _i9) => (
                     <React.Fragment key={_i9}>
                       <div style={css(`display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid ${pr.bord ?? ""};`)}>
-                        <div className="m-chiffre" style={st79}>
+                        <div style={st79} className={"m-chiffre"}>
                           {pr.rang}
                         </div>
                         <div style={st80}>
@@ -859,7 +865,7 @@ export default function View(V) {
                             {pr.ventes}
                           </div>
                         </div>
-                        <div className="m-chiffre" style={st83}>
+                        <div style={st83} className={"m-chiffre"}>
                           {pr.montant}
                         </div>
                       </div>
@@ -875,7 +881,7 @@ export default function View(V) {
                 </div>
                 <div style={st85}>
                   <button onClick={V.mobAccueil.versVideos} style={st86}>
-                    <span className="m-chiffre" style={st87}>
+                    <span style={st87} className={"m-chiffre"}>
                       {V.mobAccueil.nbAPoster}
                     </span>
                     {" "}
@@ -884,7 +890,7 @@ export default function View(V) {
                     </span>
                   </button>
                   <button onClick={V.mobAccueil.versIdees} style={st86}>
-                    <span className="m-chiffre" style={st87}>
+                    <span style={st87} className={"m-chiffre"}>
                       {V.mobAccueil.nbIdees}
                     </span>
                     {" "}
@@ -894,8 +900,8 @@ export default function View(V) {
                   </button>
                 </div>
               </div>
-              <div className="m-desk">
-                <div className="r-g4" style={st88}>
+              <div className={"m-desk"}>
+                <div style={st88} className={"r-g4"}>
                   {(V.dashKpis || []).map((k, _i9) => (
                     <React.Fragment key={_i9}>
                       <div style={st89}>
@@ -924,7 +930,7 @@ export default function View(V) {
                         {" "}
                         {V.dashOccupe ? (
                           <React.Fragment>
-                            <div className="sk" style={st93}></div>
+                            <div style={st93} className={"sk"}></div>
                           </React.Fragment>
                         ) : null}
                         {" "}
@@ -939,7 +945,7 @@ export default function View(V) {
                     </React.Fragment>
                   ))}
                 </div>
-                <div className="r-g2" style={st95}>
+                <div style={st95} className={"r-g2"}>
                   <div style={st96}>
                     <div style={st97}>
                       <div style={st98}>
@@ -965,7 +971,7 @@ export default function View(V) {
                     {" "}
                     {V.dashOccupe ? (
                       <React.Fragment>
-                        <div className="sk" style={st103}></div>
+                        <div style={st103} className={"sk"}></div>
                       </React.Fragment>
                     ) : null}
                   </div>
@@ -1081,7 +1087,7 @@ export default function View(V) {
         ) : null}
         {V.isAnalytics ? (
           <React.Fragment>
-            <div className="r-page" style={st122}>
+            <div style={st122} className={"r-page"}>
               <div style={st123}>
                 {(V.analyticsTabs || []).map((tb, _i8) => (
                   <React.Fragment key={_i8}>
@@ -1094,7 +1100,7 @@ export default function View(V) {
               {V.isCompte ? (
                 <React.Fragment>
                   <div style={st7}>
-                    <div className="r-g3" style={st124}>
+                    <div style={st124} className={"r-g3"}>
                       {(V.compteKpis || []).map((k, _i11) => (
                         <React.Fragment key={_i11}>
                           <div style={st89}>
@@ -1142,7 +1148,7 @@ export default function View(V) {
                         </div>
                       </React.Fragment>
                     ) : null}
-                    <div className="r-g2" style={st131}>
+                    <div style={st131} className={"r-g2"}>
                       <div style={st96}>
                         <div style={st132}>
                           <div style={st98}>
@@ -1168,7 +1174,7 @@ export default function View(V) {
                         {" "}
                         {V.dashOccupe ? (
                           <React.Fragment>
-                            <div className="sk" style={st103}></div>
+                            <div style={st103} className={"sk"}></div>
                           </React.Fragment>
                         ) : null}
                       </div>
@@ -1745,7 +1751,7 @@ export default function View(V) {
         ) : null}
         {V.isCommandes ? (
           <React.Fragment>
-            <div className="r-page" style={st52}>
+            <div style={st52} className={"r-page"}>
               {V.importCommandes.visible ? (
                 <React.Fragment>
                   <div style={css(`padding:12px 16px;border-radius:13px;background:${V.importCommandes.bg ?? ""};color:${V.importCommandes.fg ?? ""};font-size:13px;font-weight:600;`)}>
@@ -1753,7 +1759,7 @@ export default function View(V) {
                   </div>
                 </React.Fragment>
               ) : null}
-              <div className="m-mob" style={st209}>
+              <div style={st209} className={"m-mob"}>
                 <div style={st210}>
                   {(V.mobCmd.segments || []).map((sg, _i9) => (
                     <React.Fragment key={_i9}>
@@ -1764,12 +1770,38 @@ export default function View(V) {
                   ))}
                 </div>
                 <div style={st211}>
+                  <select value={V.fVendeur ?? ""} onChange={V.setFVendeur} style={st212}>
+                    {(V.vendeurOptions || []).map((vo, _i10) => (
+                      <React.Fragment key={_i10}>
+                        <option value={vo ?? ""}>
+                          {vo}
+                        </option>
+                      </React.Fragment>
+                    ))}
+                  </select>
+                  <button onClick={V.toggleDp} aria-label="Choisir une période" style={css(`width:44px;height:44px;flex:none;border:1px solid ${V.mobCmd.dateBord ?? ""};border-radius:13px;background:${V.mobCmd.dateFond ?? ""};color:${V.mobCmd.dateEncre ?? ""};font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;`)}>
+                    {V.mobCmd.iconeDate}
+                  </button>
+                </div>
+                {V.filtersActive ? (
+                  <React.Fragment>
+                    <div style={st58}>
+                      <span style={st213}>
+                        {V.dpLabel}
+                      </span>
+                      <button onClick={V.resetFilters} style={st214}>
+                        {"Réinitialiser"}
+                      </button>
+                    </div>
+                  </React.Fragment>
+                ) : null}
+                <div style={st215}>
                   <div style={st22}>
-                    <div style={st212}>
+                    <div style={st216}>
                       {V.mobCmd.entete}
                     </div>
-                    <div style={st213}>
-                      <span className="m-chiffre" style={st214}>
+                    <div style={st217}>
+                      <span style={st218} className={"m-chiffre"}>
                         {V.mobCmd.gmv}
                       </span>
                       {" "}
@@ -1779,17 +1811,17 @@ export default function View(V) {
                     </div>
                     {V.mobCmd.note ? (
                       <React.Fragment>
-                        <div style={st215}>
+                        <div style={st219}>
                           {V.mobCmd.note}
                         </div>
                       </React.Fragment>
                     ) : null}
                   </div>
-                  <div style={st216}>
-                    <div className="m-chiffre" style={st217}>
+                  <div style={st220}>
+                    <div style={st221} className={"m-chiffre"}>
                       {V.mobCmd.com}
                     </div>
-                    <div style={st218}>
+                    <div style={st222}>
                       {"commissions"}
                     </div>
                   </div>
@@ -1803,15 +1835,15 @@ export default function View(V) {
                           <div style={st81} title={lg.produitComplet}>
                             {lg.produit}
                           </div>
-                          <div style={st219}>
+                          <div style={st223}>
                             {lg.meta}
                           </div>
                         </div>
-                        <div style={st216}>
-                          <div className="m-chiffre" style={st220}>
+                        <div style={st220}>
+                          <div style={st224} className={"m-chiffre"}>
                             {lg.gmv}
                           </div>
-                          <div className="m-chiffre" style={css(`font-size:12px;font-weight:700;color:${lg.couleur ?? ""};margin-top:2px;`)}>
+                          <div style={css(`font-size:12px;font-weight:700;color:${lg.couleur ?? ""};margin-top:2px;`)} className={"m-chiffre"}>
                             {lg.com}
                           </div>
                         </div>
@@ -1820,10 +1852,10 @@ export default function View(V) {
                   ))}
                   {V.chargementCommandes ? (
                     <React.Fragment>
-                      <div style={st221}>
+                      <div style={st225}>
                         {(V.squelettes || []).map((sq2, _i12) => (
                           <React.Fragment key={_i12}>
-                            <div className="sk" style={css(`height:17px;width:${sq2.largeur ?? ""};`)}></div>
+                            <div style={css(`height:17px;width:${sq2.largeur ?? ""};`)} className={"sk"}></div>
                           </React.Fragment>
                         ))}
                       </div>
@@ -1832,7 +1864,7 @@ export default function View(V) {
                   {" "}
                   {V.noCommandes ? (
                     <React.Fragment>
-                      <div style={st222}>
+                      <div style={st226}>
                         {V.messageVide}
                       </div>
                     </React.Fragment>
@@ -1840,11 +1872,11 @@ export default function View(V) {
                   {" "}
                   {V.pagination.visible ? (
                     <React.Fragment>
-                      <div style={st223}>
-                        <div style={st224}>
+                      <div style={st227}>
+                        <div style={st228}>
                           {V.pagination.resume}
                         </div>
-                        <div style={st225}>
+                        <div style={st211}>
                           <button onClick={V.pagination.prec} aria-label="Page précédente" style={css(`width:38px;height:38px;border:1px solid var(--m-trait);border-radius:11px;background:var(--m-surface);color:var(--m-encre2);font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:${V.pagination.precOp ?? ""};pointer-events:${V.pagination.precPe ?? ""};`)}>
                             {V.mobCmd.flecheG}
                           </button>
@@ -1857,20 +1889,20 @@ export default function View(V) {
                   ) : null}
                 </div>
               </div>
-              <div className="m-desk">
-                <div className="r-g3" style={st124}>
+              <div className={"m-desk"}>
+                <div style={st124} className={"r-g3"}>
                   {(V.ordersKpis || []).map((k, _i9) => (
                     <React.Fragment key={_i9}>
                       <div style={st89}>
-                        <div style={st226}>
+                        <div style={st229}>
                           {k.label}
                         </div>
-                        <div style={st227}>
+                        <div style={st230}>
                           {k.value}
                         </div>
                         {k.sub ? (
                           <React.Fragment>
-                            <div style={st228}>
+                            <div style={st231}>
                               {k.sub}
                             </div>
                           </React.Fragment>
@@ -1919,7 +1951,7 @@ export default function View(V) {
                       {(V.commandesRows || []).map((r, _i11) => (
                         <React.Fragment key={_i11}>
                           <tr style={st136} className={sp("hover", "background:var(--primary-softer)")}>
-                            <td style={st229}>
+                            <td style={st232}>
                               {r.date}
                             </td>
                             <td style={st139} title={r.produitComplet}>
@@ -1928,7 +1960,7 @@ export default function View(V) {
                             <td style={st144}>
                               {r.vendeur}
                             </td>
-                            <td style={st230}>
+                            <td style={st233}>
                               <span style={css(`display:inline-block;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:${r.statutBg ?? ""};color:${r.statutFg ?? ""};`)}>
                                 {r.statut}
                               </span>
@@ -1946,10 +1978,10 @@ export default function View(V) {
                   </table>
                   {V.chargementCommandes ? (
                     <React.Fragment>
-                      <div style={st231}>
+                      <div style={st234}>
                         {(V.squelettes || []).map((sq, _i12) => (
                           <React.Fragment key={_i12}>
-                            <div className="sk" style={css(`height:17px;width:${sq.largeur ?? ""};`)}></div>
+                            <div style={css(`height:17px;width:${sq.largeur ?? ""};`)} className={"sk"}></div>
                           </React.Fragment>
                         ))}
                       </div>
@@ -1958,7 +1990,7 @@ export default function View(V) {
                   {" "}
                   {V.noCommandes ? (
                     <React.Fragment>
-                      <div style={st232}>
+                      <div style={st235}>
                         {V.messageVide}
                       </div>
                     </React.Fragment>
@@ -1966,7 +1998,7 @@ export default function View(V) {
                   {" "}
                   {V.pagination.visible ? (
                     <React.Fragment>
-                      <div style={st233}>
+                      <div style={st236}>
                         <div style={st115}>
                           {V.pagination.resume}
                         </div>
@@ -1974,7 +2006,7 @@ export default function View(V) {
                           <button onClick={V.pagination.prec} style={css(`padding:7px 13px;border:1px solid var(--border-2);border-radius:9px;background:var(--card);color:var(--text-2);font-size:12.5px;font-weight:600;cursor:pointer;opacity:${V.pagination.precOp ?? ""};pointer-events:${V.pagination.precPe ?? ""};`)} className={sp("hover", "background:var(--primary-softer)")}>
                             {"Précédent"}
                           </button>
-                          <div style={st234}>
+                          <div style={st237}>
                             {V.pagination.page}
                           </div>
                           <button onClick={V.pagination.suiv} style={css(`padding:7px 13px;border:1px solid var(--border-2);border-radius:9px;background:var(--card);color:var(--text-2);font-size:12.5px;font-weight:600;cursor:pointer;opacity:${V.pagination.suivOp ?? ""};pointer-events:${V.pagination.suivPe ?? ""};`)} className={sp("hover", "background:var(--primary-softer)")}>
@@ -1992,7 +2024,7 @@ export default function View(V) {
         {" "}
         {V.isRushs ? (
           <React.Fragment>
-            <div style={st235}>
+            <div style={st238}>
               {V.bibliotheque.visible ? (
                 <React.Fragment>
                   <div style={css(`padding:12px 16px;border-radius:13px;background:${V.bibliotheque.bg ?? ""};color:${V.bibliotheque.fg ?? ""};font-size:13px;font-weight:600;`)}>
@@ -2000,8 +2032,8 @@ export default function View(V) {
                   </div>
                 </React.Fragment>
               ) : null}
-              <div className="r-vidbar" style={st236}>
-                <div style={st237}>
+              <div style={st239} className={"r-vidbar"}>
+                <div style={st240}>
                   <button onClick={V.rushGoRoot} style={css(`border:none;background:transparent;padding:4px 6px;border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:700;color:${V.rushRootFg ?? ""};cursor:pointer;`)} className={sp("hover", "background:var(--primary-softer)")}>
                     {"Tous les rushs"}
                   </button>
@@ -2011,28 +2043,28 @@ export default function View(V) {
                         {V.chevronRIcon}
                       </span>
                       {" "}
-                      <span style={st238}>
+                      <span style={st241}>
                         {V.rushFolderName}
                       </span>
                     </React.Fragment>
                   ) : null}
                 </div>
                 <div style={st11}></div>
-                <input value={V.rushQuery ?? ""} onChange={V.onRushQuery} placeholder="Rechercher un rush…" style={st239} />
-                <button onClick={V.rushNewFolder} style={st240} className={sp("hover", "background:var(--primary-softer)")}>
+                <input value={V.rushQuery ?? ""} onChange={V.onRushQuery} placeholder="Rechercher un rush…" style={st242} />
+                <button onClick={V.rushNewFolder} style={st243} className={sp("hover", "background:var(--primary-softer)")}>
                   {V.folderPlusIcon}
                   <span>
                     {"Nouveau dossier"}
                   </span>
                 </button>
                 <input type="file" accept="video/*" multiple="" ref={V.rushInputRef} onChange={V.onRushPick} style={st51} />
-                <button onClick={V.rushBrowse} style={st241}>
+                <button onClick={V.rushBrowse} style={st244}>
                   {V.uploadIcon}
                   <span>
                     {"Importer"}
                   </span>
                 </button>
-                <div style={st242}>
+                <div style={st245}>
                   <button onClick={V.rushGridBtn.onClick} style={css(`padding:7px 10px;border:none;border-radius:9px;background:${V.rushGridBtn.bg ?? ""};color:${V.rushGridBtn.fg ?? ""};cursor:pointer;display:flex;`)}>
                     {V.gridIcon}
                   </button>
@@ -2044,7 +2076,7 @@ export default function View(V) {
               <div onDragOver={V.onRushDragOver} onDragLeave={V.onRushDragLeave} onDrop={V.onRushDrop} style={css(`border:2px dashed ${V.rushDropBorder ?? ""};background:${V.rushDropBg ?? ""};border-radius:20px;padding:18px;transition:background .15s,border-color .15s;min-height:340px;`)}>
                 {V.rushIsGrid ? (
                   <React.Fragment>
-                    <div style={st243}>
+                    <div style={st246}>
                       {(V.rushCards || []).map((r, _i11) => (
                         <React.Fragment key={_i11}>
                           <div draggable={r.draggable} onDragStart={r.onDragStart} onDragOver={r.onDragOver} onDragLeave={r.onDragLeave} onDrop={r.onDrop} onDoubleClick={r.onOpen} style={css(`position:relative;background:var(--card);border:1.5px solid ${r.border ?? ""};border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;cursor:pointer;box-shadow:0 1px 8px rgba(30,20,60,0.04);transition:border-color .15s,transform .12s;`)} className={sp("hover", "transform:translateY(-2px)")}>
@@ -2052,18 +2084,18 @@ export default function View(V) {
                               {" "}{r.thumb}{" "}
                             </div>
                             <div>
-                              <div style={st244}>
+                              <div style={st247}>
                                 {r.name}
                               </div>
-                              <div style={st245}>
+                              <div style={st248}>
                                 {r.meta}
                               </div>
                             </div>
-                            <div style={st246}>
-                              <button onClick={r.onRename} title="Renommer" style={st247} className={sp("hover", "background:var(--primary-softer)")}>
+                            <div style={st249}>
+                              <button onClick={r.onRename} title="Renommer" style={st250} className={sp("hover", "background:var(--primary-softer)")}>
                                 {V.penIcon}
                               </button>
-                              <button onClick={r.onDelete} title="Supprimer" style={st248} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
+                              <button onClick={r.onDelete} title="Supprimer" style={st251} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
                                 {V.trashIcon2}
                               </button>
                             </div>
@@ -2076,7 +2108,7 @@ export default function View(V) {
                 {" "}
                 {V.rushIsList ? (
                   <React.Fragment>
-                    <div style={st249}>
+                    <div style={st252}>
                       {(V.rushCards || []).map((r, _i11) => (
                         <React.Fragment key={_i11}>
                           <div draggable={r.draggable} onDragStart={r.onDragStart} onDragOver={r.onDragOver} onDragLeave={r.onDragLeave} onDrop={r.onDrop} onDoubleClick={r.onOpen} style={css(`display:flex;align-items:center;gap:14px;padding:11px 15px;border-bottom:1px solid var(--border);border-left:3px solid ${r.rowAccent ?? ""};cursor:pointer;`)} className={sp("hover", "background:var(--primary-softer)")}>
@@ -2088,13 +2120,13 @@ export default function View(V) {
                                 {r.name}
                               </div>
                             </div>
-                            <div style={st250}>
+                            <div style={st253}>
                               {r.meta}
                             </div>
-                            <button onClick={r.onRename} style={st251}>
+                            <button onClick={r.onRename} style={st254}>
                               {V.penIcon}
                             </button>
-                            <button onClick={r.onDelete} style={st252} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
+                            <button onClick={r.onDelete} style={st255} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
                               {V.trashIcon2}
                             </button>
                           </div>
@@ -2106,37 +2138,37 @@ export default function View(V) {
                 {" "}
                 {V.rushEmpty ? (
                   <React.Fragment>
-                    <div style={st253}>
-                      <div style={st254}>
+                    <div style={st256}>
+                      <div style={st257}>
                         {V.uploadBigIcon}
                       </div>
-                      <div style={st255}>
+                      <div style={st258}>
                         {"Glisse tes rushs ici"}
                       </div>
-                      <div style={st256}>
+                      <div style={st259}>
                         {"MP4, MOV, AVI, MKV, WebM — tous formats acceptés. Crée des dossiers pour trier par produit ou par marque."}
                       </div>
                     </div>
                   </React.Fragment>
                 ) : null}
               </div>
-              <div style={st257}>
+              <div style={st260}>
                 {"Astuce : glisse un rush sur un dossier pour le ranger. Double-clic pour ouvrir."}
               </div>
             </div>
             {V.rushRenameOpen ? (
               <React.Fragment>
                 <div onClick={V.rushRenameClose} style={st145}>
-                  <div onClick={V.stopProp} style={st258}>
+                  <div onClick={V.stopProp} style={st261}>
                     <div style={st64}>
                       {"Renommer"}
                     </div>
-                    <input value={V.rushRenameVal ?? ""} onChange={V.onRushRenameVal} onKeyDown={V.onRushRenameKey} style={st259} />
-                    <div style={st260}>
-                      <button onClick={V.rushRenameClose} style={st261}>
+                    <input value={V.rushRenameVal ?? ""} onChange={V.onRushRenameVal} onKeyDown={V.onRushRenameKey} style={st262} />
+                    <div style={st263}>
+                      <button onClick={V.rushRenameClose} style={st264}>
                         {"Annuler"}
                       </button>
-                      <button onClick={V.rushRenameSave} style={st262}>
+                      <button onClick={V.rushRenameSave} style={st265}>
                         {"Enregistrer"}
                       </button>
                     </div>
@@ -2147,24 +2179,24 @@ export default function View(V) {
             {" "}
             {V.rushPreviewOpen ? (
               <React.Fragment>
-                <div onClick={V.rushPreviewClose} style={st263}>
-                  <div onClick={V.stopProp} style={st264}>
-                    <div style={st265}>
+                <div onClick={V.rushPreviewClose} style={st266}>
+                  <div onClick={V.stopProp} style={st267}>
+                    <div style={st268}>
                       {V.rushPreviewMedia}
                     </div>
-                    <div style={st266}>
+                    <div style={st269}>
                       <div style={st16}>
-                        <div style={st267}>
+                        <div style={st270}>
                           {V.rushPreviewName}
                         </div>
-                        <div style={st268}>
+                        <div style={st271}>
                           {V.rushPreviewMeta}
                         </div>
                       </div>
-                      <button onClick={V.rushPreviewRename} style={st269}>
+                      <button onClick={V.rushPreviewRename} style={st272}>
                         {"Renommer"}
                       </button>
-                      <button onClick={V.rushPreviewClose} style={st270}>
+                      <button onClick={V.rushPreviewClose} style={st273}>
                         {"Fermer"}
                       </button>
                     </div>
@@ -2176,10 +2208,10 @@ export default function View(V) {
         ) : null}
         {V.isParametres ? (
           <React.Fragment>
-            <div className="r-page" style={st271}>
-              <div className="r-g2" style={st272}>
-                <div style={st273}>
-                  <div style={st274}>
+            <div style={st274} className={"r-page"}>
+              <div style={st275} className={"r-g2"}>
+                <div style={st276}>
+                  <div style={st277}>
                     <div style={st98}>
                       {"Profil"}
                     </div>
@@ -2190,7 +2222,7 @@ export default function View(V) {
                         </div>
                       </React.Fragment>
                     ) : null}
-                    <div style={st275}>
+                    <div style={st278}>
                       {V.hasAvatar ? (
                         <React.Fragment>
                           {" "}{V.avatarImg}{" "}
@@ -2199,23 +2231,23 @@ export default function View(V) {
                       {" "}
                       {V.noAvatar ? (
                         <React.Fragment>
-                          <div style={st276}>
+                          <div style={st279}>
                             {V.avatarInitials}
                           </div>
                         </React.Fragment>
                       ) : null}
-                      <div style={st277}>
-                        <div style={st278}>
+                      <div style={st280}>
+                        <div style={st281}>
                           {"JPG ou PNG, 400×400 px minimum."}
                         </div>
                         <div style={st182}>
                           <input type="file" accept="image/*" ref={V.avatarInputRef} onChange={V.onAvatarPick} style={st51} />
-                          <button onClick={V.onAvatarBrowse} style={st262} className={sp("hover", "background:var(--primary-2)")}>
+                          <button onClick={V.onAvatarBrowse} style={st265} className={sp("hover", "background:var(--primary-2)")}>
                             {"Changer la photo"}
                           </button>
                           {V.hasAvatar ? (
                             <React.Fragment>
-                              <button onClick={V.onAvatarRemove} style={st261} className={sp("hover", "border-color:var(--neg);color:var(--neg)")}>
+                              <button onClick={V.onAvatarRemove} style={st264} className={sp("hover", "border-color:var(--neg);color:var(--neg)")}>
                                 {"Retirer"}
                               </button>
                             </React.Fragment>
@@ -2223,62 +2255,62 @@ export default function View(V) {
                         </div>
                       </div>
                     </div>
-                    <div className="r-g2" style={st279}>
-                      <div style={st280}>
-                        <label style={st281}>
+                    <div style={st282} className={"r-g2"}>
+                      <div style={st283}>
+                        <label style={st284}>
                           {"Nom complet"}
                         </label>
-                        <input value={V.profileName ?? ""} onChange={V.onProfileName} style={st282} />
+                        <input value={V.profileName ?? ""} onChange={V.onProfileName} style={st285} />
                       </div>
-                      <div style={st280}>
-                        <label style={st281}>
+                      <div style={st283}>
+                        <label style={st284}>
                           {"Pseudo TikTok"}
                         </label>
-                        <input value={V.profileHandle ?? ""} onChange={V.onProfileHandle} style={st282} />
+                        <input value={V.profileHandle ?? ""} onChange={V.onProfileHandle} style={st285} />
                       </div>
-                      <div style={st280}>
-                        <label style={st281}>
+                      <div style={st283}>
+                        <label style={st284}>
                           {"Email"}
                         </label>
-                        <div style={st283}>
+                        <div style={st286}>
                           {V.profileEmail}
                         </div>
-                        <div style={st284}>
+                        <div style={st287}>
                           {"Adresse de connexion — elle ne se modifie pas ici."}
                         </div>
                       </div>
-                      <div style={st280}>
-                        <label style={st281}>
+                      <div style={st283}>
+                        <label style={st284}>
                           {"Téléphone"}
                         </label>
-                        <input value={V.profilePhone ?? ""} onChange={V.onProfilePhone} style={st282} />
+                        <input value={V.profilePhone ?? ""} onChange={V.onProfilePhone} style={st285} />
                       </div>
                     </div>
-                    <div style={st285}>
-                      <button onClick={V.saveProfile} style={st286} className={sp("hover", "background:var(--primary-2)")}>
+                    <div style={st288}>
+                      <button onClick={V.saveProfile} style={st289} className={sp("hover", "background:var(--primary-2)")}>
                         {"Enregistrer"}
                       </button>
                       {V.profileSaved ? (
                         <React.Fragment>
-                          <div style={st287}>
+                          <div style={st290}>
                             {"Modifications enregistrées."}
                           </div>
                         </React.Fragment>
                       ) : null}
                     </div>
                   </div>
-                  <div style={st288}>
+                  <div style={st291}>
                     <div>
                       <div style={st98}>
                         {"Connexion TikTok Shop"}
                       </div>
-                      <div style={st289}>
+                      <div style={st292}>
                         {"Synchronise tes commandes, produits et commissions automatiquement."}
                       </div>
                     </div>
                     {V.tiktokConnected ? (
                       <React.Fragment>
-                        <div style={st290}>
+                        <div style={st293}>
                           {"Connecté"}
                         </div>
                       </React.Fragment>
@@ -2286,47 +2318,47 @@ export default function View(V) {
                     {" "}
                     {V.tiktokOff ? (
                       <React.Fragment>
-                        <button style={st291} className={sp("hover", "background:var(--primary-2)")}>
+                        <button style={st294} className={sp("hover", "background:var(--primary-2)")}>
                           {"Connecter"}
                         </button>
                       </React.Fragment>
                     ) : null}
                   </div>
                 </div>
-                <div style={st273}>
-                  <div style={st292}>
+                <div style={st276}>
+                  <div style={st295}>
                     <div>
                       <div style={st98}>
                         {"Mot de passe"}
                       </div>
-                      <div style={st289}>
+                      <div style={st292}>
                         {"8 caractères minimum, avec une majuscule et un chiffre."}
                       </div>
                     </div>
-                    <div className="r-g2" style={st279}>
-                      <div style={st293}>
-                        <label style={st281}>
+                    <div style={st282} className={"r-g2"}>
+                      <div style={st296}>
+                        <label style={st284}>
                           {"Mot de passe actuel"}
                         </label>
-                        <input type="password" value={V.pwdCurrent ?? ""} onChange={V.onPwdCurrent} placeholder="••••••••" style={st294} />
+                        <input type="password" value={V.pwdCurrent ?? ""} onChange={V.onPwdCurrent} placeholder="••••••••" style={st297} />
                       </div>
-                      <div style={st280}>
-                        <label style={st281}>
+                      <div style={st283}>
+                        <label style={st284}>
                           {"Nouveau mot de passe"}
                         </label>
-                        <input type="password" value={V.pwdNext ?? ""} onChange={V.onPwdNext} placeholder="••••••••" style={st294} />
+                        <input type="password" value={V.pwdNext ?? ""} onChange={V.onPwdNext} placeholder="••••••••" style={st297} />
                       </div>
-                      <div style={st280}>
-                        <label style={st281}>
+                      <div style={st283}>
+                        <label style={st284}>
                           {"Confirmation"}
                         </label>
-                        <input type="password" value={V.pwdConfirm ?? ""} onChange={V.onPwdConfirm} placeholder="••••••••" style={st294} />
+                        <input type="password" value={V.pwdConfirm ?? ""} onChange={V.onPwdConfirm} placeholder="••••••••" style={st297} />
                       </div>
                     </div>
                     {V.showPwdMeter ? (
                       <React.Fragment>
-                        <div style={st295}>
-                          <div style={st296}>
+                        <div style={st298}>
+                          <div style={st299}>
                             <div style={css(`height:100%;border-radius:999px;width:${V.pwdBarWidth ?? ""};background:${V.pwdBarColor ?? ""};transition:width .18s ease;`)}></div>
                           </div>
                           <div style={css(`font-size:12px;font-weight:700;color:${V.pwdBarColor ?? ""};min-width:64px;`)}>
@@ -2335,8 +2367,8 @@ export default function View(V) {
                         </div>
                       </React.Fragment>
                     ) : null}
-                    <div style={st285}>
-                      <button onClick={V.submitPwd} style={st286} className={sp("hover", "background:var(--primary-2)")}>
+                    <div style={st288}>
+                      <button onClick={V.submitPwd} style={st289} className={sp("hover", "background:var(--primary-2)")}>
                         {"Mettre à jour"}
                       </button>
                       {V.pwdMsg ? (
@@ -2348,46 +2380,46 @@ export default function View(V) {
                       ) : null}
                     </div>
                   </div>
-                  <div style={st297}>
+                  <div style={st300}>
                     <div>
                       <div style={st98}>
                         {"Apparence"}
                       </div>
-                      <div style={st298}>
+                      <div style={st301}>
                         {"S’applique à l’affichage mobile. Mémorisé sur cet appareil."}
                       </div>
                     </div>
-                    <div style={st299}>
-                      <label htmlFor="sombre" style={st300}>
+                    <div style={st302}>
+                      <label htmlFor="sombre" style={st303}>
                         {"Thème sombre"}
                       </label>
                       <button id="sombre" onClick={V.apparence.basculer} aria-pressed={V.apparence.actif} style={css(`width:48px;height:28px;flex:none;border:none;border-radius:99px;cursor:pointer;padding:3px;display:flex;justify-content:${V.apparence.position ?? ""};background:${V.apparence.piste ?? ""};transition:background .18s;`)}>
-                        <span style={st301}></span>
+                        <span style={st304}></span>
                       </button>
                     </div>
                   </div>
-                  <div style={st302}>
-                    <div style={st303}>
-                      <div style={st304}>
+                  <div style={st305}>
+                    <div style={st306}>
+                      <div style={st307}>
                         {"Notifications"}
                       </div>
-                      <span style={st305}>
+                      <span style={st308}>
                         {"En développement"}
                       </span>
                     </div>
                     {(V.notifRows || []).map((n, _i10) => (
                       <React.Fragment key={_i10}>
-                        <div style={st306}>
+                        <div style={st309}>
                           <div>
-                            <div style={st307}>
+                            <div style={st310}>
                               {n.label}
                             </div>
-                            <div style={st308}>
+                            <div style={st311}>
                               {n.sub}
                             </div>
                           </div>
-                          <div style={st309}>
-                            <span style={st310}></span>
+                          <div style={st312}>
+                            <span style={st313}></span>
                           </div>
                         </div>
                       </React.Fragment>
@@ -2395,27 +2427,27 @@ export default function View(V) {
                   </div>
                 </div>
               </div>
-              <div style={st311}>
-                <div style={st312}>
+              <div style={st314}>
+                <div style={st315}>
                   {"Zone sensible"}
                 </div>
-                <div style={st313}></div>
+                <div style={st316}></div>
               </div>
-              <div style={st314}>
+              <div style={st317}>
                 <div>
                   <div style={st177}>
-                    <div style={st304}>
+                    <div style={st307}>
                       {"Supprimer le compte"}
                     </div>
-                    <span style={st305}>
+                    <span style={st308}>
                       {"En développement"}
                     </span>
                   </div>
-                  <div style={st315}>
+                  <div style={st318}>
                     {"La suppression définitive n'est pas encore en place. Demande-la et elle sera faite à la main."}
                   </div>
                 </div>
-                <button disabled={V.vrai} style={st316}>
+                <button disabled={V.vrai} style={st319}>
                   {"Supprimer"}
                 </button>
               </div>
@@ -2424,9 +2456,9 @@ export default function View(V) {
         ) : null}
         {V.isVideosPage ? (
           <React.Fragment>
-            <div style={st235}>
-              <div className="r-vidbar" style={st236}>
-                <div style={st237}>
+            <div style={st238}>
+              <div style={st239} className={"r-vidbar"}>
+                <div style={st240}>
                   <button onClick={V.vidGoRoot} style={css(`border:none;background:transparent;padding:4px 6px;border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:700;color:${V.vidRootFg ?? ""};cursor:pointer;`)} className={sp("hover", "background:var(--primary-softer)")}>
                     {"Toutes les vidéos"}
                   </button>
@@ -2436,28 +2468,28 @@ export default function View(V) {
                         {V.chevronRIcon}
                       </span>
                       {" "}
-                      <span style={st238}>
+                      <span style={st241}>
                         {V.vidFolderName}
                       </span>
                     </React.Fragment>
                   ) : null}
                 </div>
                 <div style={st11}></div>
-                <input value={V.vidQuery ?? ""} onChange={V.onVidQuery} placeholder="Rechercher une vidéo…" style={st317} />
-                <button onClick={V.vidNewFolder} style={st240} className={sp("hover", "background:var(--primary-softer)")}>
+                <input value={V.vidQuery ?? ""} onChange={V.onVidQuery} placeholder="Rechercher une vidéo…" style={st320} />
+                <button onClick={V.vidNewFolder} style={st243} className={sp("hover", "background:var(--primary-softer)")}>
                   {V.folderPlusIcon}
                   <span>
                     {"Nouveau dossier"}
                   </span>
                 </button>
                 <input type="file" accept="video/*" multiple="" ref={V.vidInputRef} onChange={V.onVidPick} style={st51} />
-                <button onClick={V.vidBrowse} style={st241}>
+                <button onClick={V.vidBrowse} style={st244}>
                   {V.uploadIcon}
                   <span>
                     {"Importer"}
                   </span>
                 </button>
-                <div style={st242}>
+                <div style={st245}>
                   <button onClick={V.vidGridBtn.onClick} style={css(`padding:7px 10px;border:none;border-radius:9px;background:${V.vidGridBtn.bg ?? ""};color:${V.vidGridBtn.fg ?? ""};cursor:pointer;display:flex;`)}>
                     {V.gridIcon}
                   </button>
@@ -2466,7 +2498,7 @@ export default function View(V) {
                   </button>
                 </div>
               </div>
-              <div className="r-chips" style={st318}>
+              <div style={st321} className={"r-chips"}>
                 {(V.vidFilters || []).map((f, _i8) => (
                   <React.Fragment key={_i8}>
                     <button onClick={f.onClick} style={css(`display:flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid ${f.border ?? ""};border-radius:999px;background:${f.bg ?? ""};color:${f.fg ?? ""};font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;`)}>
@@ -2474,7 +2506,7 @@ export default function View(V) {
                         {f.label}
                       </span>
                       {" "}
-                      <span style={st319}>
+                      <span style={st322}>
                         {f.count}
                       </span>
                     </button>
@@ -2484,7 +2516,7 @@ export default function View(V) {
               <div onDragOver={V.onVidDragOver} onDragLeave={V.onVidDragLeave} onDrop={V.onVidDrop} style={css(`border:2px dashed ${V.vidDropBorder ?? ""};background:${V.vidDropBg ?? ""};border-radius:20px;padding:18px;transition:background .15s,border-color .15s;min-height:340px;`)}>
                 {V.vidIsGrid ? (
                   <React.Fragment>
-                    <div style={st320}>
+                    <div style={st323}>
                       {(V.vidCards || []).map((r, _i11) => (
                         <React.Fragment key={_i11}>
                           <div draggable={r.draggable} onDragStart={r.onDragStart} onDragOver={r.onDragOver} onDragLeave={r.onDragLeave} onDrop={r.onDrop} onDoubleClick={r.onOpen} style={css(`position:relative;background:var(--card);border:1.5px solid ${r.border ?? ""};border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;cursor:pointer;box-shadow:0 1px 8px rgba(30,20,60,0.04);transition:border-color .15s,transform .12s;`)} className={sp("hover", "transform:translateY(-2px)")}>
@@ -2492,10 +2524,10 @@ export default function View(V) {
                               {" "}{r.thumb}{" "}
                             </div>
                             <div>
-                              <div style={st244}>
+                              <div style={st247}>
                                 {r.name}
                               </div>
-                              <div style={st245}>
+                              <div style={st248}>
                                 {r.meta}
                               </div>
                             </div>
@@ -2507,14 +2539,14 @@ export default function View(V) {
                                       {r.status}
                                     </span>
                                     {" "}
-                                    <span style={st321}>
+                                    <span style={st324}>
                                       {V.chevronMiniIcon}
                                     </span>
                                   </button>
                                   {r.menuOpen ? (
                                     <React.Fragment>
                                       <div onClick={r.closeMenu} style={st32}></div>
-                                      <div onClick={V.stopProp} style={st322}>
+                                      <div onClick={V.stopProp} style={st325}>
                                         {(r.statusOptions || []).map((o, _i20) => (
                                           <React.Fragment key={_i20}>
                                             <button onClick={o.onClick} style={css(`display:flex;align-items:center;gap:8px;padding:8px 10px;border:none;border-radius:9px;background:${o.bg ?? ""};color:var(--text);font-size:12.5px;font-weight:600;font-family:inherit;text-align:left;cursor:pointer;`)} className={sp("hover", "background:var(--primary-softer)")}>
@@ -2532,11 +2564,11 @@ export default function View(V) {
                                 </div>
                               </React.Fragment>
                             ) : null}
-                            <div style={st246}>
-                              <button onClick={r.onRename} title="Renommer" style={st247} className={sp("hover", "background:var(--primary-softer)")}>
+                            <div style={st249}>
+                              <button onClick={r.onRename} title="Renommer" style={st250} className={sp("hover", "background:var(--primary-softer)")}>
                                 {V.penIcon}
                               </button>
-                              <button onClick={r.onDelete} title="Supprimer" style={st248} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
+                              <button onClick={r.onDelete} title="Supprimer" style={st251} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
                                 {V.trashIcon2}
                               </button>
                             </div>
@@ -2549,7 +2581,7 @@ export default function View(V) {
                 {" "}
                 {V.vidIsList ? (
                   <React.Fragment>
-                    <div style={st249}>
+                    <div style={st252}>
                       {(V.vidCards || []).map((r, _i11) => (
                         <React.Fragment key={_i11}>
                           <div draggable={r.draggable} onDragStart={r.onDragStart} onDragOver={r.onDragOver} onDragLeave={r.onDragLeave} onDrop={r.onDrop} onDoubleClick={r.onOpen} style={css(`display:flex;align-items:center;gap:14px;padding:11px 15px;border-bottom:1px solid var(--border);border-left:3px solid ${r.rowAccent ?? ""};cursor:pointer;`)} className={sp("hover", "background:var(--primary-softer)")}>
@@ -2568,13 +2600,13 @@ export default function View(V) {
                                 </button>
                               </React.Fragment>
                             ) : null}
-                            <div style={st323}>
+                            <div style={st326}>
                               {r.meta}
                             </div>
-                            <button onClick={r.onRename} style={st251}>
+                            <button onClick={r.onRename} style={st254}>
                               {V.penIcon}
                             </button>
-                            <button onClick={r.onDelete} style={st252} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
+                            <button onClick={r.onDelete} style={st255} className={sp("hover", "background:var(--neg-soft);color:var(--neg)")}>
                               {V.trashIcon2}
                             </button>
                           </div>
@@ -2586,37 +2618,37 @@ export default function View(V) {
                 {" "}
                 {V.vidEmpty ? (
                   <React.Fragment>
-                    <div style={st253}>
-                      <div style={st254}>
+                    <div style={st256}>
+                      <div style={st257}>
                         {V.videoBigIcon}
                       </div>
-                      <div style={st255}>
+                      <div style={st258}>
                         {V.vidEmptyTitle}
                       </div>
-                      <div style={st256}>
+                      <div style={st259}>
                         {V.vidEmptySub}
                       </div>
                     </div>
                   </React.Fragment>
                 ) : null}
               </div>
-              <div style={st257}>
+              <div style={st260}>
                 {"Astuce : clique le badge de statut pour le changer · glisse une vidéo sur un dossier pour la ranger."}
               </div>
             </div>
             {V.vidRenameOpen ? (
               <React.Fragment>
                 <div onClick={V.vidRenameClose} style={st145}>
-                  <div onClick={V.stopProp} style={st258}>
+                  <div onClick={V.stopProp} style={st261}>
                     <div style={st64}>
                       {"Renommer"}
                     </div>
-                    <input value={V.vidRenameVal ?? ""} onChange={V.onVidRenameVal} onKeyDown={V.onVidRenameKey} style={st259} />
-                    <div style={st260}>
-                      <button onClick={V.vidRenameClose} style={st261}>
+                    <input value={V.vidRenameVal ?? ""} onChange={V.onVidRenameVal} onKeyDown={V.onVidRenameKey} style={st262} />
+                    <div style={st263}>
+                      <button onClick={V.vidRenameClose} style={st264}>
                         {"Annuler"}
                       </button>
-                      <button onClick={V.vidRenameSave} style={st262}>
+                      <button onClick={V.vidRenameSave} style={st265}>
                         {"Enregistrer"}
                       </button>
                     </div>
@@ -2627,17 +2659,17 @@ export default function View(V) {
             {" "}
             {V.vidPreviewOpen ? (
               <React.Fragment>
-                <div onClick={V.vidPreviewClose} style={st263}>
-                  <div onClick={V.stopProp} style={st264}>
-                    <div style={st265}>
+                <div onClick={V.vidPreviewClose} style={st266}>
+                  <div onClick={V.stopProp} style={st267}>
+                    <div style={st268}>
                       {V.vidPreviewMedia}
                     </div>
-                    <div style={st324}>
-                      <div style={st325}>
-                        <div style={st267}>
+                    <div style={st327}>
+                      <div style={st328}>
+                        <div style={st270}>
                           {V.vidPreviewName}
                         </div>
-                        <div style={st268}>
+                        <div style={st271}>
                           {V.vidPreviewMeta}
                         </div>
                       </div>
@@ -2648,7 +2680,7 @@ export default function View(V) {
                           </button>
                         </React.Fragment>
                       ))}
-                      <button onClick={V.vidPreviewClose} style={st270}>
+                      <button onClick={V.vidPreviewClose} style={st273}>
                         {"Fermer"}
                       </button>
                     </div>
@@ -2660,29 +2692,29 @@ export default function View(V) {
         ) : null}
         {V.isAssistant ? (
           <React.Fragment>
-            <div className="r-page" style={st326}>
-              <div style={st327}>
-                <span style={st328}>
+            <div style={st329} className={"r-page"}>
+              <div style={st330}>
+                <span style={st331}>
                   {V.chantierIcon}
                 </span>
                 <div>
-                  <div style={st329}>
+                  <div style={st332}>
                     {"En cours de développement"}
                   </div>
-                  <div style={st308}>
+                  <div style={st311}>
                     {"Cette page n'est pas encore utilisable. On y reviendra."}
                   </div>
                 </div>
               </div>
-              <div style={st330}>
-                <div style={st318}>
-                  <div style={st331}>
-                    <span style={st332}></span>
+              <div style={st333}>
+                <div style={st321}>
+                  <div style={st334}>
+                    <span style={st335}></span>
                     {"Données connectées "}
                   </div>
                   {(V.ctxChips || []).map((c, _i9) => (
                     <React.Fragment key={_i9}>
-                      <div style={st333}>
+                      <div style={st336}>
                         {c.label}
                       </div>
                     </React.Fragment>
@@ -2690,33 +2722,33 @@ export default function View(V) {
                   <div style={st11}></div>
                   {V.hasChat ? (
                     <React.Fragment>
-                      <button onClick={V.resetChat} style={st334}>
+                      <button onClick={V.resetChat} style={st337}>
                         {"Nouvelle conversation"}
                       </button>
                     </React.Fragment>
                   ) : null}
                 </div>
-                <div ref={V.chatScrollRef} style={st335}>
+                <div ref={V.chatScrollRef} style={st338}>
                   {V.chatEmpty ? (
                     <React.Fragment>
-                      <div style={st336}>
+                      <div style={st339}>
                         <div style={st203}>
-                          <div style={st337}>
+                          <div style={st340}>
                             {V.sparkIcon}
                           </div>
                           <div>
-                            <div style={st338}>
+                            <div style={st341}>
                               {"Ton conseiller data"}
                             </div>
-                            <div style={st339}>
+                            <div style={st342}>
                               {"Il lit tes commandes, marques, produits et vidéos, puis te dit quoi pousser."}
                             </div>
                           </div>
                         </div>
-                        <div style={st340}>
+                        <div style={st343}>
                           {(V.suggestions || []).map((s, _i13) => (
                             <React.Fragment key={_i13}>
-                              <button onClick={s.onClick} style={st341} className={sp("hover", "background:var(--primary-softer);border-color:var(--primary)")}>
+                              <button onClick={s.onClick} style={st344} className={sp("hover", "background:var(--primary-softer);border-color:var(--primary)")}>
                                 {s.label}
                               </button>
                             </React.Fragment>
@@ -2729,11 +2761,11 @@ export default function View(V) {
                     <React.Fragment key={_i9}>
                       {m.estUtilisateur ? (
                         <React.Fragment>
-                          <div style={st342}>
-                            <div style={st343}>
+                          <div style={st345}>
+                            <div style={st346}>
                               {m.text}
                             </div>
-                            <div style={st344}>
+                            <div style={st347}>
                               {m.initiales}
                             </div>
                           </div>
@@ -2742,19 +2774,19 @@ export default function View(V) {
                       {" "}
                       {m.estAssistant ? (
                         <React.Fragment>
-                          <div style={st345}>
-                            <div style={st346}>
+                          <div style={st348}>
+                            <div style={st349}>
                               <svg width="27" height="27" viewBox="0 0 64 64" aria-hidden="true" style={st4}>
                                 <path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" strokeWidth="6.5" strokeLinecap="round"></path>
                                 <circle cx="47" cy="46" r="5.5" fill="currentColor"></circle>
                               </svg>
                             </div>
-                            <div style={st347}>
+                            <div style={st350}>
                               {(m.segments || []).map((sg, _i15) => (
                                 <React.Fragment key={_i15}>
                                   {sg.estTexte ? (
                                     <React.Fragment>
-                                      <div style={st348}>
+                                      <div style={st351}>
                                         {sg.texte}
                                       </div>
                                     </React.Fragment>
@@ -2762,9 +2794,9 @@ export default function View(V) {
                                   {" "}
                                   {sg.estPuce ? (
                                     <React.Fragment>
-                                      <div style={st349}>
-                                        <span style={st350}></span>
-                                        <div style={st351}>
+                                      <div style={st352}>
+                                        <span style={st353}></span>
+                                        <div style={st354}>
                                           {sg.texte}
                                         </div>
                                       </div>
@@ -2773,11 +2805,11 @@ export default function View(V) {
                                   {" "}
                                   {sg.estAction ? (
                                     <React.Fragment>
-                                      <div style={st352}>
-                                        <span style={st353}>
+                                      <div style={st355}>
+                                        <span style={st356}>
                                           {"À FAIRE"}
                                         </span>
-                                        <div style={st354}>
+                                        <div style={st357}>
                                           {sg.texte}
                                         </div>
                                       </div>
@@ -2793,19 +2825,19 @@ export default function View(V) {
                   ))}
                   {V.chatBusy ? (
                     <React.Fragment>
-                      <div style={st355}>
-                        <div style={st356}>
+                      <div style={st358}>
+                        <div style={st359}>
                           <svg width="27" height="27" viewBox="0 0 64 64" aria-hidden="true" style={st4}>
                             <path d="M11 47 A 28 28 0 0 1 53 22" fill="none" stroke="currentColor" strokeWidth="6.5" strokeLinecap="round"></path>
                             <circle cx="47" cy="46" r="5.5" fill="currentColor"></circle>
                           </svg>
                         </div>
-                        <div style={st357}>
-                          <span style={st358}></span>
+                        <div style={st360}>
+                          <span style={st361}></span>
                           {" "}
-                          <span style={st359}></span>
+                          <span style={st362}></span>
                           {" "}
-                          <span style={st360}></span>
+                          <span style={st363}></span>
                         </div>
                       </div>
                     </React.Fragment>
@@ -2813,16 +2845,16 @@ export default function View(V) {
                   {" "}
                   {V.chatErr ? (
                     <React.Fragment>
-                      <div style={st361}>
+                      <div style={st364}>
                         {V.chatErr}
                       </div>
                     </React.Fragment>
                   ) : null}
                 </div>
-                <div style={st362}>
-                  <textarea value={V.chatInput ?? ""} onChange={V.onChatInput} onKeyDown={V.onChatKey} placeholder="Demande-lui : sur quelle marque appuyer aujourd'hui ?" style={st363}></textarea>
+                <div style={st365}>
+                  <textarea value={V.chatInput ?? ""} onChange={V.onChatInput} onKeyDown={V.onChatKey} placeholder="Demande-lui : sur quelle marque appuyer aujourd'hui ?" style={st366}></textarea>
                   <div style={st58}>
-                    <div style={st364}>
+                    <div style={st367}>
                       {"Entrée pour envoyer · Maj+Entrée pour une nouvelle ligne"}
                     </div>
                     <button onClick={V.sendChat} style={css(`display:flex;align-items:center;gap:7px;padding:10px 16px;border:none;border-radius:12px;background:${V.sendBg ?? ""};color:#fff;font-size:13.5px;font-weight:600;font-family:inherit;cursor:${V.sendCursor ?? ""};`)}>
@@ -2839,20 +2871,20 @@ export default function View(V) {
         ) : null}
         {V.isOther ? (
           <React.Fragment>
-            <div style={st365}>
-              <div style={st366}>
+            <div style={st368}>
+              <div style={st369}>
                 {V.otherIcon}
               </div>
-              <div style={st367}>
+              <div style={st370}>
                 {V.pageTitle}
               </div>
-              <div style={st368}>
+              <div style={st371}>
                 {"Cette section n'est pas incluse dans cette maquette — le focus est sur le "}
-                <strong style={st369}>
+                <strong style={st372}>
                   {"Dashboard"}
                 </strong>
                 {" et "}
-                <strong style={st369}>
+                <strong style={st372}>
                   {"Analytics"}
                 </strong>
                 {"."}
@@ -2863,13 +2895,13 @@ export default function View(V) {
       </main>
       {V.menuMobileOuvert ? (
         <React.Fragment>
-          <button className="r-voile" onClick={V.fermerMenuMobile} aria-label="Fermer le menu"></button>
-          <div className="r-feuille">
-            <div style={st370}></div>
+          <button onClick={V.fermerMenuMobile} aria-label="Fermer le menu" className={"r-voile"}></button>
+          <div className={"r-feuille"}>
+            <div style={st373}></div>
             {(V.ongletsPlus || []).map((o, _i6) => (
               <React.Fragment key={_i6}>
                 <button onClick={o.onClick} style={css(`display:flex;align-items:center;gap:13px;width:100%;padding:13px 12px;border:none;border-radius:13px;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600;text-align:left;background:${o.bg ?? ""};color:${o.fg ?? ""};`)}>
-                  <span style={st371}>
+                  <span style={st374}>
                     {o.icon}
                   </span>
                   {" "}
@@ -2879,8 +2911,8 @@ export default function View(V) {
                 </button>
               </React.Fragment>
             ))}
-            <div style={st372}></div>
-            <div style={st373}>
+            <div style={st375}></div>
+            <div style={st376}>
               {V.compte.photo ? (
                 <React.Fragment>
                   <img src={V.compte.photo} alt="" style={st14} />
@@ -2898,13 +2930,13 @@ export default function View(V) {
                 <div style={st107}>
                   {V.compte.nom}
                 </div>
-                <div style={st374}>
+                <div style={st377}>
                   {V.compte.sous}
                 </div>
               </div>
             </div>
-            <button onClick={V.deconnexionItem.onClick} style={st375}>
-              <span style={st371}>
+            <button onClick={V.deconnexionItem.onClick} style={st378}>
+              <span style={st374}>
                 {V.deconnexionItem.icon}
               </span>
               {" "}
@@ -2915,15 +2947,15 @@ export default function View(V) {
           </div>
         </React.Fragment>
       ) : null}
-      <nav className="r-tabbar" aria-label="Navigation principale">
+      <nav aria-label="Navigation principale" className={"r-tabbar"}>
         {(V.onglets || []).map((o, _i4) => (
           <React.Fragment key={_i4}>
-            <button className="r-onglet" onClick={o.onClick} style={css(`color:${o.fg ?? ""};`)}>
-              <span style={st376}>
+            <button onClick={o.onClick} style={css(`color:${o.fg ?? ""};`)} className={"r-onglet"}>
+              <span style={st379}>
                 {o.icon}
               </span>
               {" "}
-              <span style={st377}>
+              <span style={st380}>
                 {o.label}
               </span>
             </button>

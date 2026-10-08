@@ -82,17 +82,20 @@ input,button,select{font-family:inherit;}
     position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
   }
 
-  /* Barre d'outils des Commandes : en flex aligne a droite, les contoles
-     s'enroulent au hasard de leurs largeurs et le resultat est en escalier.
-     Sur mobile on impose le rythme : deux listes cote a cote, la periode sur
-     toute la largeur, puis les actions. Les boutons s'etirent pour remplir leur
-     ligne, qu'ils soient un ou deux — « Reinitialiser » n'apparait que lorsqu'un
-     filtre est actif. */
-  .r-outils{width:100% !important;justify-content:flex-start !important;gap:8px !important;}
-  .r-outils > select{flex:1 1 calc(50% - 4px) !important;min-width:0 !important;min-height:40px;}
-  .r-outils > div{flex:1 1 100% !important;min-width:0 !important;}
-  .r-outils > div > button{width:100% !important;justify-content:center;}
-  .r-outils > button{flex:1 1 auto !important;min-width:130px;justify-content:center;}
+  /* Barre d'outils des Commandes : au bureau, cinq controles alignes a droite
+     du titre. A 375px ils s'enroulaient sur quatre rangees et repoussaient le
+     premier chiffre a 300px du haut de l'ecran. L'en-tete ne garde donc que le
+     titre et « Importer », sur un seul rang : le statut est passe dans le
+     controle segmente de la page, le vendeur et la periode dans la ligne de
+     filtres juste en dessous. */
+  .r-outils{width:auto !important;flex:none !important;gap:8px !important;flex-wrap:nowrap !important;}
+  .r-outils > select,
+  .r-outils > .r-reinit{display:none !important;}
+  /* Le bouton de periode s'en va, mais son ancre reste affichee : le
+     calendrier est rendu dedans, et masquer l'ancre emporterait la feuille. */
+  .r-outils > .r-ancre > button{display:none !important;}
+  .r-import{padding:10px 14px !important;border-radius:13px !important;font-size:13.5px !important;}
+  .r-import > .m-ic{display:flex !important;}
 
   /* Bibliotheques (Videos, Rushs) : meme principe. Le fil d'ariane et le
      selecteur de vue partagent la premiere ligne, la recherche prend toute la
@@ -162,8 +165,6 @@ input,button,select{font-family:inherit;}
      pastilles blanches sur fond noir. On les rattache a la charte, sans
      toucher au bouton primaire ni a la pastille de marque. */
   .r-ancre > button,
-  .r-outils > select,
-  .r-outils > div > button,
   .r-vidbar > input,
   .r-vidbar > div:last-child{
     background:var(--m-surface) !important;
@@ -173,12 +174,6 @@ input,button,select{font-family:inherit;}
   .r-calendrier{background:var(--m-surface) !important;border-color:var(--m-trait) !important;color:var(--m-encre) !important;}
   .r-calendrier > div:first-child{background:var(--m-accent-fond) !important;border-bottom-color:var(--m-trait) !important;}
   .r-chips > button{background:var(--m-surface) !important;border-color:var(--m-trait) !important;}
-
-  /* Le statut est passe dans le controle segmente de la page : la liste
-     deroulante de l'en-tete disait la meme chose deux fois. Le vendeur et les
-     dates restent — la maquette ne leur avait pas prevu de place, et les
-     supprimer aurait fait disparaitre deux filtres en silence. */
-  .r-sel-statut{display:none !important;}
 
   /* Deux colonnes maximum : a 375px, quatre indicateurs cote a cote donnent
      des colonnes de 30px ou « 48 250 € » se brise en trois lignes. */

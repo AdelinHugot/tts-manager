@@ -196,9 +196,17 @@ function emit(node, scope, depth) {
       props.push(v.dynamic ? `style={css(${v.code})}` : `style={${styleConst(raw)}}`);
       continue;
     }
+    // `class` rejoint la liste des classes au lieu de former son propre prop :
+    // emis separement, il produisait un second `className` sur le meme noeud et
+    // JSX ne garde que le dernier — toute classe posee sur un element ayant un
+    // `style-hover` disparaissait sans bruit.
+    if (name === 'class') {
+      const v = attrValue(raw, scope);
+      classes.unshift(v.dynamic ? `(${v.code})` : v.code);
+      continue;
+    }
     let key = name;
-    if (key === 'class') key = 'className';
-    else if (key === 'for') key = 'htmlFor';
+    if (key === 'for') key = 'htmlFor';
     else if (key === 'crossorigin') key = 'crossOrigin';
     else if (/^on[a-z]/.test(key)) key = 'on' + key[2].toUpperCase() + key.slice(3);
 

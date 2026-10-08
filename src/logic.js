@@ -1967,12 +1967,17 @@ export class Logic extends DCLogic {
                     com:o.com?('+'+this.fmtEur(o.com,2)):'—',
                     couleur:c, bord:i?'var(--m-trait)':'transparent'};
           }),
+          iconeDate:this.iconEl('calendar',19,1.9),
+          dateFond:F.from?'var(--m-accent-doux)':'var(--m-surface)',
+          dateBord:F.from?'var(--m-accent)':'var(--m-trait)',
+          dateEncre:F.from?'var(--m-accent)':'var(--m-encre2)',
           flecheG:this.iconEl('chevronL',17,2.1),
           flecheD:this.iconEl('chevronR',17,2.1)
         };
       })(),
       importCommandes:{
         onClick:()=>this.ouvrirImport(),
+        icone:this.iconEl('upload',16,2.1),
         label:S.importEnCours?'Import en cours…':'Importer',
         op:S.importEnCours?'0.6':'1', pe:S.importEnCours?'none':'auto',
         ref:this.importInputRef, onFichier:e=>this.onFichierImport(e),
