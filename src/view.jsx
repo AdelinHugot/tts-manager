@@ -2057,7 +2057,7 @@ export default function View(V) {
                     {"Nouveau dossier"}
                   </span>
                 </button>
-                <input type="file" accept="video/*" multiple="" ref={V.rushInputRef} onChange={V.onRushPick} style={st51} />
+                <input type="file" accept="video/*" multiple={true} ref={V.rushInputRef} onChange={V.onRushPick} style={st51} />
                 <button onClick={V.rushBrowse} style={st244}>
                   {V.uploadIcon}
                   <span>
@@ -2482,7 +2482,7 @@ export default function View(V) {
                     {"Nouveau dossier"}
                   </span>
                 </button>
-                <input type="file" accept="video/*" multiple="" ref={V.vidInputRef} onChange={V.onVidPick} style={st51} />
+                <input type="file" accept="video/*" multiple={true} ref={V.vidInputRef} onChange={V.onVidPick} style={st51} />
                 <button onClick={V.vidBrowse} style={st244}>
                   {V.uploadIcon}
                   <span>

@@ -171,6 +171,18 @@ function styleConst(css) {
 
 const EVENT_ATTRS = /^on[A-Z]/;
 
+// Attributs booleens ecrits a vide en HTML (`multiple=""`, `disabled`). React
+// applique ces noms comme *proprietes* du noeud, et `input.multiple = ""` vaut
+// false : l'attribut etait pose dans le markup et neutralise au montage. On
+// emet donc un vrai `true`. L'attribut d'un element inerte (`<option selected>`)
+// n'est pas dans la liste : React le pilote par la valeur du parent.
+const BOOLEAN_ATTRS = new Set([
+  'multiple', 'disabled', 'checked', 'controls', 'required', 'readOnly',
+  'autoFocus', 'autoPlay', 'loop', 'muted', 'hidden', 'open', 'noValidate',
+  'default', 'reversed', 'playsInline',
+]);
+const BOOLEAN_ALIAS = { readonly: 'readOnly', autofocus: 'autoFocus', autoplay: 'autoPlay', novalidate: 'noValidate', playsinline: 'playsInline' };
+
 function emit(node, scope, depth) {
   const pad = '  '.repeat(depth);
 
@@ -205,6 +217,14 @@ function emit(node, scope, depth) {
       classes.unshift(v.dynamic ? `(${v.code})` : v.code);
       continue;
     }
+    // `multiple=""` ou `disabled` tout court : la valeur vide est la facon
+    // HTML de dire « vrai », pas une chaine a transmettre telle quelle.
+    const boolKey = BOOLEAN_ALIAS[name] || name;
+    if (BOOLEAN_ATTRS.has(boolKey) && (raw === '' || raw === name)) {
+      props.push(`${boolKey}={true}`);
+      continue;
+    }
+
     let key = name;
     if (key === 'for') key = 'htmlFor';
     else if (key === 'crossorigin') key = 'crossOrigin';
